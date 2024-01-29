@@ -7,7 +7,7 @@ function QuickBuyProducts() {
         <h3 className="font-semibold ">FLASH SALE TODAY</h3>
         <div className="my-2">
           <div className="flex md:max-w-[260px] border ">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>
@@ -16,7 +16,7 @@ function QuickBuyProducts() {
         </div>
         <div className="my-2">
           <div className="flex md:max-w-[260px] border ">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>
@@ -25,7 +25,7 @@ function QuickBuyProducts() {
         </div>
         <div className="my-2">
           <div className="flex md:max-w-[260px] border ">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>
@@ -37,7 +37,7 @@ function QuickBuyProducts() {
         <h3 className="font-semibold ">BEST SELLERS</h3>
         <div className="my-2">
           <div className="flex md:max-w-[260px] border ">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>
@@ -46,7 +46,7 @@ function QuickBuyProducts() {
         </div>
         <div className="my-2">
           <div className="flex md:max-w-[260px] border ">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>
@@ -55,7 +55,7 @@ function QuickBuyProducts() {
         </div>
         <div className="my-2">
           <div className="flex md:max-w-[260px] border ">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>
@@ -67,7 +67,7 @@ function QuickBuyProducts() {
         <h3 className="font-semibold ">TOP RATED</h3>
         <div className="my-2">
           <div className="flex md:max-w-[260px] border ">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>
@@ -76,7 +76,7 @@ function QuickBuyProducts() {
         </div>
         <div className="my-2">
           <div className="flex md:max-w-[260px] border ">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>
@@ -85,7 +85,7 @@ function QuickBuyProducts() {
         </div>
         <div className="my-2">
           <div className="flex md:max-w-[260px] border ">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>
@@ -97,7 +97,7 @@ function QuickBuyProducts() {
         <h3 className="font-semibold ">NEW ARRIVAL</h3>
         <div className="my-2">
           <div className="flex md:max-w-[260px] border ">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>
@@ -106,7 +106,7 @@ function QuickBuyProducts() {
         </div>
         <div className="my-2">
           <div className="flex md:max-w-[260px] border ">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>
@@ -115,7 +115,7 @@ function QuickBuyProducts() {
         </div>
         <div className="my-2">
           <div className="flex md:max-w-[260px]">
-            <img src={product} alt="" srcset="" />
+            <img src={product} alt="" srcSet="" />
             <div className="text-xs flex flex-col justify-center gap-2">
               <p>Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
               <p className="text-[#2DA5F3] font-bold">$201.1</p>

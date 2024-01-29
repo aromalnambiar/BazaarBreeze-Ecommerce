@@ -1,47 +1,54 @@
 const bcrypt=require('bcrypt');
 const nodemailer=require('nodemailer');
+const jwt=require('jsonwebtoken');
 const User=require('../models/User');
 const OTP=require('../models/Otp');
+const Products=require('../models/Products');
+const mongoose=require('mongoose');
 
 const generateOtp=()=>{
         const otp=Math.floor(100000 + Math.random() * 900000);;
         return String(otp);
 }
 
-const sendMail=(email,otp)=>{
+const sendMail = async (email, otp) => {
     try {
-        let transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-              type: 'OAuth2',
-              user: `${process.env.USER}`,
-              pass: `${process.env.PASS}`,
-              clientId: `${process.env.CLIENT_ID}`,
-              clientSecret:`${process.env.CLIENT_SECRET}`,
-              refreshToken: `${process.env.REFRESH_TOKEN}`
-            }
-          });
-    
-        function sendMail(email,otp){
-            const details={
-                from:`${process.env.USER}`,
-                to:email,
-                subject:"Testing nodemailer",
-                html:otp
-            }
-            transporter.sendMail(details,function(error,data){
-                if(error)
-                console.log(error);
-                else
-                console.log(data);
-            });
-        }    
-    sendMail(email,otp);
-
+      let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+          type: 'OAuth2',
+          user: `${process.env.USER}`,
+          pass: `${process.env.PASS}`,
+          clientId: `${process.env.CLIENT_ID}`,
+          clientSecret: `${process.env.CLIENT_SECRET}`,
+          refreshToken: `${process.env.REFRESH_TOKEN}`
+        }
+      });
+  
+      const details = {
+        from: `${process.env.USER}`,
+        to: email,
+        subject: "Testing nodemailer",
+        html: otp
+      };
+  
+      // Return a promise that resolves on successful sending or rejects on error
+      return new Promise((resolve, reject) => {
+        transporter.sendMail(details, function (error, data) {
+          if (error) {
+            console.error(error);
+            reject(error);
+          } else {
+            console.log(data);
+            resolve();
+          }
+        });
+      });
     } catch (error) {
-        console.log(error);
+      console.log(error);
+      throw error;
     }
-}
+  };
 
 
 const retrieveOTP=async(email)=>{
@@ -58,17 +65,20 @@ const verifyOTP=async(req,res)=>{
     try {
         const {email,username,password,otp:enteredOTP}=req.body;
         const storedOTP=await retrieveOTP(email);
+        
 
         if(enteredOTP==storedOTP){
-            const user=new User({email,username,password});
+            const hashedPassword = await bcrypt.hash(password, 10);
+            const user=new User({email,username,password:hashedPassword});
             await user.save();
             res.status(200).json({message:"User created successfully"});
         }else{
             res.status(400).json({message:"Invalid OTP"});
         }
-
+        
     } catch (error) {
         console.log(error);
+        res.status(400).json({message:"Invalid OTP"});
         throw new Error;
     }
 }
@@ -77,8 +87,8 @@ const resendOTP=async(req,res)=>{
     try {
         const {email}=req.body; 
         const otp=generateOtp();
-        sendMail(email,otp);
-        storeOTP(email,otp);
+        await sendMail(email, otp);  
+        storeOTP(email, otp);
         res.status(200).json({message:"OTP resend success"});
     } catch (error) {
         console.log(error);
@@ -93,9 +103,9 @@ const forgetPassword=async(req,res)=>{
             return res.status(404).json({message:"can't find user"});
         }
         const otp=generateOtp();
-        sendMail(email,otp);
+        await sendMail(email,otp);
         storeOTP(email,otp);
-        res.status(200).json({message:"success"});
+        res.status(200).json({message:"OTP sent successfully",username:user.username});
     } catch (error) {
         console.log(error);
         throw new Error;
@@ -104,7 +114,7 @@ const forgetPassword=async(req,res)=>{
 
 const resetPassword=async(req,res)=>{
     try {
-        const {email,otp:enteredOTP,newPassword}=req.body;
+        const {email,otp:enteredOTP,password:newPassword}=req.body;
         const storedOTP=await retrieveOTP(email);
         console.log("storedOTP : ",storedOTP);
         console.log("enteredOTP : ",enteredOTP);
@@ -113,7 +123,8 @@ const resetPassword=async(req,res)=>{
             if(!user){
                 res.status(404).send("User not found");
             }else{
-                user.password=newPassword;
+                const hashedPassword=await bcrypt.hash(newPassword,10);
+                user.password=hashedPassword;
                 await user.save();
                 res.status(200).json({message:"password reset successfully"});
             }
@@ -138,31 +149,35 @@ const storeOTP=async(email,otp)=>{
 
 
 
-const registerUser=async(req,res)=>{
+const registerUser = async (req, res) => {
     try {
-        const {email}=req.body;
-
-        const otp=generateOtp();
-        sendMail(email,otp);
-        storeOTP(email,otp);
-        res.status(200).json({message:"OTP sent to your email"});
+      const { email } = req.body;
+      const otp = generateOtp();
+      await sendMail(email, otp);  
+      storeOTP(email, otp);
+      res.status(200).json({ message: "OTP sent to your email" });
     } catch (error) {
-        console.log(error);
+      console.log(error);
+      res.status(500).json({ message: "Failed to send OTP email" });
     }
-}
+  };
 
 const loginUser=async(req,res)=>{
     try {
+        console.log("loginUser");
+        console.log("req.body : ",req.body);
         const {email,password}=req.body;
         const user=await User.findOne({email});
+        console.log(user);
         if(!user){
             return res.status(404).json({message:"User isn't available"});
         }
-        else if(user.password===password){
+        else if(bcrypt.compareSync(password,user.password)){
             if(user.isBlocked){
-                res.status(400).json({message:"User is blocked"})
+               return res.status(400).json({message:"User is blocked"})
             }
-            return res.status(200).json({message:"Login successfull"});
+            const token=jwt.sign({userId:user._id,role:'user'},`${process.env.JWT_SECRET}`,{expiresIn:'1h'});
+            return res.status(200).json({token,userId:user._id,message:"Login successfull"});
         }else{
             return res.status(400).json({message:"password isn't matching"});
         }
@@ -172,5 +187,47 @@ const loginUser=async(req,res)=>{
     }
 }
 
-module.exports={registerUser,verifyOTP,sendMail,loginUser,resetPassword,forgetPassword,resendOTP};
+const listProducts=async(req,res)=>{
+    try {
+         const products=await Products.find();
+         console.log(products);
+         
+    } catch (error) {
+        console.log(error);
+        throw new Error;
+    }
+}
+
+const productDetails = async (req, res) => {
+    try {
+      const productId = new mongoose.Types.ObjectId(req.params.productid); // Replace with the actual product ID
+        console.log(req.params.productid);
+      const result = await Products.aggregate([
+        {
+          $match: {
+            _id: productId,
+          },
+        },
+        {
+          $lookup: {
+            from: 'productvariants',
+            localField: '_id',
+            foreignField: 'productId',
+            as: 'productDetails',
+          },
+        },
+      ]);
+  
+      console.log(result);
+  
+      // Assuming you want to send the first product detail, you can use $arrayElemAt
+      const firstProductDetail = result[0]?.productDetails[0] || null;
+  
+      res.status(200).json({ message: "success", productDetails: firstProductDetail });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+module.exports={registerUser,verifyOTP,sendMail,loginUser,resetPassword,forgetPassword,resendOTP,listProducts,productDetails};
 

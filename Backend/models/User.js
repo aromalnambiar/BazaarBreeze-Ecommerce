@@ -13,8 +13,6 @@ const UserSchema=new mongoose.Schema({
     age:{type:Number},
     wishlist:{type:Array},
     cart:{type:Array},
-    otp:{type:Number},
-    otpExpiration:{type:Date,expiresIn:'1m',default:Date.now},
     wallet:{type:Number},
 })
 
