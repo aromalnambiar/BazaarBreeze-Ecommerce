@@ -152,6 +152,12 @@ const storeOTP=async(email,otp)=>{
 const registerUser = async (req, res) => {
     try {
       const { email } = req.body;
+      
+      const existingUser = await User.findOne({ email });
+      console.log(existingUser);
+      if (existingUser) {
+        return res.status(400).json({ message: "User with this email already exists" });
+      }
       const otp = generateOtp();
       await sendMail(email, otp);  
       storeOTP(email, otp);
@@ -187,47 +193,117 @@ const loginUser=async(req,res)=>{
     }
 }
 
-const listProducts=async(req,res)=>{
-    try {
-         const products=await Products.find();
-         console.log(products);
+// const listProducts=async(req,res)=>{
+//     try {
+//          const products=await Products.find();
+//          console.log(products);
+//          res.status(200).json({message:"success",products});
          
-    } catch (error) {
-        console.log(error);
-        throw new Error;
-    }
-}
+//     } catch (error) {
+//         console.log(error);
+//         throw new Error;
+//     }
+// }
 
+const listProducts = async (req, res) => {
+  try {
+    const products = await Products.aggregate([
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'variants',
+        },
+      },
+      {
+        $addFields: {
+          firstVariant: { $arrayElemAt: ['$variants', 0] },
+        },
+      },
+      {
+        $project: {
+          variants: 0, 
+        },
+      },
+    ]);
+
+    // console.log(products);
+    res.status(200).json({ message: 'success', products });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
+// const productDetails = async (req, res) => {
+//     try {
+//       const productId = new mongoose.Types.ObjectId(req.params.productid); // Replace with the actual product ID
+//         console.log(req.params.productid);
+//       const result = await Products.aggregate([
+//         {
+//           $match: {
+//             _id: productId,
+//           },
+//         },
+//         {
+//           $lookup: {
+//             from: 'productvariants',
+//             localField: '_id',
+//             foreignField: 'productId',
+//             as: 'productDetails',
+//           },
+//         },
+//       ]);
+  
+//       console.log(result[0]);
+  
+  
+//       res.status(200).json({ message: "success", productDetails: result[0] });
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ error: 'Internal Server Error' });
+//     }
+//   };
 const productDetails = async (req, res) => {
-    try {
-      const productId = new mongoose.Types.ObjectId(req.params.productid); // Replace with the actual product ID
-        console.log(req.params.productid);
-      const result = await Products.aggregate([
-        {
-          $match: {
-            _id: productId,
-          },
+  try {
+    const productId = new mongoose.Types.ObjectId(req.params.productid);
+    const result = await Products.aggregate([
+      {
+        $match: {
+          _id: productId,
         },
-        {
-          $lookup: {
-            from: 'productvariants',
-            localField: '_id',
-            foreignField: 'productId',
-            as: 'productDetails',
-          },
+      },
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'productDetails',
         },
-      ]);
-  
-      console.log(result);
-  
-      // Assuming you want to send the first product detail, you can use $arrayElemAt
-      const firstProductDetail = result[0]?.productDetails[0] || null;
-  
-      res.status(200).json({ message: "success", productDetails: firstProductDetail });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      },
+    ]);
+
+    if (result.length > 0) {
+      const product = result[0];
+
+      const firstVariant = product.productDetails[0];
+
+      product.productDetails = firstVariant;
+
+      console.log(product);
+
+      res.status(200).json({ message: 'success', productDetails: product });
+    } else {
+      res.status(404).json({ message: 'Product not found' });
     }
-  };
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+
 module.exports={registerUser,verifyOTP,sendMail,loginUser,resetPassword,forgetPassword,resendOTP,listProducts,productDetails};
 

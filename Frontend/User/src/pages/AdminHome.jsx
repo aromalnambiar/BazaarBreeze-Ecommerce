@@ -7,6 +7,8 @@ import AddCategory from "../components/common/AddCategory.jsx";
 import AddProduct from "../components/common/AddProduct.jsx";
 import AddImages from "../components/common/AddImages.jsx";
 import { useParams } from "react-router-dom";
+import ViewProducts from "../components/common/ViewProducts.jsx";
+import AdminSignIn from "../components/admin/AdminSignin.jsx";
 
 function AdminHome() {
   const d = useParams();
@@ -26,6 +28,8 @@ function AdminHome() {
         return <AddCategory />;
       case "add-product":
         return <AddProduct />;
+      case "view-products":
+        return <ViewProducts />;
       default:
         return <UsersList />;
     }

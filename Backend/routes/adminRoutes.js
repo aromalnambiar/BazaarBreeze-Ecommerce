@@ -2,6 +2,8 @@ const router=require('express').Router();
 const adminController=require('../controllers/adminController.js');
 const multer=require('multer');
 const path=require('path');
+const { authenticateJWT, isAdmin } = require('../middlewares/authMiddleware.js');
+
 
 const storage = multer.diskStorage({
     destination: 'uploads/',
@@ -13,6 +15,8 @@ const storage = multer.diskStorage({
   });
   
   const upload = multer({ storage: storage });
+
+router.post('/login', adminController.login);
 
 router.get('/products',adminController.viewProducts);
 router.get('/products/product',adminController.viewProduct);
@@ -34,6 +38,7 @@ router.put('/users/:userid',adminController.blockUser);
 // router.put('/users/:user-id/disable');
 // router.get('/users/search');
 // router.get('/users/users/:user-id');
+
 // router.get('/orders');
 // router.put('/orders/:order-id');
 // router.delete('/orders/:order-id');

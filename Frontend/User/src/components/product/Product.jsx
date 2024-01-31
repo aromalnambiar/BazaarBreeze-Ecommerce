@@ -1,16 +1,31 @@
+import { useEffect, useState } from "react";
 import photo from "../../assets/images/Laptop.png";
+import { useSelector } from "react-redux";
+import axios from "axios";
+import { BASE_URL } from "../../../config";
 
 function Product() {
+  const product = useSelector((state) => state.user.product);
+  const [item, setItem] = useState({});
+  // console.log("product: ", product);
+
+  useEffect(() => {
+    const result = axios.get(`${BASE_URL}/user/products/${product._id}`).then((res) => {
+      console.log("RESPONSE : ", res);
+      setItem(res.data.productDetails);
+    });
+  }, []);
+  // console.log(item?.productDetails?.images[0]);
   return (
     <>
       <div className="grid grid-cols-12 mt-8  gap-8">
         <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6">
-          <div className="border">
-            <img className="mx-auto" src={photo} alt="" />
+          <div className="border max-w-[350px] mx-auto">
+            <img className="mx-auto" src={`${BASE_URL}/uploads/${item?.productDetails?.images[0]}`||photo} alt="" />
           </div>
         </div>
         <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6">
-          <h3 className="font-semibold mb-4">2020 Apple MacBook Pro with Apple M1 Chip (13-inch, 8GB RAM, 256GB SSD Storage) - Space Gray</h3>
+          <h3 className="font-semibold mb-4">{product.description || "2020 Apple MacBook Pro with Apple M1 Chip (13-inch, 8GB RAM, 256GB SSD Storage) - Space Gray"}</h3>
           <div>
             <div className="flex justify-between text-[#5F6C72]">
               <p>
@@ -22,7 +37,7 @@ function Product() {
             </div>
             <div className="flex justify-between text-[#5F6C72]">
               <p>
-                Brand: <span className="font-semibold">Apple</span>
+                Brand: <span className="font-semibold">{item.brand || "Brand"}</span>
               </p>
               <p>
                 Category: <span className="font-semibold">Electronics Devices</span>

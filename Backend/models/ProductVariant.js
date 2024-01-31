@@ -5,9 +5,9 @@ const ProductVariant=new mongoose.Schema({
     stock:{type:Number},
     regularPrice:{type:Number},
     color:{type:String},
-    specificationsId:{type:mongoose.Schema.Types.ObjectId},
     variantName:{type:String},
-    salePrice:{type:Number},
+    salePrice:{type:String},
+    regularPrice:{type:String},
     images:{type:Array},
     specification:{type:Array}
 })

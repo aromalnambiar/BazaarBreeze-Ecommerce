@@ -4,8 +4,32 @@ const Products=require('../models/Products');
 const ProductVariant=require('../models/ProductVariant');
 const Category=require('../models/Category');
 const Users=require('../models/User.js');
+const Admin=require('../models/Admin.js');
 const { findByIdAndDelete } = require('../models/User');
 
+const login = async (req, res) => {
+    try {
+      const { email, password } = req.body;
+      const admin = await Admin.findOne({ email });
+  
+      if (!admin) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
+  
+      const isPasswordValid=(password==admin.password);
+  
+      if (!isPasswordValid) {
+        return res.status(401).json({ message: 'Invalid credentials' });
+      }
+  
+      const token = jwt.sign({ adminId: admin._id ,role:'admin'}, `${process.env.JWT_SECRET}`, { expiresIn: '1h' });
+      console.log("token : ",token);
+      res.status(200).json({ token });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  };
 
 const viewProducts=async(req,res)=>{
     try {
@@ -20,7 +44,7 @@ const viewProducts=async(req,res)=>{
 const viewProduct=async(req,res)=>{
     try {
         const {productId}=req.body;
-        const product=await Products.find();
+        const product=await Products.find({productId});
 
     } catch (error) {
         console.log(error);
@@ -70,8 +94,8 @@ const addProductVariant=async(req,res)=>{
             productId,
             stock,
             color,
-            regularprice,
-            specialprice,
+            regularPrice:regularprice,
+            salePrice:specialprice,
             variantName,
             images,
             specification
@@ -172,6 +196,10 @@ const addCategory=async(req,res)=>{
     try {
         const {name,description}=req.body;
         console.log(req.body);
+        const categoryExist=await Category.find({name});
+        if(categoryExist){
+            return res.status(400).json({message:"Category already exist"});
+        }
         const category=new Category({
             name,
             description,
@@ -254,27 +282,20 @@ const viewUsers=async(req,res)=>{
 const blockUser=async(req,res)=>{
     try {
         const userId = req.params.userid;
-    
-        // Find the user by ID
         const user = await Users.findById(userId);
-    
         if (!user) {
           return res.status(404).json({ message: 'User not found' });
         }
-    
-        // Toggle the isBlocked field
         user.isBlocked = !user.isBlocked;
-    
-        // Save the updated user
         const updatedUser = await user.save();
-    
-        res.status(200).json({ message: 'User block status toggled successfully', user: updatedUser });
+        res.status(200).json({ message: 'Success', user: updatedUser });
       } catch (error) {
         console.error(error);
         res.status(500).json({ error: 'Internal Server Error' });
       }
 }
 module.exports={
+    login,
     viewProducts,viewProduct,addProduct,addProductVariant,
     addCategory,editCategory,deleteCategory,viewCategory,
     editProduct,editProductVariant,deleteProduct,viewCategories,

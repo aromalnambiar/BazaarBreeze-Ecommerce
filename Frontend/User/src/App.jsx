@@ -8,12 +8,26 @@ import Home from "./pages/Home";
 import AdminHome from "./pages/AdminHome";
 import Layout from "./components/common/Layout";
 import MaxWidth from "./components/common/MaxWidth";
+import store from "./redux/store/configureStore.js";
+import AdminSignIn from "./components/admin/AdminSignin";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-  console.log("user : ", isAuthenticated);
+  // console.log("user : ", isAuthenticated);
   const isAdminAuthenticated = useSelector((state) => state.auth.isAdminAuthenticated);
-  console.log("admin : ", isAdminAuthenticated);
+  // console.log("admin : ", isAdminAuthenticated);
+
+  const PrivateRoute = () => {
+    // const isAdminAuthenticated = useSelector((state) => state.auth.isAdminAuthenticated);
+    const isAdminAuthenticated = true;
+    console.log("admin : ", isAdminAuthenticated);
+    if (isAdminAuthenticated) {
+      return <AdminHome />;
+    } else {
+      return <AdminSignIn />;
+    }
+  };
+
   return (
     <>
       <BrowserRouter>
@@ -28,13 +42,13 @@ function App() {
                     <Route path="/user/*" element={<User />} />
                     <Route path="/cart/*" element={<Cart />} />
                     <Route path="/dashboard/*" element={<Dashboard />} />
-                    <Route path="/" element={<Home />} />
+                    <Route path="/*" element={<Home />} />
                   </Routes>
                 </MaxWidth>
               </Layout>
             }
           />
-          <Route path="/admin/*" element={<AdminHome />} />
+          <Route path="/admin/*" element={<PrivateRoute />} />
         </Routes>
       </BrowserRouter>
     </>

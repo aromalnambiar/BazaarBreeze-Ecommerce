@@ -48,7 +48,9 @@ const Sidebar = () => {
           {renderArrowIcon(1)}
           {expandedMenu === 1 && (
             <ul className="flex flex-col gap-4 pt-4">
-              <li className="pl-4 my-1">View all products</li>
+              <Link to="/admin/view-products">
+                <li className="pl-4 my-1">View all products</li>
+              </Link>
               <Link to="/admin/add-product">
                 <li className="pl-4 my-1">Add product</li>
               </Link>
@@ -67,20 +69,22 @@ const Sidebar = () => {
             </ul>
           )}
         </li>
-        <Link to={"/admin/view-users"}>
-          <li className={`p-2 my-2 px-2 rounded-md cursor-pointer ${expandedMenu === 3 ? "bg-gray-100" : "  "}`}>
-            <span className="inline-block w-full" onClick={() => handleMenuClick(3)}>
-              Users
-            </span>
-            {renderArrowIcon(3)}
-            {expandedMenu === 3 && (
-              <ul className="flex flex-col gap-4 pt-4">
+        <li className={`p-2 my-2 px-2 rounded-md cursor-pointer ${expandedMenu === 3 ? "bg-gray-100" : "  "}`}>
+          <span className="inline-block w-full" onClick={() => handleMenuClick(3)}>
+            Users
+          </span>
+          {renderArrowIcon(3)}
+          {expandedMenu === 3 && (
+            <ul className="flex flex-col gap-4 pt-4">
+              <Link to={"/admin/users"}>
                 <li className="pl-4 my-1">All users</li>
-                <li className="pl-4 my-1">Submenu 8</li>
-              </ul>
-            )}
-          </li>
-        </Link>
+              </Link>
+              <Link to={"/admin/user-details"}>
+                <li className="pl-4 my-1">User details</li>
+              </Link>
+            </ul>
+          )}
+        </li>
         <li className={`p-2 my-2 px-2 rounded-md cursor-pointer ${expandedMenu === 4 ? "bg-gray-100" : "  "}`}>
           <span className="inline-block w-full" onClick={() => handleMenuClick(4)}>
             Categories
