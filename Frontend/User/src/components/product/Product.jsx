@@ -1,31 +1,37 @@
 import { useEffect, useState } from "react";
 import photo from "../../assets/images/Laptop.png";
-import { useSelector } from "react-redux";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
+import { useParams } from "react-router-dom";
+import Specification from "./Specification";
 
 function Product() {
-  const product = useSelector((state) => state.user.product);
+  const { id: productId } = useParams();
   const [item, setItem] = useState({});
-  // console.log("product: ", product);
+  const [category, setCategory] = useState("");
+  const [isSpecification, setIsSpecification] = useState(false);
 
   useEffect(() => {
-    const result = axios.get(`${BASE_URL}/user/products/${product._id}`).then((res) => {
-      console.log("RESPONSE : ", res);
-      setItem(res.data.productDetails);
-    });
+    const fetchDetails = async () => {
+      const response = await axios.get(`${BASE_URL}/user/products/${productId}`);
+      console.log("RESPONSE : ", response);
+      setItem(response.data.productDetails);
+      setCategory(response.data.category);
+    };
+    fetchDetails();
+    window.scrollTo(0, 0);
   }, []);
-  // console.log(item?.productDetails?.images[0]);
+  console.log("item : ", item);
   return (
     <>
-      <div className="grid grid-cols-12 mt-8  gap-8">
+      <div className="grid grid-cols-12 mt-8 text-sm max-w-[940px]  gap-8">
         <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6">
-          <div className="border max-w-[350px] mx-auto">
-            <img className="mx-auto" src={`${BASE_URL}/uploads/${item?.productDetails?.images[0]}`||photo} alt="" />
+          <div className="border max-w-[350px] min-h-[310px] p-10 mx-auto">
+            <img className="mx-auto w-full h-full" src={`${BASE_URL}/uploads/${item?.productDetails?.images[0]}` || photo} alt="" />
           </div>
         </div>
         <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6">
-          <h3 className="font-semibold mb-4">{product.description || "2020 Apple MacBook Pro with Apple M1 Chip (13-inch, 8GB RAM, 256GB SSD Storage) - Space Gray"}</h3>
+          <h3 className="font-semibold mb-4">{item.description || "2020 Apple MacBook Pro with Apple M1 Chip (13-inch, 8GB RAM, 256GB SSD Storage) - Space Gray"}</h3>
           <div>
             <div className="flex justify-between text-[#5F6C72]">
               <p>
@@ -40,11 +46,11 @@ function Product() {
                 Brand: <span className="font-semibold">{item.brand || "Brand"}</span>
               </p>
               <p>
-                Category: <span className="font-semibold">Electronics Devices</span>
+                Category: <span className="font-semibold">{category}</span>
               </p>
             </div>
           </div>
-          <p className="text-[#2DA5F3] font-bold my-6">$1070</p>
+          <p className="text-[#2DA5F3] font-bold my-6">{item.productDetails?.salePrice}₹</p>
           <hr className="mb-6" />
           <div className="flex justify-between ">
             <div className="flex flex-col gap-2">
@@ -63,8 +69,7 @@ function Product() {
               <div>1TB SSD Storage</div>
             </div>
           </div>
-          <div className="flex items-center h-16 my-6 gap-4 text-xs md:text-sm font-bold justify-center">
-            <div className="border-2 flex items-center px-10 h-full">01</div>
+          <div className="flex items-center h-10 my-6 gap-4 text-xs font-bold justify-center">
             <button className="bg-[#FA8232] text-white  px-16 h-full rounded ">ADD TO CART</button>
             <button className="outline outline-[#FA8232] text-[#FA8232] h-full  rounded  px-6">BUY NOW</button>
           </div>
@@ -78,15 +83,27 @@ function Product() {
           </div>
         </div>
       </div>
-      <div className=" max-w-[1020px] mt-16 mx-auto">
+      <div className=" mt-16 max-w-[940px] text-sm mx-auto mb-10">
         <div className="flex justify-center gap-20 border items-center h-16">
-          <button className="border-b-4 border-b-[#FA8232] h-full">DESCRIPTION</button>
-          <button>SPECIFICATION</button>
+          <button onClick={() => setIsSpecification(false)} className={`${!isSpecification && "border-b-4 border-b-[#FA8232]"} h-full`}>
+            DESCRIPTION
+          </button>
+          <button onClick={() => setIsSpecification(true)} className={`${isSpecification && "border-b-4 border-b-[#FA8232] "} h-full`}>
+            SPECIFICATION
+          </button>
         </div>
-        <div className="p-12 border">
-          <p>The most powerful MacBook Pro ever is here. With the blazing-fast M1 Pro or M1 Max chip — the first Apple silicon designed for pros — you get groundbreaking performance and amazing battery life. Add to that a stunning Liquid Retina XDR display, the best camera and audio ever in a Mac notebook, and all the ports you need. The first notebook of its kind, this MacBook Pro is a beast. M1 Pro takes the exceptional performance of the M1 architecture to a whole new level for pro users.</p>
-          <p>Even the most ambitious projects are easily handled with up to 10 CPU cores, up to 16 GPU cores, a 16‑core Neural Engine, and dedicated encode and decode media engines that support H.264, HEVC, and ProRes codecs.</p>
-        </div>
+        {isSpecification ? (
+          <>
+            <Specification specifications={item.productDetails.specification} />
+          </>
+        ) : (
+          <>
+            <div className="p-12 border">
+              <p>The most powerful MacBook Pro ever is here. With the blazing-fast M1 Pro or M1 Max chip — the first Apple silicon designed for pros — you get groundbreaking performance and amazing battery life. Add to that a stunning Liquid Retina XDR display, the best camera and audio ever in a Mac notebook, and all the ports you need. The first notebook of its kind, this MacBook Pro is a beast. M1 Pro takes the exceptional performance of the M1 architecture to a whole new level for pro users.</p>
+              <p>Even the most ambitious projects are easily handled with up to 10 CPU cores, up to 16 GPU cores, a 16‑core Neural Engine, and dedicated encode and decode media engines that support H.264, HEVC, and ProRes codecs.</p>
+            </div>
+          </>
+        )}
       </div>
     </>
   );

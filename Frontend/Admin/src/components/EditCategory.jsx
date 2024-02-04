@@ -1,0 +1,104 @@
+import axios from "axios";
+import { BASE_URL } from "../../../User/config";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+function EditCategory({ categoryId, setIsEdit }) {
+  const name = useRef();
+  const description = useRef();
+  const imageInput = useRef();
+  const [currentImage, setCurrentImage] = useState(null);
+  const [newImagePreview, setNewImagePreview] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/admin/products/category/${categoryId}`);
+        const fetchedCategory = response.data.category;
+        name.current.value = fetchedCategory.name || "";
+        description.current.value = fetchedCategory.description || "";
+        setCurrentImage(fetchedCategory.image || null);
+        console.log(response.data.message);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+    fetchData();
+  }, [categoryId]);
+
+  const handleImageChange = (e) => {
+    const selectedImage = e.target.files[0];
+    setNewImagePreview(URL.createObjectURL(selectedImage));
+  };
+
+  const editSubmit = async () => {
+    try {
+      const updatedName = name.current.value;
+      const updatedDescription = description.current.value;
+
+      // Create a FormData object to handle file uploads
+      const formData = new FormData();
+      formData.append("name", updatedName);
+      formData.append("description", updatedDescription);
+      if (imageInput.current.files[0]) {
+        formData.append("image", imageInput.current.files[0]);
+      }
+
+      // Make a PUT request to update the category
+      const response = await axios.put(`${BASE_URL}/admin/products/category/${categoryId}`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      console.log(response.data.message);
+      setCurrentImage(newImagePreview); // Update the current image with the new image preview
+      setNewImagePreview(null); // Reset the new image preview
+      setIsEdit(false);
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  return (
+    <div className="max-w-[500px] mx-auto shadow-md bg-white rounded-lg border p-10 flex flex-col gap-4">
+      <h1>Edit Category</h1>
+      <hr />
+      <h3>Title</h3>
+      <input ref={name} className="border-2 rounded-md p-2" type="text" placeholder="Enter category title" />
+      <h3>Description</h3>
+      <textarea ref={description} className="border-2 rounded-md p-2" name="description" id="" cols="30" rows="10" placeholder="Enter category description..."></textarea>
+      <div className="mb-4">
+        <h3>Current Image</h3>
+        {currentImage && (
+          <img src={`${BASE_URL}/uploads/${currentImage}`} alt="Current Category" className="max-w-full h-auto rounded-md border border-gray-300" />
+        )}
+      </div>
+      <h3>New Image</h3>
+      <input ref={imageInput} type="file" onChange={handleImageChange} />
+      {newImagePreview && (
+        <div className="mb-4">
+          <h3>New Image Preview</h3>
+          <img src={newImagePreview} alt="New Category" className="max-w-full h-auto rounded-md border border-gray-300" />
+        </div>
+      )}
+      <div className="flex gap-4">
+        <button onClick={editSubmit} className="bg-[#696cff] text-white px-8 py-2 rounded-md ">
+          Submit
+        </button>
+        <button
+          onClick={() => {
+            setIsEdit(false);
+          }}
+          className="bg-[#fedad4] py-2 px-6 text-red-600 rounded-md "
+        >
+          Discard
+        </button>
+      </div>
+    </div>
+  );
+}
+
+export default EditCategory;

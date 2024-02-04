@@ -2,16 +2,16 @@ import product from "../../assets/images/Image.png";
 
 function ComputerAccessories() {
   return (
-    <div className="my-10 md:max-w-[1020px] mx-auto">
+    <div className="my-10 text-xs md:text-base mx-auto">
       <div className="flex justify-between my-10">
         <h2 className="font-bold text-lg text-[#191C1F]">Computer Accessories</h2>
         <ul className="flex gap-4">
-          <li className="font-semibold">All Product</li>
-          <li className="text-[#5F6C72] ">Keyboard and mouse</li>
-          <li className="text-[#5F6C72] ">Headphone</li>
-          <li className="text-[#5F6C72] ">Webcam</li>
-          <li className="text-[#5F6C72] ">Printer</li>
-          <li className="text-[#FA8232] font-semibold">Browser All Product</li>
+          <li className="font-semibold cursor-pointer">All Product</li>
+          <li className="text-[#5F6C72]  cursor-pointer">Keyboard and mouse</li>
+          <li className="text-[#5F6C72]  cursor-pointer">Headphone</li>
+          <li className="text-[#5F6C72]  cursor-pointer">Webcam</li>
+          <li className="text-[#5F6C72] cursor-pointer ">Printer</li>
+          <li className="text-[#FA8232] font-semibold cursor-pointer">Browser All Product</li>
         </ul>
       </div>
       <div>

@@ -27,8 +27,8 @@ router.put('/products/:variantid/variant',upload.array('photos'),adminController
 router.delete('/products/:productid',adminController.deleteProduct); 
 
 router.get('/products/category',adminController.viewCategories);
-router.post('/products/category',adminController.addCategory);
-router.put('/products/category/:categoryId',adminController.editCategory);
+router.post('/products/category',upload.single('image'),adminController.addCategory);
+router.put('/products/category/:categoryId',upload.single('image'),adminController.editCategory);
 router.get('/products/category/:categoryId',adminController.viewCategory);
 router.delete('/products/category/:categoryId', adminController.deleteCategory);
 

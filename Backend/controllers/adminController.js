@@ -56,8 +56,8 @@ const addProduct=async(req,res)=>{
     try {
         const details=req.body;
         const {brand,name,category,description}=req.body;
-        console.log("details : ",details);
-        console.log("details : ");
+        // console.log("details : ",details);
+        // console.log("details : ");
         const product=new Products({
             brand,
             name,
@@ -69,7 +69,7 @@ const addProduct=async(req,res)=>{
         })
         let productId=await product.save();
         productId=productId._id;
-        console.log("product Id : ",productId);
+        // console.log("product Id : ",productId);
         res.status(201).json({message:"success",productId});
         // console.log(images);
     } catch (error) {
@@ -195,8 +195,9 @@ const deleteProduct=async(req,res)=>{
 const addCategory=async(req,res)=>{
     try {
         const {name,description}=req.body;
-        console.log(req.body);
-        const categoryExist=await Category.find({name});
+        // console.log("body : ",req.body);
+        const categoryExist=await Category.findOne({name});
+        // console.log(categoryExist);
         if(categoryExist){
             return res.status(400).json({message:"Category already exist"});
         }
@@ -204,7 +205,9 @@ const addCategory=async(req,res)=>{
             name,
             description,
             createdDate:Date.now(),
-            updatedDate:null
+            updatedDate:null,
+            image:req.file.filename
+
         });
         await category.save();
         res.status(201).json({message:"Succes, category added"});
@@ -223,7 +226,8 @@ const editCategory=async(req,res)=>{
         const categoryIdObjectId =new mongoose.Types.ObjectId(categoryId);
         const newCategory=await Category.findByIdAndUpdate({_id:categoryIdObjectId},{
             name,
-            description
+            description,
+            image:req.file.filename
         })
         console.log(newCategory);
         res.status(201).json({message:"Updated successfully",category:newCategory});
@@ -256,6 +260,8 @@ const viewCategories=async(req,res)=>{
         throw new Error;
     }
 }
+
+
 const viewCategory=async(req,res)=>{
     try {
         console.log(req.params);
@@ -271,7 +277,7 @@ const viewCategory=async(req,res)=>{
 const viewUsers=async(req,res)=>{
     try {
         const users=await Users.find();
-        console.log(users);
+        // console.log(users);
         res.status(200).json({message:"success",users});
     } catch (error) {
         console.log(error);

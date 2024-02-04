@@ -2,7 +2,7 @@ import product from "../../assets/images/Image2.png";
 
 function QuickBuyProducts() {
   return (
-    <div className="my-10 md:max-w-[1020px] mx-auto flex gap-2">
+    <div className="my-10 text-xs md:text-base mx-auto flex gap-2">
       <div>
         <h3 className="font-semibold ">FLASH SALE TODAY</h3>
         <div className="my-2">

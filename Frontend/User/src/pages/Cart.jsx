@@ -1,8 +1,10 @@
-
+import ShoppingCart from "../components/cart/ShoppingCart";
 function Cart() {
-    return (
-        <></>
-    )
+  return (
+    <>
+      <ShoppingCart />
+    </>
+  );
 }
 
-export default Cart
+export default Cart;
