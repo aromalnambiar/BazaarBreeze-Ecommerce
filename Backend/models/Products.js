@@ -6,7 +6,8 @@ const productSchema=new mongoose.Schema({
     createdDate:{type:Date},
     description:{type:String},
     category:{type:mongoose.Types.ObjectId},
-    brand:{type:String}
+    brand:{type:String},
+    isDelete:{type:Boolean,default:false}
 })
 
 const productModel=mongoose.model("Product",productSchema);

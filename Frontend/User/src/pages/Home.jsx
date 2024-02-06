@@ -27,7 +27,17 @@ function Home() {
             <QuickBuyProducts />
           </>
         );
-
+      case "home":
+        return (
+          <>
+            <Banner />
+            <BestDeals />
+            <ShopWithCategories />
+            <FeaturedProducts />
+            <ComputerAccessories />
+            <QuickBuyProducts />
+          </>
+        );
       default:
         return <NotFound />;
     }

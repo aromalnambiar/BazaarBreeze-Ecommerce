@@ -52,7 +52,6 @@ function SignUp() {
         alert(res);
       });
   };
-  useEffect(() => {}, []);
 
   return (
     <div>
@@ -62,10 +61,10 @@ function SignUp() {
         <form onSubmit={handleSignup}>
           <div className="border text-sm shadow-2xl max-w-[424px] flex flex-col mx-auto p-8 gap-4 my-16">
             <div className="flex justify-between">
-              <button onClick={() => navigate("/user/signin")} className="w-full pb-4">
+              <div onClick={() => navigate("/user/signin")} className="w-full pb-4 text-center cursor-pointer">
                 Sign In
-              </button>
-              <button className="w-full border-b-4 border-orange-400 pb-4">Sign Up</button>
+              </div>
+              <div className="w-full border-b-4 border-orange-400 pb-4 text-center">Sign Up</div>
             </div>
             <p>Name</p>
             <input ref={username} className="h-12 border-2 pl-2" type="text" />

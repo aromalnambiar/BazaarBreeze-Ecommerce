@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import photo from "../../assets/images/Laptop.png";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Specification from "./Specification";
 
 function Product() {
@@ -10,18 +10,36 @@ function Product() {
   const [item, setItem] = useState({});
   const [category, setCategory] = useState("");
   const [isSpecification, setIsSpecification] = useState(false);
+  const [isCartFound, setIsCartFound] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDetails = async () => {
       const response = await axios.get(`${BASE_URL}/user/products/${productId}`);
-      console.log("RESPONSE : ", response);
+      // console.log("RESPONSE : ", response);
       setItem(response.data.productDetails);
       setCategory(response.data.category);
+      setIsCartFound(response.data.isCartFound);
     };
     fetchDetails();
     window.scrollTo(0, 0);
   }, []);
-  console.log("item : ", item);
+
+  const handleAddToCart = async (id) => {
+    try {
+      console.log("ID : ", id);
+      const response = await axios.post(`${BASE_URL}/user/cart`, {
+        userId: "65b8bd92f5bc7f3595fbcd23",
+        productVariantId: id,
+        quantity: 1,
+      });
+      // console.log(response);
+      setIsCartFound(true);
+    } catch (error) {
+      console.log(error.response.data.message);
+    }
+  };
+  // console.log("item : ", item);
   return (
     <>
       <div className="grid grid-cols-12 mt-8 text-sm max-w-[940px]  gap-8">
@@ -70,7 +88,15 @@ function Product() {
             </div>
           </div>
           <div className="flex items-center h-10 my-6 gap-4 text-xs font-bold justify-center">
-            <button className="bg-[#FA8232] text-white  px-16 h-full rounded ">ADD TO CART</button>
+            {isCartFound ? (
+              <button onClick={() => navigate("/cart")} className="bg-[#FA8232] text-white  px-16 h-full rounded ">
+                VIEW CART
+              </button>
+            ) : (
+              <button onClick={() => handleAddToCart(item.productDetails._id)} className="bg-[#FA8232] text-white  px-16 h-full rounded ">
+                ADD TO CART
+              </button>
+            )}
             <button className="outline outline-[#FA8232] text-[#FA8232] h-full  rounded  px-6">BUY NOW</button>
           </div>
           <div className="flex items-center gap-2">

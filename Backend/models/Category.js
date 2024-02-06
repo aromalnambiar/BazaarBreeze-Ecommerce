@@ -5,7 +5,8 @@ const categorySchema=new mongoose.Schema({
     createdDate:{type:Date},
     description:{type:String},
     image:{type:String},
-    updatedDate:{type:Date}
+    updatedDate:{type:Date},
+    isListed:{type:Boolean,required:true}
 })
 
 const categoryModel=mongoose.model("Category",categorySchema);

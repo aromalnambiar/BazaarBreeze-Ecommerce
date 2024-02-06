@@ -20,6 +20,8 @@ function BestDeals() {
       });
   }, []);
 
+  // console.log("Products : ", products);
+
   const handleClick = (item) => {
     navigate(`/product/${item._id}`);
   };
@@ -34,11 +36,11 @@ function BestDeals() {
         {products.map((item) => {
           return (
             <div key={item._id} onClick={() => handleClick(item)} className="flex w-48 h-64 relative cursor-pointer flex-col p-2 border">
-              {console.log(item.firstVariant.images[0])}
-              <img className="w-52" src={`${BASE_URL}/uploads/${item.firstVariant.images[0]}` || product} alt="" />
+              {console.log(item.firstVariant?.images[0])}
+              <img className="w-52" src={`${BASE_URL}/uploads/${item.firstVariant?.images[0]}` || product} alt="" />
               <div className="absolute bottom-2">
                 <p className="text-sm w-44 overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">{item.description}</p>
-                <p>{item.firstVariant.salePrice || "2342"}</p>
+                <p>{item.firstVariant?.salePrice}</p>
               </div>
             </div>
           );

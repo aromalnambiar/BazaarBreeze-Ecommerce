@@ -18,6 +18,8 @@ const generateOtp=()=>{
 
 const sendMail = async (email, otp) => {
     try {
+      
+
       let transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
@@ -26,18 +28,17 @@ const sendMail = async (email, otp) => {
           pass: `${process.env.PASS}`,
           clientId: `${process.env.CLIENT_ID}`,
           clientSecret: `${process.env.CLIENT_SECRET}`,
-          refreshToken: `${process.env.REFRESH_TOKEN}`
+          refreshToken: `${process.env.REFRESH_TOKEN}`,
         }
       });
   
       const details = {
         from: `${process.env.USER}`,
         to: email,
-        subject: "Testing nodemailer",
+        subject: "OTP for ecommerce",
         html: otp
       };
   
-      // Return a promise that resolves on successful sending or rejects on error
       return new Promise((resolve, reject) => {
         transporter.sendMail(details, function (error, data) {
           if (error) {
@@ -102,6 +103,7 @@ const resendOTP=async(req,res)=>{
 const forgetPassword=async(req,res)=>{
     try {
         const {email}=req.body;
+        console.log("email : ",email);
         const user=await User.findOne({email});
         if(!user){
             return res.status(404).json({message:"can't find user"});
@@ -240,36 +242,6 @@ const listProducts = async (req, res) => {
   }
 };
 
-
-// const productDetails = async (req, res) => {
-//     try {
-//       const productId = new mongoose.Types.ObjectId(req.params.productid); // Replace with the actual product ID
-//         console.log(req.params.productid);
-//       const result = await Products.aggregate([
-//         {
-//           $match: {
-//             _id: productId,
-//           },
-//         },
-//         {
-//           $lookup: {
-//             from: 'productvariants',
-//             localField: '_id',
-//             foreignField: 'productId',
-//             as: 'productDetails',
-//           },
-//         },
-//       ]);
-  
-//       console.log(result[0]);
-  
-  
-//       res.status(200).json({ message: "success", productDetails: result[0] });
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     }
-//   };
 const productDetails = async (req, res) => {
   try {
     const productId = new mongoose.Types.ObjectId(req.params.productid);
@@ -288,15 +260,19 @@ const productDetails = async (req, res) => {
         },
       },
     ]);
+
     const category= await Category.findById(result[0].category);
     console.log("Category : ",category);
-
+    
     if (result.length > 0) {
       const product = result[0];
       const firstVariant = product.productDetails[0];
       product.productDetails = firstVariant;
+      const cart=await Cart.findOne({ 'product.productVariantId': firstVariant._id });
+      const isCartFound = !!cart;
+      console.log("cart : ",cart);
       console.log(product);
-      res.status(200).json({ message: 'success', productDetails: product ,category:category.name});
+      res.status(200).json({ message: 'success', productDetails: product ,isCartFound,category:category.name});
     } else {
       res.status(404).json({ message: 'Product not found' });
     }
@@ -309,20 +285,20 @@ const productDetails = async (req, res) => {
 
 const showAddresses = async (req, res) => {
   try {
-    const { userId } = req.body;
-    const addresses = await Address.find({ userId: userId });
+    const { id } = req.params;
+    const addresses = await Address.find({ userId: id });
+    // console.log("address length : ",addresses);
 
     if (!addresses || addresses.length === 0) {
-      return res.status(200).json({ message: "No addresses found" });
+      return res.status(200).json({ message: "No addresses found",addresses });
     }
 
-    res.status(200).json({ message: "Addresses found Successfully", addresses });
+    res.status(200).json({ message: "Addresses found Successfully", addresses  });
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 };
-
 
 const showOrders=async(req,res)=>{
   try {
@@ -340,8 +316,10 @@ const showOrders=async(req,res)=>{
 
 const showUser=async(req,res)=>{
   try {
-    const {userId}=req.body;
-    const user=await User.findById({userId});
+    const {userid}=req.params;
+    // console.log("user id : ",req.params);
+    const user=await User.findById({_id:userid});
+    // console.log("user : ",user);
     if(!user){
       return res.status(200).json({message:"User is not found"});
     }
@@ -351,10 +329,39 @@ const showUser=async(req,res)=>{
   }
 }
 
+const editProfile = async (req, res) => {
+  try {
+    console.log("editProfile");
+    const { userid, username, age, gender } = req.body;
+    console.log("user  : ", req.body);
+
+    const updatedUser = await User.findByIdAndUpdate(
+      { _id: userid },
+      { 
+        username,
+        age,
+        gender,
+        image:req.file.filename||null 
+      },
+      { new: true } 
+    );
+      console.log("updated user : ",updatedUser);
+    if (!updatedUser) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.status(200).json({ message: "Updated successfully", user: updatedUser });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+
 const addAddress=async(req,res)=>{
   try {
     const {fullName,address,state,street,phone1,pincode,userId}=req.body;
-    const {phone2,landmark,companyName}=req.body;
+    const {phone2}=req.body;
     const result=new Address({
       fullName,
       address,
@@ -364,7 +371,6 @@ const addAddress=async(req,res)=>{
       pincode,
       userId,
       phone2,
-      landmark,
     });
     const response=await result.save();
     res.status(201).json({message:"Address added successfully",response});
@@ -378,10 +384,9 @@ const addAddress=async(req,res)=>{
 const editAddress=async(req,res)=>{
   try {
     const {fullName,address,state,street,phone1,pincode,userId}=req.body;
-    const {companyName,phone2}=req.body;
-      const updatedAddress=await Address.findByIdAndUpdate({addressId},{
+    const {phone2,addressId}=req.body;
+      const updatedAddress=await Address.findByIdAndUpdate({_id:addressId},{
         fullName,
-        companyName,
         address,
         state,
         street,
@@ -400,8 +405,8 @@ const editAddress=async(req,res)=>{
 
 const deleteAddress=async(req,res)=>{
   try {
-    const {addressId}=req.body;
-    const result=await Address.findByIdAndDelete({addressId});
+    const {id:addressId}=req.params;
+    const result=await Address.findByIdAndDelete({_id:addressId});
     console.log(result);
     res.status(200).json({message:"Address deleted successfully"});
   } catch (error) {
@@ -414,25 +419,27 @@ const addToCart = async (req, res) => {
   try {
     const { userId, productVariantId, quantity } = req.body;
 
-    // Check if the product variant exists
-    const productVariant = await ProductVariant.findOne({ productVariantId });
+    console.log("pv : ",productVariantId);
+    console.log("quantity : ",quantity);
+    console.log("userId : ",userId);
+
+    const productVariant = await ProductVariant.findById(productVariantId );
 
     if (!productVariant) {
       return res.status(404).json({ message: 'Product variant not found' });
     }
 
-    // Check if the requested quantity is greater than the available stock
     if (quantity > productVariant.stock) {
       return res.status(400).json({ message: 'Insufficient stock available' });
     }
 
-    // Check if the requested quantity exceeds the maximum allowed quantity per person
-    const maxQuantityPerPerson = 5; // Set your maximum quantity per person
-    const userCart = await Cart.findOne({ user: userId });
+     const maxQuantityPerPerson = 5; // Set your maximum quantity per person
+    const userCart = await Cart.findOne({ user:userId });
+    // console.log("userCart : ",userCart);
 
     if (userCart) {
       const existingProductIndex = userCart.product.findIndex((item) => item.productVariantId.equals(productVariantId));
-
+      console.log("existing : ",existingProductIndex);
       if (existingProductIndex !== -1) {
         const totalQuantity = userCart.product[existingProductIndex].quantity + quantity;
 
@@ -440,27 +447,28 @@ const addToCart = async (req, res) => {
           return res.status(400).json({ message: `Maximum ${maxQuantityPerPerson} quantity allowed per person` });
         } 
 
-        // If the product exists, update the quantity and totalPrice
         userCart.product[existingProductIndex].quantity += quantity || 1;
         userCart.product[existingProductIndex].totalPrice =
-          userCart.product[existingProductIndex].quantity * productVariant.price;
+          userCart.product[existingProductIndex].quantity * productVariant.salePrice;
       } else {
-        // If the product doesn't exist, add it to the cart
         userCart.product.push({
           productVariantId,
           quantity: quantity || 1,
-          price: productVariant.price,
-          totalPrice: quantity ? quantity * productVariant.price : productVariant.price,
+          price: productVariant.salePrice,
+          totalPrice: quantity ? quantity * productVariant.salePrice : productVariant.salePrice,
         });
       }
+      await userCart.save();
+      res.status(200).json({ message: 'Successfully added to cart', cart: userCart });
+
     } else {
-      // If the user's cart doesn't exist, create a new one
-      const newUserCart = new Cart({ user: userId });
+      const newUserCart = new Cart({ user:userId });
+      console.log("newUserCart : ",newUserCart);
       newUserCart.product.push({
         productVariantId,
         quantity: quantity || 1,
-        price: productVariant.price,
-        totalPrice: quantity ? quantity * productVariant.price : productVariant.price,
+        price: productVariant.salePrice,
+        totalPrice: quantity ? quantity * productVariant.salePrice : productVariant.salePrice,
       });
       await newUserCart.save();
       res.status(200).json({ message: 'Successfully added to cart', cart: userCart || newUserCart });
@@ -475,7 +483,8 @@ const addToCart = async (req, res) => {
 
 const deleteFromCart = async (req, res) => {
       try {
-        const { userId, productVariantId } = req.body;
+        const { userId, productVariantId } = req.query;
+        console.log("userId , productVariantId ",req.query);
         const userCart = await Cart.findOne({ user: userId });
         if (!userCart) {
           return res.status(404).json({ message: 'Cart not found' });
@@ -495,27 +504,23 @@ const deleteFromCart = async (req, res) => {
 
 const showCart= async(req,res)=>{
   try {
-    const {userId}=req.body;
-    const cart=await Cart.findById({user:userId});
+    const userId=req.params.id;
+    // console.log("userId : ",userId);
+    // const cart=await Cart.findOne({user:userId});
+    // const cart = await Cart.findOne({ user: userId })
+    const cart = await Cart.findOne({ user: userId }).populate({
+      path: 'product.productVariantId',
+      model: 'ProductVariant',
+      select: 'variantName salePrice images',
+    });
+    // console.log("cart : ",cart);
     res.status(200).json({message:"success",cart});
   } catch (error) {
     res.status(500).json({message:"internal server issue"});
   }
 }
 
-const editProfile=async(req,res)=>{
-  try {
-    const {username,phone,userId}=req.body;
-    const user=await User.findByIdAndUpdate({userId},{
-      username,
-      phone,
-      image:req.file.filename
-    })
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({message:"Internal server error"});
-  }
-}
+
 
 module.exports = { addToCart };
 
@@ -525,6 +530,6 @@ module.exports={
   listProducts,productDetails,
   showCart,addToCart,deleteFromCart,
   showAddresses,showOrders,showUser,
-  addAddress,editAddress,deleteAddress,editProfile
+  addAddress,editAddress,deleteAddress,editProfile,
 };
 

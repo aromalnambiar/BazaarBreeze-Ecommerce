@@ -77,7 +77,6 @@ function UserDetails() {
           </div>
           <div className="bg-white border rounded-md text-[#566a7f] shadow-md min-w-48 col-span-6 min-h-48 h-max flex flex-col p-6 gap-4">
             <div>
-              {" "}
               <IoGiftOutline className="text-[30px] text-[#696cff]" />
             </div>
             <p className="text-lg font-semibold">Wishlist</p>

@@ -8,11 +8,8 @@ const UserSchema=new mongoose.Schema({
     password:{type:String,required:true},
     updatedDate:{type:Date},
     isBlocked:{type:Boolean,default:false},
-    mobile:{type:Number},
     gender:{type:String},
     age:{type:Number},
-    wishlist:{type:Array},
-    cart:{type:Array},
     wallet:{type:Number},
 })
 

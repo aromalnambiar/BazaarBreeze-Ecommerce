@@ -29,12 +29,12 @@ function SignIn() {
       })
       .then((res) => {
         const token = res.data.token;
-        const userId = res.data.userId;
         console.log(res);
         alert(res.data.message);
         dispatch(loginSuccess(token));
         localStorage.setItem("token", token);
-        navigate("/");
+        // console.log("navigating : /")
+        navigate("/", { replace: true });
       })
       .catch((error) => {
         console.log(error);
@@ -46,10 +46,10 @@ function SignIn() {
     <form onSubmit={handleSignin}>
       <div className="border text-sm shadow-2xl max-w-[424px] flex flex-col mx-auto p-8 gap-6 my-16">
         <div className="flex justify-between">
-          <button className="w-full border-b-4 border-orange-400 pb-4">Sign In</button>
-          <button onClick={() => navigate("/user/signup")} className="w-full pb-4">
+          <div className="w-full border-b-4 border-orange-400 pb-4 text-center">Sign In</div>
+          <div onClick={() => navigate("/user/signup")} className="w-full pb-4 cursor-pointer text-center">
             Sign Up
-          </button>
+          </div>
         </div>
         <p>Email Address</p>
         <input ref={email} className="h-12 border-2 pl-2" type="email" />

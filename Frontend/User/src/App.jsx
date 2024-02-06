@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useNavigate, Navigate } from "react-router-dom";
 import Shop from "./pages/Shop";
 import User from "./pages/User";
 import Cart from "./pages/Cart";
@@ -7,8 +7,12 @@ import Product from "./components/product/Product";
 import Dashboard from "./components/dashboard/Dashboard";
 import Layout from "./components/common/Layout";
 import MaxWidth from "./components/common/MaxWidth";
+import { useSelector } from "react-redux";
+import { useEffect } from "react";
 
 function App() {
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+
   return (
     <>
       <BrowserRouter>
@@ -16,10 +20,10 @@ function App() {
           <MaxWidth>
             <Routes>
               <Route path="/shop/*" element={<Shop />} />
-              <Route path="/user/*" element={<User />} />
+              <Route path="/user/*" element={isAuthenticated ? <Navigate to="/dashboard" /> : <User />} />
               <Route path="/cart/*" element={<Cart />} />
               <Route path="/product/:id" element={<Product />} />
-              <Route path="/dashboard/*" element={<Dashboard />} />
+              <Route path="/dashboard/*" element={isAuthenticated ? <Dashboard /> : <Navigate to="/user/signin" />} />
               <Route path="/*" element={<Home />} />
             </Routes>
           </MaxWidth>

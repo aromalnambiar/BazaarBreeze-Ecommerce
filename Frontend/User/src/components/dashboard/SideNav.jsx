@@ -7,36 +7,57 @@ import { LiaIdCardSolid } from "react-icons/lia";
 import { GoGear } from "react-icons/go";
 import { LuWallet } from "react-icons/lu";
 import { TbLogout } from "react-icons/tb";
+import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { logout } from "../../redux/reducers/authSlice";
 
 function SideNav() {
-    const logoComponents = {
-        MdOutlineDashboard,
-        LuHistory,
-        CgTrack,
-        LuShoppingCart,
-        IoMdHeartEmpty,
-        LiaIdCardSolid,
-        GoGear,
-        LuWallet,
-        TbLogout,
-      };
+  const navigate = useNavigate("");
+  const dispatch = useDispatch();
+
+  const logoComponents = {
+    MdOutlineDashboard,
+    LuHistory,
+    CgTrack,
+    LuShoppingCart,
+    IoMdHeartEmpty,
+    LiaIdCardSolid,
+    GoGear,
+    LuWallet,
+    TbLogout,
+  };
   let lists = [
-    { name: "Dashboard", logo: "MdOutlineDashboard" },
-    { name: "Order History", logo: "LuHistory" },
-    { name: "Track Order", logo: "CgTrack" },
-    { name: "Shopping Cart", logo: "LuShoppingCart" },
-    { name: "Wishlist", logo: "IoMdHeartEmpty" },
-    { name: "Cards&Address", logo: "LiaIdCardSolid" },
-    { name: "Settings", logo: "GoGear" },
-    { name: "Wallet", logo: "LuWallet" },
-    { name: "Logout", logo: "TbLogout" },
+    { name: "Dashboard", logo: "MdOutlineDashboard", path: "/dashboard" },
+    { name: "Order History", logo: "LuHistory", path: "/dashboard/orders" },
+    { name: "Track Order", logo: "CgTrack", path: "/dashboard" },
+    { name: "Shopping Cart", logo: "LuShoppingCart", path: "/dashboard/carts" },
+    { name: "Wishlist", logo: "IoMdHeartEmpty", path: "/dashboard/wishlists" },
+    { name: "Cards&Address", logo: "LiaIdCardSolid", path: "/dashboard/cards" },
+    { name: "Settings", logo: "GoGear", path: "/dashboard/settings" },
+    { name: "Wallet", logo: "LuWallet", path: "/wallet" },
+    { name: "Logout", logo: "TbLogout", path: "/logout" },
   ];
+
+  const handleLogout = () => {
+    dispatch(logout());
+    localStorage.removeItem("token");
+  };
+
+  const handleClick = (path) => {
+    if (path == "/logout" && confirm("Are you sure ?")) {
+      handleLogout();
+      navigate("/");
+    } else {
+      navigate(item.path);
+    }
+  };
+
   return (
     <ul className="py-4">
       {lists.map((item) => {
         const LogoComponent = logoComponents[item.logo];
         return (
-          <li className="flex items-center gap-4 pl-6 cursor-pointer text-gray-600 hover:bg-[#FA8232] hover:text-white p-2" key={item.name}>
+          <li onClick={() => handleClick(item.path)} className="flex items-center gap-4 pl-6 cursor-pointer text-gray-600 hover:bg-[#FA8232] hover:text-white p-2" key={item.name}>
             <LogoComponent />
             <p>{item.name}</p>
           </li>
