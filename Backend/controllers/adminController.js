@@ -220,14 +220,15 @@ const addCategory=async(req,res)=>{
 const editCategory=async(req,res)=>{
     try {
         console.log("body : ",res.body);
-        const {name,description}=req.body;
+        const {name,description,isListed}=req.body;
         console.log(req.params);
         const { categoryId } = req.params;
         const categoryIdObjectId =new mongoose.Types.ObjectId(categoryId);
         const newCategory=await Category.findByIdAndUpdate({_id:categoryIdObjectId},{
             name,
             description,
-            image:req.file.filename
+            image:req.file.filename,
+            isListed:isListed||true,
         })
         console.log(newCategory);
         res.status(201).json({message:"Updated successfully",category:newCategory});

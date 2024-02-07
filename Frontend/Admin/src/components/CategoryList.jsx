@@ -9,13 +9,15 @@ function CategoryList() {
   const [categories, setCategories] = useState([]);
   const [isEdit, setIsEdit] = useState(false);
   const [categoryId, setCategoryId] = useState("");
-
+  const [isListed, setIsListed] = useState(true);
+  const [categoriesHolder, setCategoriesHolder] = useState([]);
   useEffect(() => {
     const result = axios
       .get(`${BASE_URL}/admin/products/category`)
       .then((res) => {
-        console.log(res.data.categories);
+        // console.log(res.data.categories);
         setCategories(res.data.categories);
+        setCategoriesHolder(res.data.categories);
       })
       .catch((res) => {
         console.log(res);
@@ -43,6 +45,16 @@ function CategoryList() {
     setCategoryId(categoryId);
     setIsEdit(true);
   };
+  const handleView = () => {
+    console.log("IsListed : ", isListed);
+    if (isListed) {
+      setCategories(() => categoriesHolder.filter((category) => category.isListed));
+    } else {
+      setCategories(() => categoriesHolder.filter((category) => !category.isListed));
+    }
+    setIsListed((prev) => !prev);
+  };
+  console.log("categories : ", categories);
   return (
     <>
       {isEdit ? (
@@ -52,6 +64,12 @@ function CategoryList() {
           <div className="bg-white p-6 flex justify-between py-8">
             <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search category..." />
             <div>
+              <button onClick={() => setCategories(categoriesHolder)} className="border-[#afb0e1]  px-8 py-2 mr-4 rounded-md shadow-lg">
+                View all
+              </button>
+              <button onClick={handleView} className="border-[#afb0e1]  px-8 py-2 mr-4 rounded-md shadow-lg">
+                {isListed ? "View unlisted" : "View listed"}
+              </button>
               <Link to={"/category/add"}>
                 <button className="bg-[#696cff] text-white px-8 py-2 rounded-md shadow-lg">Add Category</button>
               </Link>
