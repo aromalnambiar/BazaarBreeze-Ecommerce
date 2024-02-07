@@ -26,10 +26,10 @@ function ChooseAddress({ grandTotal }) {
 
   //   // Add more addresses as needed
   // ];
-
+  const userId = localStorage.getItem("userId");
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/user/address/65b8bd92f5bc7f3595fbcd23`)
+      .get(`${BASE_URL}/user/address/${userId}`)
       .then((res) => {
         setAddress(res.data.addresses);
         setSelectedAddress(address[0]);

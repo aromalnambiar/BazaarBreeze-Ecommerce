@@ -29,10 +29,12 @@ function SignIn() {
       })
       .then((res) => {
         const token = res.data.token;
+        const userId = res.data.userId;
         console.log(res);
         alert(res.data.message);
         dispatch(loginSuccess(token));
         localStorage.setItem("token", token);
+        localStorage.setItem("userId", userId);
         // console.log("navigating : /")
         navigate("/", { replace: true });
       })

@@ -14,18 +14,18 @@ function EditProfile() {
   const email = useRef();
   const age = useRef();
   const genderSelect = useRef();
-
+  const userId = localStorage.getItem("userId");
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/user/65b8bd92f5bc7f3595fbcd23`)
+      .get(`${BASE_URL}/user/${userId}`)
       .then((res) => {
         // console.log("res : ", );
         const user = res.data.user;
         setUser(res.data.user);
         username.current.value = user.username;
         email.current.value = user.email;
-        age. current.value=user.age;
-        genderSelect.current.value=user.gender;
+        age.current.value = user.age;
+        genderSelect.current.value = user.gender;
       })
       .catch((err) => {
         console.log(err);
@@ -51,7 +51,7 @@ function EditProfile() {
 
   const handleSubmit = () => {
     const formData = new FormData();
-    formData.append("userid", "65b8bd92f5bc7f3595fbcd23");
+    formData.append("userid", userId);
     formData.append("age", age.current.value);
     formData.append("gender", genderSelect.current.value);
     formData.append("username", username.current.value);

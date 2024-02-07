@@ -93,10 +93,11 @@ function UserDetails() {
   const [isToggle, setIsToggle] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editAddressDetails, setEditAddressDetails] = useState({});
+  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/user/65b8bd92f5bc7f3595fbcd23`)
+      .get(`${BASE_URL}/user/${userId}`)
       .then((res) => {
         setUser(res.data.user);
       })
@@ -107,7 +108,7 @@ function UserDetails() {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/user/address/65b8bd92f5bc7f3595fbcd23`)
+      .get(`${BASE_URL}/user/address/${userId}`)
       .then((res) => {
         setAddress(res.data.addresses);
       })
@@ -137,7 +138,7 @@ function UserDetails() {
         <EditAddress setIsEdit={setIsEdit} addressDetails={editAddressDetails} />
       ) : (
         <div className="mb-10">
-          <h3 className="text-lg font-bold my-2">Hello, Kevin</h3>
+          <h3 className="text-lg font-bold my-2">Hello, User</h3>
           <p className="text-sm w-3/6">From your account dashboard. you can easily check & view your Recent Orders, manage your Shipping and Billing Addresses and edit your Password and Account Details.</p>
           <div className="grid relative grid-cols-12 gap-4 mt-4">
             <AccountInfo user={user} handleEditAccount={handleEditAccount} />

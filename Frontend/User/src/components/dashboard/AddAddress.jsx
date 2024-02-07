@@ -11,6 +11,7 @@ function AddAddress({ setIsToggle }) {
   const email = useRef();
   const phone1 = useRef();
   const phone2 = useRef();
+  const userId = localStorage.getItem("userId");
 
   const handleSubmit = () => {
     axios
@@ -21,7 +22,7 @@ function AddAddress({ setIsToggle }) {
         street: street.current.value,
         phone1: phone1.current.value,
         pincode: pincode.current.value,
-        userId: "65b8bd92f5bc7f3595fbcd23",
+        userId: userId,
         phone2: phone2.current.value,
       })
       .then((res) => {
@@ -85,12 +86,12 @@ function AddAddress({ setIsToggle }) {
               </label>
               <input ref={pincode} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="number" required placeholder="90210" />
             </div>
-            <div className="w-full mt-6 px-3 mb-6 md:mb-0">
+            {/* <div className="w-full mt-6 px-3 mb-6 md:mb-0">
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                 Email
               </label>
               <input ref={email} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" required placeholder="Jane" />
-            </div>
+            </div> */}
             <div className="w-full md:w-2/4 mt-2 px-3 mb-6 md:mb-0">
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                 Phone1

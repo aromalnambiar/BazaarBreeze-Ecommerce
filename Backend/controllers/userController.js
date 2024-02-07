@@ -18,19 +18,14 @@ const generateOtp=()=>{
 
 const sendMail = async (email, otp) => {
     try {
-      
-
-      let transporter = nodemailer.createTransport({
+   
+      var transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-          type: 'OAuth2',
-          user: `${process.env.USER}`,
-          pass: `${process.env.PASS}`,
-          clientId: `${process.env.CLIENT_ID}`,
-          clientSecret: `${process.env.CLIENT_SECRET}`,
-          refreshToken: `${process.env.REFRESH_TOKEN}`,
-        }
-      });
+            user: `${process.env.USER}`,			
+            pass: `${process.env.PASS}`				 
+           }
+       });
   
       const details = {
         from: `${process.env.USER}`,
@@ -245,6 +240,9 @@ const listProducts = async (req, res) => {
 const productDetails = async (req, res) => {
   try {
     const productId = new mongoose.Types.ObjectId(req.params.productid);
+
+    const userId = req.query.userId;
+
     const result = await Products.aggregate([
       {
         $match: {
@@ -261,27 +259,32 @@ const productDetails = async (req, res) => {
       },
     ]);
 
-    const category= await Category.findById(result[0].category);
-    console.log("Category : ",category);
-    
+    const category = await Category.findById(result[0].category);
+
     if (result.length > 0) {
       const product = result[0];
       const firstVariant = product.productDetails[0];
       product.productDetails = firstVariant;
-      const cart=await Cart.findOne({ 'product.productVariantId': firstVariant._id });
-      const isCartFound = !!cart;
-      console.log("cart : ",cart);
+
+      // Find the cart for the user
+      const cart = await Cart.findOne({ user: userId });
+
+      // Check if the product variant exists in the cart
+      const isCartFound = cart && cart.product.some(item => item.productVariantId.equals(firstVariant._id));
+
+      console.log("cart : ", cart);
       console.log(product);
-      res.status(200).json({ message: 'success', productDetails: product ,isCartFound,category:category.name});
+
+      res.status(200).json({ message: 'success', productDetails: product, isCartFound, category: category.name });
     } else {
       res.status(404).json({ message: 'Product not found' });
     }
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 const showAddresses = async (req, res) => {
   try {

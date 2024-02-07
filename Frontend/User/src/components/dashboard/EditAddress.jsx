@@ -11,6 +11,9 @@ function AddAddress({ setIsEdit, addressDetails }) {
   const email = useRef();
   const phone1 = useRef();
   const phone2 = useRef();
+  const userId = localStorage.getItem("userId");
+
+  console.log("User Id : ", userId);
 
   useEffect(() => {
     fullName.current.value = addressDetails.fullName;
@@ -35,7 +38,7 @@ function AddAddress({ setIsEdit, addressDetails }) {
         street: street.current.value,
         phone1: phone1.current.value,
         pincode: pincode.current.value,
-        userId: "65b8bd92f5bc7f3595fbcd23",
+        userId: userId,
         phone2: phone2.current.value,
         addressId: addressDetails._id,
       })

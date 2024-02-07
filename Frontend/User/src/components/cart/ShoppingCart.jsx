@@ -12,11 +12,12 @@ function ShoppingCart() {
   const [quantity, setQuantity] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
-
+  const userId = localStorage.getItem("userId");
+  console.log("User Id : ", userId);
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/user/cart/65b8bd92f5bc7f3595fbcd23`)
+      .get(`${BASE_URL}/user/cart/${userId}`)
       .then((res) => {
         // console.log(res.data.cart.product);
         setCartItems(res.data.cart.product);
@@ -44,7 +45,7 @@ function ShoppingCart() {
       // setQuantity(quantity + 1);
       axios
         .post(`${BASE_URL}/user/cart`, {
-          userId: "65b8bd92f5bc7f3595fbcd23",
+          userId: userId,
           quantity: 1,
           productVariantId: id,
         })
@@ -63,7 +64,7 @@ function ShoppingCart() {
       // setQuantity(quantity - 1);
       axios
         .post(`${BASE_URL}/user/cart`, {
-          userId: "65b8bd92f5bc7f3595fbcd23",
+          userId: userId,
           quantity: -1,
           productVariantId: id,
         })
@@ -78,7 +79,6 @@ function ShoppingCart() {
   };
 
   const deleteFromCart = (id) => {
-    const userId = "65b8bd92f5bc7f3595fbcd23";
     if (confirm("Are you sure ?")) {
       axios
         .delete(`${BASE_URL}/user/cart?userId=${userId}&productVariantId=${id}`)
@@ -122,6 +122,7 @@ function ShoppingCart() {
                           <div className="flex flex-col justify-around ml-4 flex-grow">
                             <span className="font-bold text-sm">Iphone 6S</span>
                             {/* <span className="text-red-500 text-xs">Apple</span> */}
+                            {/* {console.log("map : ",item.productVariantId)} */}
                             <a onClick={() => deleteFromCart(item.productVariantId._id)} className="font-semibold mb-2 cursor-pointer hover:text-red-500 text-gray-500 text-xs">
                               Remove
                             </a>

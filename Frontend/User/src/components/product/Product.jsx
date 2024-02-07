@@ -15,21 +15,24 @@ function Product() {
 
   useEffect(() => {
     const fetchDetails = async () => {
-      const response = await axios.get(`${BASE_URL}/user/products/${productId}`);
-      // console.log("RESPONSE : ", response);
+      const userId = localStorage.getItem("userId");
+      const response = await axios.get(`${BASE_URL}/user/products/${productId}?userId=${userId}`);
+      console.log("RESPONSE : ", response);
       setItem(response.data.productDetails);
       setCategory(response.data.category);
       setIsCartFound(response.data.isCartFound);
     };
+
     fetchDetails();
     window.scrollTo(0, 0);
-  }, []);
+  }, [productId]); 
 
   const handleAddToCart = async (id) => {
     try {
       console.log("ID : ", id);
+      const userId = localStorage.getItem("userId");
       const response = await axios.post(`${BASE_URL}/user/cart`, {
-        userId: "65b8bd92f5bc7f3595fbcd23",
+        userId,
         productVariantId: id,
         quantity: 1,
       });

@@ -12,23 +12,42 @@ function EmailVerification(props) {
 
   const handleVerify = () => {
     const otpValue = otp.current.value;
-    console.log(props.email,props.username,props.password,otpValue);
-    const result = axios
-      .post(`${BASE_URL}/user/verify-otp`, { 
-        email: props.email,
-        username: props.username,
-        password: props.password,
-        otp: otpValue,
-      })
-      .then((res) => {
-        console.log(res);
-        alert(res.data.message);
-        navigate("/user/signin");
-      })
-      .catch((res) => {
-        console.log(res);
-        alert(res.response.data.message);
-      });
+    console.log(props.email, props.username, props.password, otpValue);
+    if (props?.resetPassword) {
+      const result = axios
+        .post(`${BASE_URL}/user/reset-password`, {
+          email: props.email,
+          username: props.username,
+          password: props.password,
+          otp: otpValue,
+        })
+        .then((res) => {
+          console.log(res);
+          alert(res.data.message);
+          navigate("/user/signin");
+        })
+        .catch((res) => {
+          console.log(res);
+          alert(res.response.data.message);
+        });
+    } else {
+      const result = axios
+        .post(`${BASE_URL}/user/verify-otp`, {
+          email: props.email,
+          username: props.username,
+          password: props.password,
+          otp: otpValue,
+        })
+        .then((res) => {
+          console.log(res);
+          alert(res.data.message);
+          navigate("/user/signin");
+        })
+        .catch((res) => {
+          console.log(res);
+          alert(res.response.data.message);
+        });
+    }
   };
 
   const handleResendCode = () => {
