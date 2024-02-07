@@ -48,7 +48,7 @@ function SideNav() {
       handleLogout();
       navigate("/");
     } else {
-      navigate(item.path);
+      navigate(path);
     }
   };
 

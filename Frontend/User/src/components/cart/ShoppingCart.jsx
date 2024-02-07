@@ -95,7 +95,7 @@ function ShoppingCart() {
   return (
     <>
       {isProceed ? (
-        <ChooseAddress grandTotal={grandTotal} />
+        <ChooseAddress grandTotal={grandTotal} cartItems={cartItems} />
       ) : (
         <div className="grid grid-cols-12 gap-4 my-14 min-h-[80vh]">
           <div className="col-span-8  ">

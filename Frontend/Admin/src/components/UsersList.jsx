@@ -2,12 +2,13 @@ import React, { useEffect, useState } from "react";
 import photo from "../assets/images/Customer.png";
 import { FaCircleUser } from "react-icons/fa6";
 import axios from "axios";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../config";
 
 function UsersList() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
+  const [isToggle, setIsToggle] = useState(false);
 
   useEffect(() => {
     const result = axios
@@ -20,7 +21,7 @@ function UsersList() {
       .catch((res) => {
         console.log(res);
       });
-  }, []);
+  }, [isToggle]);
 
   const handleBlock = (item) => {
     if (confirm(`Do you want to ${item.isBlocked ? "Unblock" : "Block"} the user`)) {
@@ -30,6 +31,7 @@ function UsersList() {
         .then((res) => {
           console.log(res);
           alert(res.data.message);
+          setIsToggle((prev) => !prev);
         })
         .catch((res) => {
           console.log(res);
@@ -40,9 +42,9 @@ function UsersList() {
     <div className=" border border-gray-300 overflow-hidden shadow-md rounded-2xl mb-20">
       <div className="bg-white p-6 flex justify-between py-8">
         <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search user..." />
-        <div>
+        {/* <div>
           <button className="bg-[#696cff] text-white px-8 py-2 rounded-md shadow-lg">Add Customer</button>
-        </div>
+        </div> */}
       </div>
       <table className="min-w-full bg-white ">
         <thead>

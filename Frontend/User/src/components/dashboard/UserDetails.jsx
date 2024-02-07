@@ -9,7 +9,7 @@ import AddAddress from "./AddAddress";
 import EditAddress from "./EditAddress";
 
 function AccountInfo({ user, handleEditAccount }) {
-  console.log("user : ", user);
+  // console.log("user : ", user);
   return (
     <div className="border min-h-[40vh] relative pb-20 overflow-hidden rounded-md col-span-4">
       <div className="text-sm font-semibold border-b">

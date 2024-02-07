@@ -40,7 +40,7 @@ function SignIn() {
       })
       .catch((error) => {
         console.log(error);
-        setError("Invalid email or password. Please try again.");
+        setError(error?.response?.data?.message);
       });
   };
 

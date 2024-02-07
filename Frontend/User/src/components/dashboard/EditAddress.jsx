@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
 
@@ -12,6 +12,7 @@ function AddAddress({ setIsEdit, addressDetails }) {
   const phone1 = useRef();
   const phone2 = useRef();
   const userId = localStorage.getItem("userId");
+  const [error, setError] = useState("");
 
   console.log("User Id : ", userId);
 
@@ -29,7 +30,38 @@ function AddAddress({ setIsEdit, addressDetails }) {
 
   console.log("addressDetails : ", addressDetails);
 
+  const validateInputs = () => {
+    const fullNameValue = fullName.current.value.trim();
+    const addressValue = address.current.value.trim();
+    const stateValue = state.current.value.trim();
+    const pincodeValue = pincode.current.value.trim();
+    const emailValue = email.current.value.trim();
+    const phone1Value = phone1.current.value.trim();
+
+    if (!fullNameValue || !addressValue || !stateValue || !pincodeValue || !emailValue || !phone1Value) {
+      setErrorMessage("Please fill in all required fields.");
+      return false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(emailValue)) {
+      setErrorMessage("Please enter a valid email address.");
+      return false;
+    }
+
+    const pincodeRegex = /^\d{6}$/;
+    if (!pincodeRegex.test(pincodeValue)) {
+      setErrorMessage("Please enter a valid 6-digit pincode.");
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = () => {
+
+    
+
     axios
       .put(`${BASE_URL}/user/address`, {
         fullName: fullName.current.value,
@@ -58,12 +90,15 @@ function AddAddress({ setIsEdit, addressDetails }) {
         .then((res) => {
           console.log("res : ", res.data.message);
           alert(res.data.message);
+          setIsEdit((prev) => !prev);
         })
         .catch((err) => {
           console.log("err : ", err);
         });
     }
   };
+
+
 
   return (
     <>

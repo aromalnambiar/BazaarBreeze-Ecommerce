@@ -8,10 +8,38 @@ import Dashboard from "./components/dashboard/Dashboard";
 import Layout from "./components/common/Layout";
 import MaxWidth from "./components/common/MaxWidth";
 import { useSelector } from "react-redux";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { io } from "socket.io-client";
+import { logout } from "./redux/reducers/authSlice";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
+  const dispatch = useDispatch();
+  const [socket, setSocket] = useState(null);
+
+  useEffect(() => {
+    const newSocket = io("http://localhost:3000");
+    setSocket(newSocket);
+  }, []);
+
+  useEffect(() => {
+    console.log("Inside socket1 : ", socket);
+    if (socket) {
+      console.count("socket : ", socket);
+      socket.on("blockUser", () => {
+        console.log("I am getting executed socket");
+        try {
+          dispatch(logout());
+          localStorage.removeItem("token");
+          localStorage.removeItem("userId");
+          console.log("Logout dispatched successfully");
+        } catch (error) {
+          console.error("Error dispatching logout:", error);
+        }
+      });
+    }
+  }, [socket, dispatch]);
 
   return (
     <>

@@ -52,7 +52,6 @@ const AddProduct = () => {
   };
 
   const handleInputChange = (fieldName, value) => {
-    // Generic handler for input changes
     switch (fieldName) {
       case "productName":
         setProductName(value);

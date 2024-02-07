@@ -10,6 +10,7 @@ const Address=require('../models/Address');
 const Order=require('../models/Order');
 const Cart =require('../models/Cart');
 const Category=require('../models/Category');
+const Payment=require('../models/Payment');
 
 const generateOtp=()=>{
         const otp=Math.floor(100000 + Math.random() * 900000);;
@@ -303,19 +304,23 @@ const showAddresses = async (req, res) => {
   }
 };
 
-const showOrders=async(req,res)=>{
+const showOrders = async (req, res) => {
   try {
-    const {userId}=req.body;
-    const orders=await Order.findById({_id:userId});
-    if(!orders){
-      return res.status(200).json({message:"No orders found"});
+    const { userId } = req.params;
+    console.log("user id ",userId);
+    const orders = await Order.find({ userId });
+
+    if (!orders || orders.length === 0) {
+      return res.status(200).json({ message: "No orders found" });
     }
-    res.status(200).json({message:"Success",orders});
+
+    res.status(200).json({ message: "Success", orders });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({message:"Server error"});
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
-}
+};
+
 
 const showUser=async(req,res)=>{
   try {
@@ -523,9 +528,49 @@ const showCart= async(req,res)=>{
   }
 }
 
+const addOrder = async (req, res) => {
+  try {
+    console.log("Inside addOrder1");
+    const {
+      orderedItems,
+      paymentStatus,
+      deliveryDate,
+      offers,
+      payment,
+      shippingAddress,
+      shippingDate,
+      coupons,
+      totalAmount,
+      userId,
+      orderStatus,
+    } = req.body;
 
+    console.log("Inside addOrder2");
+    console.log("Body : ",req.body);
 
-module.exports = { addToCart };
+    const newOrder = new Order({
+      orderedItems,
+      paymentStatus: paymentStatus || 'pending',
+      deliveryDate,
+      offers,
+      payment,
+      shippingAddress,
+      shippingDate,
+      coupons,
+      totalAmount,
+      userId,
+      orderStatus: orderStatus || 'Pending',
+    });
+
+    const savedOrder = await newOrder.save();
+
+    res.status(201).json({ message: 'Order added successfully', order: savedOrder });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 
 
 module.exports={
@@ -533,6 +578,6 @@ module.exports={
   listProducts,productDetails,
   showCart,addToCart,deleteFromCart,
   showAddresses,showOrders,showUser,
-  addAddress,editAddress,deleteAddress,editProfile,
+  addAddress,editAddress,deleteAddress,editProfile,addOrder
 };
 

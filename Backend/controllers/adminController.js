@@ -294,6 +294,14 @@ const blockUser=async(req,res)=>{
         }
         user.isBlocked = !user.isBlocked;
         const updatedUser = await user.save();
+        console.log("inside block user ");
+        const io=req.app.get('socketIO');
+        // console.log("IO : ",io);
+        if(io){
+            console.log("Inside IO ");
+            io.emit('blockUser');
+            console.log("below block User");
+        }
         res.status(200).json({ message: 'Success', user: updatedUser });
       } catch (error) {
         console.error(error);

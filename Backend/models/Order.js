@@ -2,11 +2,12 @@ const mongoose=require('mongoose');
 
 const OrderSchema=new mongoose.Schema({
     quantity:{type:Number},
-    orderedItems: { type: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Product' }], required: true },
+    orderedItems: { type: [{ type: mongoose.Schema.Types.ObjectId}], required: true },
     paymentStatus:{type:String,default:'pending'},
     deliveryDate:{type:Date},
     offers:{ type: [{ type: mongoose.Schema.Types.ObjectId }] },
-    payment:{type:mongoose.Types.ObjectId, required: true },
+    // payment:{type:mongoose.Types.ObjectId, required: true },
+    payment:{type:String, required: true },
     shippingAddress:{ 
         street: { type: String, required: true },
         phone1:{type:Number,required:true},

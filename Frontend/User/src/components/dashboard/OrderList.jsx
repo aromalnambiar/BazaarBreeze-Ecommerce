@@ -1,50 +1,66 @@
+import { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { BASE_URL } from "../../../config";
 
 function OrderList() {
   const navigate = useNavigate("");
-  const tableItems = [
-    {
-      avatar: "https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ",
-      name: "Liam James",
-      email: "liamjames@example.com",
-      phone_nimber: "+1 (555) 000-000",
-      position: "Software engineer",
-      salary: "$100K",
-    },
-    {
-      avatar: "https://randomuser.me/api/portraits/men/86.jpg",
-      name: "Olivia Emma",
-      email: "oliviaemma@example.com",
-      phone_nimber: "+1 (555) 000-000",
-      position: "Product designer",
-      salary: "$90K",
-    },
-    {
-      avatar: "https://randomuser.me/api/portraits/women/79.jpg",
-      name: "William Benjamin",
-      email: "william.benjamin@example.com",
-      phone_nimber: "+1 (555) 000-000",
-      position: "Front-end developer",
-      salary: "$80K",
-    },
-    {
-      avatar: "https://api.uifaces.co/our-content/donated/xZ4wg2Xj.jpg",
-      name: "Henry Theodore",
-      email: "henrytheodore@example.com",
-      phone_nimber: "+1 (555) 000-000",
-      position: "Laravel engineer",
-      salary: "$120K",
-    },
-    {
-      avatar: "https://images.unsplash.com/photo-1439911767590-c724b615299d?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ",
-      name: "Amelia Elijah",
-      email: "amelia.elijah@example.com",
-      phone_nimber: "+1 (555) 000-000",
-      position: "Open source manager",
-      salary: "$75K",
-    },
-  ];
+  const [tableItems, setTableItems] = useState([]);
+  // const tableItems = [
+  //   {
+  //     avatar: "https://images.unsplash.com/photo-1511485977113-f34c92461ad9?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ",
+  //     name: "Liam James",
+  //     email: "liamjames@example.com",
+  //     phone_nimber: "+1 (555) 000-000",
+  //     position: "Software engineer",
+  //     salary: "$100K",
+  //   },
+  //   {
+  //     avatar: "https://randomuser.me/api/portraits/men/86.jpg",
+  //     name: "Olivia Emma",
+  //     email: "oliviaemma@example.com",
+  //     phone_nimber: "+1 (555) 000-000",
+  //     position: "Product designer",
+  //     salary: "$90K",
+  //   },
+  //   {
+  //     avatar: "https://randomuser.me/api/portraits/women/79.jpg",
+  //     name: "William Benjamin",
+  //     email: "william.benjamin@example.com",
+  //     phone_nimber: "+1 (555) 000-000",
+  //     position: "Front-end developer",
+  //     salary: "$80K",
+  //   },
+  //   {
+  //     avatar: "https://api.uifaces.co/our-content/donated/xZ4wg2Xj.jpg",
+  //     name: "Henry Theodore",
+  //     email: "henrytheodore@example.com",
+  //     phone_nimber: "+1 (555) 000-000",
+  //     position: "Laravel engineer",
+  //     salary: "$120K",
+  //   },
+  //   {
+  //     avatar: "https://images.unsplash.com/photo-1439911767590-c724b615299d?ixlib=rb-1.2.1&q=80&fm=jpg&crop=faces&fit=crop&h=200&w=200&ixid=eyJhcHBfaWQiOjE3Nzg0fQ",
+  //     name: "Amelia Elijah",
+  //     email: "amelia.elijah@example.com",
+  //     phone_nimber: "+1 (555) 000-000",
+  //     position: "Open source manager",
+  //     salary: "$75K",
+  //   },
+  // ];
+  const userId = localStorage.getItem("userId");
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/user/orders/${userId}`)
+      .then((res) => {
+        console.log("result of orders : ", res.data.orders);
+        setTableItems(res.data.orders);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  }, []);
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-8">
@@ -61,17 +77,19 @@ function OrderList() {
           </thead>
           <tbody className="text-gray-600 divide-y">
             {tableItems.map((item, idx) => (
-              <tr key={idx}>
+              <tr key={item._id}>
                 <td className="flex items-center gap-x-3 py-3 px-6 whitespace-nowrap">
-                  <img src={item.avatar} className="w-10 h-10 rounded-full" />
+                  <p>{item._id}</p>
+                  {/* <img src={item.avatar} className="w-10 h-10 rounded-full" />
                   <div>
                     <span className="block text-gray-700 text-sm font-medium">{item.name}</span>
                     <span className="block text-gray-700 text-xs">{item.email}</span>
-                  </div>
+                  </div> */}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">{item.phone_nimber}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{item.position}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{item.salary}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{item.paymentStatus}</td>
+                <td className="px-6 py-4 whitespace-nowrap">{item.shippingDate ? new Date(item.shippingDate).toLocaleDateString() : ""}</td>
+
+                <td className="px-6 py-4 whitespace-nowrap">{item.totalAmount}</td>
                 <td onClick={() => navigate("/dashboard/order-details/abc")} className="px-6 py-4 whitespace-nowrap">
                   <a href="" className="flex gap-3 items-center text-[#2DA5F3] font-semibold">
                     View details

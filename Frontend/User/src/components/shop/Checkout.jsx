@@ -4,6 +4,8 @@ import { SiRazorpay } from "react-icons/si";
 import { FaPaypal } from "react-icons/fa";
 import { FaMoneyBill } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from "../../../config";
+import axios from "axios";
 
 function Checkout(props) {
   const navigate = useNavigate("");
@@ -22,9 +24,58 @@ function Checkout(props) {
   };
 
   const placeOrder = () => {
-    if (confirm("Are you sure ?")) {
-      // axios.post()
-      // navigate("/shop/checkoutsuccess")
+    console.log("Props : ", props);
+    if (!selectedPayment) {
+      alert("Please select a payment method.");
+      return;
+    }
+
+    if (selectedPayment.name !== "Cash on Delivery") {
+      alert("Currently, we only support Cash on Delivery.");
+      return;
+    }
+    if (confirm("Are you sure?")) {
+      const orderedItems = props.cartItems.map((item) => {
+        return item.productVariantId._id;
+      });
+      // const orderData = {
+      //   orderedItems,
+      //   paymentStatus: "pending",
+      //   deliveryDate: new Date(),
+      //   offers: [],
+      //   payment: selectedPayment.name,
+      //   shippingAddress: props.address,
+      //   shippingDate: new Date(),
+      //   coupons: [],
+      //   totalAmount: props.grandTotal,
+      //   userId: localStorage.getItem("userId"),
+      //   orderStatus: "Pending",
+      // };
+
+      axios
+        .post(`${BASE_URL}/user/order/add`, {
+          orderedItems,
+          paymentStatus: "pending",
+          deliveryDate: new Date(),
+          offers: [],
+          payment: selectedPayment.name,
+          shippingAddress: props.address,
+          shippingDate: new Date(),
+          coupons: [],
+          totalAmount: props.grandTotal,
+          userId: localStorage.getItem("userId"),
+          orderStatus: "Pending",
+        })
+        .then((res) => {
+          console.log("response : ", res);
+          console.log("Order placed successfully:", res.data.message);
+          navigate("/shop/checkoutsuccess");
+        })
+        .catch((err) => {
+          console.error("Error placing order:", err);
+          alert("Failed to place the order. Please try again.");
+        });
+      console.log("props : ", props);
     }
   };
 

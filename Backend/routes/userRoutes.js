@@ -33,7 +33,8 @@ router.delete('/address/:id',userController.deleteAddress);
 router.post('/cart',userController.addToCart);
 router.delete('/cart',userController.deleteFromCart);
 router.get('/cart/:id',userController.showCart);
-router.get('/orders',userController.showOrders);
+router.get('/orders/:userId',userController.showOrders);
+router.post('/order/add',userController.addOrder);
 
 router.put('/profile',upload.single('image'),userController.editProfile)
 
