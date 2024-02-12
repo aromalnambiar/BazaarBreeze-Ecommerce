@@ -17,13 +17,17 @@ function ShoppingCart() {
   const navigate = useNavigate();
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/user/cart/${userId}`)
+      .get(`${BASE_URL}/user/cart`, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
+      })
       .then((res) => {
-        // console.log(res.data.cart.product);
+        console.log("hello cart : ", res.data.cart.product);
         setCartItems(res.data.cart.product);
         setQuantity(() => res.data.cart.product.map((item) => item.quantity));
         // console.log("data : ", res.data.cart.product);
-        setGrandTotal(() => res.data.cart.product.reduce((acc, curr) => acc + curr.totalPrice, 0));
+        setGrandTotal(() => res.data.cart.product.reduce((acc, curr) => acc + curr.productVariantId.salePrice * curr.quantity, 0));
       })
       .catch((res) => {
         console.log(res);
@@ -38,17 +42,20 @@ function ShoppingCart() {
   };
 
   const increaseQuantity = (id, index) => {
-    // console.log("increase : ", quantity[index]);
-    // console.log("id : ", id);
     if (quantity[index] < 5) {
-      // console.log("increase : ");
-      // setQuantity(quantity + 1);
       axios
-        .post(`${BASE_URL}/user/cart`, {
-          userId: userId,
-          quantity: 1,
-          productVariantId: id,
-        })
+        .post(
+          `${BASE_URL}/user/cart`,
+          {
+            quantity: 1,
+            productVariantId: id,
+          },
+          {
+            headers: {
+              Authorization: `${localStorage.getItem("token")}`,
+            },
+          }
+        )
         .then((res) => {
           // console.log("response : ", res);
           setIsUpdated(!isUpdated);
@@ -61,15 +68,21 @@ function ShoppingCart() {
 
   const decreaseQuantity = (id, index) => {
     if (quantity[index] > 1) {
-      // setQuantity(quantity - 1);
       axios
-        .post(`${BASE_URL}/user/cart`, {
-          userId: userId,
-          quantity: -1,
-          productVariantId: id,
-        })
+        .post(
+          `${BASE_URL}/user/cart`,
+          {
+            userId: userId,
+            quantity: -1,
+            productVariantId: id,
+          },
+          {
+            headers: {
+              Authorization: `${localStorage.getItem("token")}`,
+            },
+          }
+        )
         .then((res) => {
-          // console.log("response : ", res);
           setIsUpdated(!isUpdated);
         })
         .catch((res) => {
@@ -81,7 +94,11 @@ function ShoppingCart() {
   const deleteFromCart = (id) => {
     if (confirm("Are you sure ?")) {
       axios
-        .delete(`${BASE_URL}/user/cart?userId=${userId}&productVariantId=${id}`)
+        .delete(`${BASE_URL}/user/cart?userId=${userId}&productVariantId=${id}`, {
+          headers: {
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+        })
         .then((res) => {
           // console.log("response: ", res);
           setIsUpdated(!isUpdated);
@@ -139,7 +156,7 @@ function ShoppingCart() {
                         </div>
                         {/* {console.log("item : ", item)} */}
                         <span className="text-center w-1/5 font-semibold text-sm">${item.productVariantId.salePrice}</span>
-                        <span className="text-center w-1/5 font-semibold text-sm">${item.totalPrice}</span>
+                        <span className="text-center w-1/5 font-semibold text-sm">${item.productVariantId.salePrice * item.quantity}</span>
                       </div>
                     );
                   })}

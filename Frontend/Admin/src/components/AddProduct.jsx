@@ -27,10 +27,12 @@ const AddProduct = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/admin/products/category`);
+        const response = await axios.get(`${BASE_URL}/admin/categories`);
         console.log("category list : ", response);
         setCategoryOptions(response.data.categories);
-      } catch (error) {}
+      } catch (error) {
+        console.log(error);
+      }
     };
     fetchData();
   }, []);
@@ -87,7 +89,7 @@ const AddProduct = () => {
 
   const handleAddProduct = async () => {
     try {
-      if (!productName || !brand || !category || !stock || !regularPrice || !salePrice || !description) {
+      if (!productName || !brand || !category || !description) {
         alert("Please fill in all required fields.");
         return;
       }
@@ -173,14 +175,22 @@ const AddProduct = () => {
       });
 
       const variantResponse = await axios.post(`${BASE_URL}/admin/products/variant`, variantFormData);
-      navigate("/products/view-all");
+      // navigate("/products/view-all");
       console.log(variantResponse.data);
       alert(variantResponse.data.message);
     } catch (error) {
       console.error("Error adding product variant:", error);
     }
   };
-
+  const clearVariant = () => {
+    setStock(0);
+    setColor("");
+    setRegularPrice(0);
+    setSalePrice(0);
+    setSpecifications([{ name: "", value: "" }]);
+    setImages([]);
+    setImagesObjects([]);
+  };
   return (
     <div className="bg-white p-8 shadow-md rounded-md max-w-3xl mx-auto text-[#566A7F]">
       <h2 className="text-left text-2xl font-bold mb-6">Product Information</h2>
@@ -189,7 +199,6 @@ const AddProduct = () => {
         <label className="block text-sm font-semibold mb-1">Name</label>
         <input type="text" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("productName", e.target.value)} />
       </div>
-
 
       <div className="flex mb-4">
         <div className="w-1/2 pr-2">
@@ -212,32 +221,35 @@ const AddProduct = () => {
       </div>
 
       <div className="mb-4">
-        <label className="block text-sm font-semibold mb-1">Stock</label>
-        <input type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("stock", e.target.value)} />
-      </div>
-
-      <div className="flex mb-4">
-        <div className="w-1/2 pr-2">
-          <label className="block text-sm font-semibold mb-1">Regular Price</label>
-          <input type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("regularPrice", e.target.value)} />
-        </div>
-        <div className="w-1/2 pl-2">
-          <label className="block text-sm font-semibold mb-1">Sale Price</label>
-          <input type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("salePrice", e.target.value)} />
-        </div>
-      </div>
-
-      <div className="mb-4">
         <label className="block text-sm font-semibold mb-1">Description</label>
         <textarea className="w-full border border-gray-300 p-2" rows="6" onChange={(e) => handleInputChange("description", e.target.value)}></textarea>
       </div>
 
-      <button className="bg-blue-500 text-white py-2 px-4 rounded-md mt-6" onClick={handleAddProduct}>
+      <button className="bg-blue-500 mb-8 text-white py-2 px-4 rounded-md mt-6" onClick={handleAddProduct}>
         Add Product
       </button>
 
       {isProductAdded && (
         <>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-1">Variant name</label>
+            <input value={productVariant} type="text" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("productVariant", e.target.value)} />
+          </div>
+          <div className="mb-4">
+            <label className="block text-sm font-semibold mb-1">Stock</label>
+            <input type="number" value={stock} className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("stock", e.target.value)} />
+          </div>
+
+          <div className="flex mb-4">
+            <div className="w-1/2 pr-2">
+              <label className="block text-sm font-semibold mb-1">Regular Price</label>
+              <input value={regularPrice} type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("regularPrice", e.target.value)} />
+            </div>
+            <div className="w-1/2 pl-2">
+              <label className="block text-sm font-semibold mb-1">Sale Price</label>
+              <input value={salePrice} type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("salePrice", e.target.value)} />
+            </div>
+          </div>
           <AddImages images={images} onImageUpload={handleImageUpload} onRemoveImage={handleRemoveImage} />
           <div className="mt-10">
             <label className="block text-xl font-semibold mb-4">Specifications</label>
@@ -256,6 +268,9 @@ const AddProduct = () => {
           </div>
           <button type="button" className="bg-lime-500 ms-auto block py-4 my-8 text-white  px-4 rounded-md" onClick={handleSendDataToVariant}>
             Send Data to Variant
+          </button>
+          <button type="button" className="bg-orange-500 ms-auto block py-4 my-8 text-white  px-4 rounded-md" onClick={clearVariant}>
+            Add another variant
           </button>
         </>
       )}

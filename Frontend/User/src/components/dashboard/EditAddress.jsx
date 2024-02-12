@@ -11,10 +11,7 @@ function AddAddress({ setIsEdit, addressDetails }) {
   const email = useRef();
   const phone1 = useRef();
   const phone2 = useRef();
-  const userId = localStorage.getItem("userId");
   const [error, setError] = useState("");
-
-  console.log("User Id : ", userId);
 
   useEffect(() => {
     fullName.current.value = addressDetails.fullName;
@@ -59,21 +56,25 @@ function AddAddress({ setIsEdit, addressDetails }) {
   };
 
   const handleSubmit = () => {
-
-    
-
     axios
-      .put(`${BASE_URL}/user/address`, {
-        fullName: fullName.current.value,
-        address: address.current.value,
-        state: state.current.value,
-        street: street.current.value,
-        phone1: phone1.current.value,
-        pincode: pincode.current.value,
-        userId: userId,
-        phone2: phone2.current.value,
-        addressId: addressDetails._id,
-      })
+      .put(
+        `${BASE_URL}/user/address`,
+        {
+          fullName: fullName.current.value,
+          address: address.current.value,
+          state: state.current.value,
+          street: street.current.value,
+          phone1: phone1.current.value,
+          pincode: pincode.current.value,
+          phone2: phone2.current.value,
+          addressId: addressDetails._id,
+        },
+        {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        }
+      )
       .then((res) => {
         console.log("res : ", res.data.message);
         alert(res.data.message);
@@ -86,7 +87,11 @@ function AddAddress({ setIsEdit, addressDetails }) {
   const handleDelete = () => {
     if (confirm("Are you sure?")) {
       axios
-        .delete(`${BASE_URL}/user/address/${addressDetails._id}`)
+        .delete(`${BASE_URL}/user/address/${addressDetails._id}`,{
+          header:{
+            Authorization:localStorage.getItem('token')
+          }
+        })
         .then((res) => {
           console.log("res : ", res.data.message);
           alert(res.data.message);
@@ -97,8 +102,6 @@ function AddAddress({ setIsEdit, addressDetails }) {
         });
     }
   };
-
-
 
   return (
     <>

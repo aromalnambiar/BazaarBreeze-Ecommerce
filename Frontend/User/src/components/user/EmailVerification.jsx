@@ -54,7 +54,7 @@ function EmailVerification(props) {
     setIsResendRequested(true);
     const otpValue = otp.current.value;
     const result = axios
-      .post(`${BASE_URL}/resend-otp`, {
+      .post(`${BASE_URL}/user/resend-otp`, {
         email: props.email,
       })
       .then((res) => {

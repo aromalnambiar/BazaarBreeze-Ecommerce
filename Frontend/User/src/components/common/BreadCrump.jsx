@@ -1,6 +1,6 @@
 function BreadCrump() {
   return (
-    <nav className="flex  bg-[#F2F4F5] pl-4 justify-center h-[60px]" aria-label="Breadcrumb">
+    <nav className="flex  bg-[#F2F4F5] pl-4 justify-center h-[60px] shadow-sm" aria-label="Breadcrumb">
       <ol className="inline-flex max-w-[1020px] w-full  items-center justify-start space-x-1 md:space-x-2 rtl:space-x-reverse">
         <li className="inline-flex items-center">
           <a href="#" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-black">

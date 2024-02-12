@@ -64,7 +64,9 @@ const Sidebar = () => {
           {renderArrowIcon(2)}
           {expandedMenu === 2 && (
             <ul className="flex flex-col gap-4 pt-4">
-              <li className="pl-4 my-1">Submenu 5</li>
+              <Link to={"/orders/view-all"}>
+                <li className="pl-4 my-1">View all orders</li>
+              </Link>
               <li className="pl-4 my-1">Submenu 6</li>
             </ul>
           )}

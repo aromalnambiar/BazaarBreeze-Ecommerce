@@ -9,20 +9,21 @@ import axios from "axios";
 
 function Checkout(props) {
   const navigate = useNavigate("");
-  const [selectedPayment, setSelectedPayment] = useState(null);
+  const [selectedPayment, setSelectedPayment] = useState({});
   const [address, setAddress] = useState(props?.address);
 
   const paymentOptions = [
-    { id: 1, name: "Cash on Delivery", icon: <FaMoneyBill /> },
+    { id: 1, name: "Cash On Delivery", icon: <FaMoneyBill /> },
     { id: 2, name: "PayPal", icon: <FaPaypal /> },
     { id: 3, name: "RazorPay", icon: <SiRazorpay /> },
-    { id: 4, name: "CreditCard", icon: <FaRegCreditCard /> },
+    { id: 4, name: "Credit Card", icon: <FaRegCreditCard /> },
   ];
 
   const handlePaymentChange = (payment) => {
     setSelectedPayment(payment);
   };
 
+  console.log("Selected payment : ", selectedPayment);
   const placeOrder = () => {
     console.log("Props : ", props);
     if (!selectedPayment) {
@@ -30,42 +31,41 @@ function Checkout(props) {
       return;
     }
 
-    if (selectedPayment.name !== "Cash on Delivery") {
+    if (selectedPayment.name !== "Cash On Delivery") {
       alert("Currently, we only support Cash on Delivery.");
       return;
     }
     if (confirm("Are you sure?")) {
       const orderedItems = props.cartItems.map((item) => {
-        return item.productVariantId._id;
+        return {
+          product: item.productVariantId._id,
+          quantity: item.quantity,
+          price: item.productVariantId.salePrice,
+        };
       });
-      // const orderData = {
-      //   orderedItems,
-      //   paymentStatus: "pending",
-      //   deliveryDate: new Date(),
-      //   offers: [],
-      //   payment: selectedPayment.name,
-      //   shippingAddress: props.address,
-      //   shippingDate: new Date(),
-      //   coupons: [],
-      //   totalAmount: props.grandTotal,
-      //   userId: localStorage.getItem("userId"),
-      //   orderStatus: "Pending",
-      // };
+      console.log("orderedItems : ", orderedItems);
 
       axios
-        .post(`${BASE_URL}/user/order/add`, {
-          orderedItems,
-          paymentStatus: "pending",
-          deliveryDate: new Date(),
-          offers: [],
-          payment: selectedPayment.name,
-          shippingAddress: props.address,
-          shippingDate: new Date(),
-          coupons: [],
-          totalAmount: props.grandTotal,
-          userId: localStorage.getItem("userId"),
-          orderStatus: "Pending",
-        })
+        .post(
+          `${BASE_URL}/user/order/add`,
+          {
+            orderedItems,
+            paymentStatus: "Pending",
+            deliveryDate: new Date(),
+            offers: [],
+            paymentMethod: selectedPayment.name,
+            shippingAddress: props.address,
+            orderDate: new Date(),
+            coupons: [],
+            totalAmount: props.grandTotal,
+            orderStatus: "Pending",
+          },
+          {
+            headers: {
+              Authorization: `${localStorage.getItem("token")}`,
+            },
+          }
+        )
         .then((res) => {
           console.log("response : ", res);
           console.log("Order placed successfully:", res.data.message);
@@ -146,15 +146,20 @@ function Checkout(props) {
           <div>
             <h3 className="text-lg font-semibold mb-4 mt-8">Payment options</h3>
             <div className="flex justify-between">
-              {paymentOptions.map((payment) => (
-                <label key={payment.id} className={`flex-1 border p-4 cursor-pointer ${selectedPayment === payment ? "bg-blue-200" : ""}`}>
-                  <input type="radio" id={`payment_${payment.id}`} name="payment" value={payment.id} checked={selectedPayment === payment} onChange={() => handlePaymentChange(payment)} className="sr-only" />
-                  <div className="flex items-center">
-                    <span className="mr-2">{payment.icon}</span>
-                    <h4 className="text-base font-semibold">{payment.name}</h4>
-                  </div>
-                </label>
-              ))}
+              {paymentOptions.map((payment) => {
+                {
+                  console.log("Payment : ", payment);
+                }
+                return (
+                  <label key={payment.id} className={`flex-1 border p-4 cursor-pointer ${selectedPayment.name === payment.name ? "bg-[#fa8232] text-white" : ""}`}>
+                    <input type="radio" id={`payment_${payment.id}`} name="payment" value={payment.id} checked={selectedPayment.name === payment.name} onChange={() => handlePaymentChange(payment)} className="sr-only" />
+                    <div className="flex items-center">
+                      <span className="mr-2">{payment.icon}</span>
+                      <h4 className="text-base font-semibold">{payment.name}</h4>
+                    </div>
+                  </label>
+                );
+              })}
             </div>
           </div>
         </div>

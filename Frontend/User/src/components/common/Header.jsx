@@ -5,7 +5,7 @@ function Header() {
   const navigate = useNavigate();
   return (
     <>
-      <div className="bg-[#1B6392]">
+      <div className="bg-[#1B6392] sticky top-0 z-50">
         <div></div>
         <div className="flex max-w-[1020px] h-[88px] justify-center items-center mx-auto">
           <Link to={"/"}>

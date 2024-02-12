@@ -1,15 +1,12 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { adminLoginSuccess } from "../redux/reducers/authSlice";
 import { BASE_URL } from "../../config";
-import { useDispatch } from "react-redux";
 
 function AdminSignIn() {
   const navigate = useNavigate();
   const email = useRef();
   const password = useRef();
-  const dispatch = useDispatch();
   const [error, setError] = useState(null);
 
   const handleSignin = (e) => {
@@ -29,11 +26,8 @@ function AdminSignIn() {
         password: password.current.value,
       })
       .then((res) => {
-        const token = res.data.token;
         console.log(res);
         alert("Login Success");
-        dispatch(adminLoginSuccess(token));
-        localStorage.setItem("adminToken", token);
         navigate("/admin/categories");
       })
       .catch((error) => {

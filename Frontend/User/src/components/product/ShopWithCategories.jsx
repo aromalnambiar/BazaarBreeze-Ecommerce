@@ -8,7 +8,7 @@ function ShopWithCategories() {
 
   useEffect(() => {
     const fetchDetails = async () => {
-      const result = await axios.get(`${BASE_URL}/admin/products/category`);
+      const result = await axios.get(`${BASE_URL}/user/categories`);
       console.log("result : ", result.data.categories);
       setCategories(result.data.categories);
     };

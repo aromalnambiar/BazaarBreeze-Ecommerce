@@ -2,15 +2,15 @@ import { useState } from "react";
 
 export default () => {
   const [steps, setStep] = useState({
-    stepsItems: ["Order placed", "Packaging", "On The Road", "Delivered"],
+    stepsItems: ["Pending", "Processing", "Shipped", "Delivered", "Cancelled"],
     currentStep: 2,
   });
 
   return (
-    <div className="max-w-2xl mx-auto px-4 my-12 md:px-0">
+    <div className="max-w-2xl mx-auto px-4 mt-12 mb-8 md:px-0 border p-14 rounded-md shadow-lg">
       <ul aria-label="Steps" className="items-center w-[50vw] mx-auto text-gray-600 font-medium md:flex">
         {steps.stepsItems.map((item, idx) => (
-          <li aria-current={steps.currentStep == idx + 1 ? "step" : false} className="flex gap-x-3 md:flex-col md:flex-1 md:gap-x-0">
+          <li key={idx} aria-current={steps.currentStep == idx + 1 ? "step" : false} className="flex gap-x-3 md:flex-col md:flex-1 md:gap-x-0">
             <div className="flex flex-col items-center md:flex-row md:flex-1">
               <hr className={`w-full border hidden md:block ${idx == 0 ? "border-none" : "" || steps.currentStep >= idx + 1 ? "border-[#FA8232]" : ""}`} />
               <div className={`w-8 h-8 rounded-full border-2 flex-none flex items-center justify-center ${steps.currentStep > idx + 1 ? "bg-[#FA8232] border-[#FA8232]" : "" || steps.currentStep == idx + 1 ? "border-[#FA8232]" : ""}`}>

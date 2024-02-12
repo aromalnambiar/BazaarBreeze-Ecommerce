@@ -9,33 +9,34 @@ import UsersList from "./components/UsersList";
 import UserDetails from "./components/UserDetails";
 import Sidebar from "./components/common/Sidebar";
 import Headerbar from "./components/common/Headerbar";
-import store from "./redux/store/configureStore";
-import { Provider, useSelector } from "react-redux";
+import EditProduct from "./components/EditProduct";
+
+import OrdersList from "./components/OrdersList";
 
 function App() {
   return (
     <>
-      <Provider store={store}>
-        <BrowserRouter>
-          <div className="grid gap-8 grid-cols-12 pr-10 min-h-screen h-full bg-[#f5f5f9]">
-            <Sidebar />
-            <div className="col-span-12 mb-10 ml-[250px]">
-              <Headerbar />
-              <Routes>
-                <Route path="/" element={<AdminSignIn />} />
-                <Route path="/products/view-all" element={<ViewProducts />} />
-                {/* <Route path="/products/view" element={<AdminSignIn />} /> */}
-                {/* <Route path="/products/edit" element={<AdminSignIn />} /> */}
-                <Route path="/products/add" element={<AddProduct />} />
-                <Route path="/category/view-all" element={<CategoryList />} />
-                <Route path="/category/add" element={<AddCategory />} />
-                <Route path="/users/view-all" element={<UsersList />} />
-                <Route path="/users/view" element={<UserDetails />} />
-              </Routes>
-            </div>
+      <BrowserRouter>
+        <div className="grid gap-8 grid-cols-12 pr-10 min-h-screen h-full bg-[#f5f5f9]">
+          <Sidebar />
+          <div className="col-span-12 mb-10 ml-[250px]">
+            <Headerbar />
+            <Routes>
+              <Route path="/" element={<AdminSignIn />} />
+              <Route path="/products/view-all" element={<ViewProducts />} />
+              {/* <Route path="/products/view" element={<AdminSignIn />} /> */}
+              {/* <Route path="/products/edit" element={<AdminSignIn />} /> */}
+              <Route path="/products/add" element={<AddProduct />} />
+              <Route path="/products/edit/:productId" element={<EditProduct />} />
+              <Route path="/category/view-all" element={<CategoryList />} />
+              <Route path="/category/add" element={<AddCategory />} />
+              <Route path="/users/view-all" element={<UsersList />} />
+              <Route path="/users/view" element={<UserDetails />} />
+              <Route path="/orders/view-all" element={<OrdersList />} />
+            </Routes>
           </div>
-        </BrowserRouter>
-      </Provider>
+        </div>
+      </BrowserRouter>
     </>
   );
 }

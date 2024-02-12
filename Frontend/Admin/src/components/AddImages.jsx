@@ -1,16 +1,29 @@
 import React, { useState } from "react";
+import { BASE_URL } from "../../config";
 
-const AddImages = ({ images, onImageUpload, onRemoveImage }) => {
+const AddImages = ({ images, onImageUpload, onRemoveImage, editproduct }) => {
+  console.log("PROPS : ", editproduct);
   return (
-    <div className="max-w-md mx-auto bg-white p-4 rounded-md shadow-md mt-8">
+    <div className="max-w-md mx-auto bg-white p-4 rounded-md shadow-md mt-12">
       <label className="block text-lg font-bold mb-4">Add Images</label>
       <div className="flex flex-wrap gap-4 justify-around">
         {images.map((image, index) => (
           <div key={index} className="mb-4 flex items-center">
-            <img src={image} alt={`Image ${index + 1}`} className="w-16 h-16 object-cover mr-4" />
-            <button onClick={() => onRemoveImage(index)} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">
-              Remove
-            </button>
+            {editproduct ? (
+              <>
+                <img src={`${BASE_URL}/uploads/${image}`} alt={`Image ${index + 1}`} className="w-16 h-16 object-cover mr-4" />
+                <button onClick={() => onRemoveImage(index)} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">
+                  Remove
+                </button>
+              </>
+            ) : (
+              <>
+                <img src={` ${image}`} alt={`Image ${index + 1}`} className="w-16 h-16 object-cover mr-4" />
+                <button onClick={() => onRemoveImage(index)} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">
+                  Remove
+                </button>
+              </>
+            )}
           </div>
         ))}
       </div>

@@ -11,38 +11,52 @@ function Product() {
   const [category, setCategory] = useState("");
   const [isSpecification, setIsSpecification] = useState(false);
   const [isCartFound, setIsCartFound] = useState(false);
+  const [dataRetrieved, setDataRetrieved] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDetails = async () => {
       const userId = localStorage.getItem("userId");
-      const response = await axios.get(`${BASE_URL}/user/products/${productId}?userId=${userId}`);
+      const response = await axios.get(`${BASE_URL}/user/products/${productId}/product`, {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      });
       console.log("RESPONSE : ", response);
       setItem(response.data.productDetails);
       setCategory(response.data.category);
       setIsCartFound(response.data.isCartFound);
+      setDataRetrieved(true);
     };
 
     fetchDetails();
     window.scrollTo(0, 0);
-  }, [productId]); 
+  }, [productId]);
 
   const handleAddToCart = async (id) => {
     try {
       console.log("ID : ", id);
       const userId = localStorage.getItem("userId");
-      const response = await axios.post(`${BASE_URL}/user/cart`, {
-        userId,
-        productVariantId: id,
-        quantity: 1,
-      });
+      const response = await axios.post(
+        `${BASE_URL}/user/cart`,
+        {
+          userId,
+          productVariantId: id,
+          quantity: 1,
+        },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+        }
+      );
       // console.log(response);
       setIsCartFound(true);
     } catch (error) {
       console.log(error.response.data.message);
     }
   };
-  // console.log("item : ", item);
+  console.log("item : ", item.productDetails);
   return (
     <>
       <div className="grid grid-cols-12 mt-8 text-sm max-w-[940px]  gap-8">
@@ -91,7 +105,7 @@ function Product() {
             </div>
           </div>
           <div className="flex items-center h-10 my-6 gap-4 text-xs font-bold justify-center">
-            {isCartFound ? (
+            {dataRetrieved && isCartFound ? (
               <button onClick={() => navigate("/cart")} className="bg-[#FA8232] text-white  px-16 h-full rounded ">
                 VIEW CART
               </button>
@@ -102,7 +116,7 @@ function Product() {
             )}
             <button className="outline outline-[#FA8232] text-[#FA8232] h-full  rounded  px-6">BUY NOW</button>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 cursor-pointer">
             <svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M16 27C16 27 3.5 20 3.5 11.5C3.5 9.99736 4.02062 8.54113 4.97328 7.37907C5.92593 6.21702 7.25178 5.42092 8.72525 5.12623C10.1987 4.83154 11.7288 5.05645 13.0551 5.76271C14.3814 6.46897 15.4221 7.61295 16 9C16.5779 7.61295 17.6186 6.46897 18.9449 5.76271C20.2712 5.05645 21.8013 4.83154 23.2748 5.12623C24.7482 5.42092 26.0741 6.21702 27.0267 7.37907C27.9794 8.54113 28.5 9.99736 28.5 11.5C28.5 20 16 27 16 27Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
               <path d="M16 27C16 27 3.5 20 3.5 11.5C3.5 9.99736 4.02062 8.54113 4.97328 7.37907C5.92593 6.21702 7.25178 5.42092 8.72525 5.12623C10.1987 4.83154 11.7288 5.05645 13.0551 5.76271C14.3814 6.46897 15.4221 7.61295 16 9C16.5779 7.61295 17.6186 6.46897 18.9449 5.76271C20.2712 5.05645 21.8013 4.83154 23.2748 5.12623C24.7482 5.42092 26.0741 6.21702 27.0267 7.37907C27.9794 8.54113 28.5 9.99736 28.5 11.5C28.5 20 16 27 16 27Z" stroke="gray" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />

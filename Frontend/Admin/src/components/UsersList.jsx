@@ -27,7 +27,7 @@ function UsersList() {
     if (confirm(`Do you want to ${item.isBlocked ? "Unblock" : "Block"} the user`)) {
       console.log(item);
       const result = axios
-        .put(`${BASE_URL}/admin/users/${item._id}`)
+        .put(`${BASE_URL}/admin/users/${item._id}`) 
         .then((res) => {
           console.log(res);
           alert(res.data.message);

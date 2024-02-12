@@ -7,13 +7,14 @@ import { LiaIdCardSolid } from "react-icons/lia";
 import { GoGear } from "react-icons/go";
 import { LuWallet } from "react-icons/lu";
 import { TbLogout } from "react-icons/tb";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/reducers/authSlice";
 
 function SideNav() {
-  const navigate = useNavigate("");
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const location = useLocation();
 
   const logoComponents = {
     MdOutlineDashboard,
@@ -29,13 +30,13 @@ function SideNav() {
   let lists = [
     { name: "Dashboard", logo: "MdOutlineDashboard", path: "/dashboard" },
     { name: "Order History", logo: "LuHistory", path: "/dashboard/orders" },
-    { name: "Track Order", logo: "CgTrack", path: "/dashboard" },
+    { name: "Track Order", logo: "CgTrack", path: "/dashboard/track" },
     { name: "Shopping Cart", logo: "LuShoppingCart", path: "/dashboard/carts" },
     { name: "Wishlist", logo: "IoMdHeartEmpty", path: "/dashboard/wishlists" },
     { name: "Cards&Address", logo: "LiaIdCardSolid", path: "/dashboard/cards" },
     { name: "Settings", logo: "GoGear", path: "/dashboard/settings" },
-    { name: "Wallet", logo: "LuWallet", path: "/wallet" },
-    { name: "Logout", logo: "TbLogout", path: "/logout" },
+    { name: "Wallet", logo: "LuWallet", path: "/dashboard/wallet" },
+    { name: "Logout", logo: "TbLogout", path: "/dashboard/logout" },
   ];
 
   const handleLogout = () => {
@@ -44,7 +45,7 @@ function SideNav() {
   };
 
   const handleClick = (path) => {
-    if (path == "/logout" && confirm("Are you sure ?")) {
+    if (path === "/dashboard/logout" && window.confirm("Are you sure?")) {
       handleLogout();
       navigate("/");
     } else {
@@ -53,11 +54,13 @@ function SideNav() {
   };
 
   return (
-    <ul className="py-4">
+    <ul className="py-4 shadow-md">
       {lists.map((item) => {
         const LogoComponent = logoComponents[item.logo];
+        const isActive = location.pathname === item.path;
+
         return (
-          <li onClick={() => handleClick(item.path)} className="flex items-center gap-4 pl-6 cursor-pointer text-gray-600 hover:bg-[#FA8232] hover:text-white p-2" key={item.name}>
+          <li onClick={() => handleClick(item.path)} className={`flex items-center gap-4 pl-6 cursor-pointer text-gray-600 ${isActive ? "bg-[#FA8232] text-white" : "hover:bg-[#ffa365] hover:text-white"} p-2`} key={item.name}>
             <LogoComponent />
             <p>{item.name}</p>
           </li>

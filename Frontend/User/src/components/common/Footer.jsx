@@ -20,12 +20,12 @@ function Footer() {
                 <ul className="text-gray-500 dark:text-gray-400 font-medium">
                   <li className="mb-4">
                     <a href="/" className="hover:underline">
-                      Flowbite
+                      Techworld
                     </a>
                   </li>
                   <li>
                     <a href="https://tailwindcss.com/" className="hover:underline">
-                      Tailwind CSS
+                      JoinTech
                     </a>
                   </li>
                 </ul>

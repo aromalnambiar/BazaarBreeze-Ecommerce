@@ -1,8 +1,12 @@
 const router=require('express').Router();
-const adminController=require('../controllers/adminController.js');
 const multer=require('multer');
 const path=require('path');
-const { authenticateJWT, isAdmin } = require('../middlewares/authMiddleware.js');
+const { authenticateJWT} = require('../middlewares/authMiddleware.js');
+const auth=require('../controllers/adminController/authController.js');
+const category=require('../controllers/adminController/categoryController.js');
+const order=require('../controllers/adminController/orderController.js');
+const product=require('../controllers/adminController/productController.js');
+const user=require('../controllers/adminController/userController.js');
 
 
 const storage = multer.diskStorage({
@@ -16,24 +20,32 @@ const storage = multer.diskStorage({
   
   const upload = multer({ storage: storage });
 
-router.post('/login', adminController.login);
+router.post('/login', auth.login);
 
-router.get('/products',adminController.viewProducts);
-router.get('/products/product',adminController.viewProduct);
-router.post('/products',adminController.addProduct);
-router.post('/products/variant',upload.array('photos',12),adminController.addProductVariant);
-router.put('/products/:productid',adminController.editProduct);
-router.put('/products/:variantid/variant',upload.array('photos'),adminController.editProductVariant);
-router.delete('/products/:productid',adminController.deleteProduct); 
+// Products
+router.get('/products', product.viewProducts);
+router.get('/products/:productId', product.viewProduct);
+router.post('/products', product.addProduct);
+router.get('/products/variant/:productId', product.viewProductVariant);
+router.post('/products/variant', upload.array('photos', 12), product.addProductVariant);
+router.put('/products/:productId', product.editProduct);
+router.put('/products/variant/:variantId', upload.array('photos'), product.editProductVariant);
+router.delete('/products/:productId', product.deleteProduct);
 
-router.get('/products/category',adminController.viewCategories);
-router.post('/products/category',upload.single('image'),adminController.addCategory);
-router.put('/products/category/:categoryId',upload.single('image'),adminController.editCategory);
-router.get('/products/category/:categoryId',adminController.viewCategory);
-router.delete('/products/category/:categoryId', adminController.deleteCategory);
+// Categories
+router.get('/categories', category.viewCategories);
+router.post('/categories', upload.single('image'), category.addCategory);
+router.put('/categories/:categoryId', upload.single('image'), category.editCategory);
+router.get('/categories/:categoryId', category.viewCategory);
+router.delete('/categories/:categoryId', category.deleteCategory);
 
-router.get('/users',adminController.viewUsers); 
-router.put('/users/:userid',adminController.blockUser);
+// Orders
+router.get('/orders', order.viewOrders);
+router.patch('/orders/status', order.changeOrderStatus);
+
+// Users
+router.get('/users', user.viewUsers);
+router.put('/users/:userId', user.blockUser);
 // router.delete('/users/:user-id');
 // router.put('/users/:user-id/disable');
 // router.get('/users/search');

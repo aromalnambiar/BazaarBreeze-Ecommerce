@@ -69,7 +69,9 @@ function ViewProducts() {
                 <td className="py-2 px-4 border-b">{item.brand || "0"}</td>
                 <td className="py-2 px-4 border-b">{item.totalEarnings || "0"}</td>
                 <td className="py-2 px-4 border-b">
-                  <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md ">Edit</button>
+                  <Link to={{ pathname: `/products/edit/${item._id}` }}>
+                    <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md">Edit</button>
+                  </Link>
                   <button onClick={() => handleDelete(item._id)} className="bg-[#fedad4] py-2 px-6 text-red-600 rounded-md ">
                     Delete
                   </button>

@@ -93,11 +93,14 @@ function UserDetails() {
   const [isToggle, setIsToggle] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [editAddressDetails, setEditAddressDetails] = useState({});
-  const userId = localStorage.getItem("userId");
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/user/${userId}`)
+      .get(`${BASE_URL}/user`, {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      })
       .then((res) => {
         setUser(res.data.user);
       })
@@ -108,7 +111,11 @@ function UserDetails() {
 
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/user/address/${userId}`)
+      .get(`${BASE_URL}/user/address`, {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      })
       .then((res) => {
         setAddress(res.data.addresses);
       })

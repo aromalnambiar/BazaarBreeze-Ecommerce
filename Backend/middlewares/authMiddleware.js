@@ -2,17 +2,17 @@ const jwt = require('jsonwebtoken');
 
 const authenticateJWT = (req, res, next) => {
   const token = req.header('Authorization');
-  console.log("authenticateJWT - token : ",token);
+  // console.log("authenticateJWT - token : ",token);
 
   if (!token) {
     return res.status(401).json({ message: 'Unauthorized' });
   }
 
-  jwt.verify(token, 'myKey', (err, user) => {
+  jwt.verify(token, `${process.env.JWT_SECRET}`, (err, user) => {
     if (err) {
       return res.status(403).json({ message: 'Forbidden' });
     }
-    // console.log("jwt verify user : ",user);
+    console.log("jwt verify user : ",user);
     req.user = user;
     next();
   });

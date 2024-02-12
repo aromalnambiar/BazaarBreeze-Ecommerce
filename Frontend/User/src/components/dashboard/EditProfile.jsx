@@ -17,7 +17,11 @@ function EditProfile() {
   const userId = localStorage.getItem("userId");
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/user/${userId}`)
+      .get(`${BASE_URL}/user`, {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      })
       .then((res) => {
         // console.log("res : ", );
         const user = res.data.user;
@@ -63,6 +67,7 @@ function EditProfile() {
       .put(`${BASE_URL}/user/profile`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `${localStorage.getItem("token")}`,
         },
       })
       .then((res) => {

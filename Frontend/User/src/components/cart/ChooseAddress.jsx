@@ -10,6 +10,7 @@ function ChooseAddress({ grandTotal, cartItems }) {
   const [address, setAddress] = useState([]);
   const navigate = useNavigate("");
   const [isDeliver, setIsDeliver] = useState(false);
+  console.log("cartItems chooseAddress : ", cartItems);
   // const addresses = [
   //   {
   //     id: 1,
@@ -29,7 +30,11 @@ function ChooseAddress({ grandTotal, cartItems }) {
   const userId = localStorage.getItem("userId");
   useEffect(() => {
     axios
-      .get(`${BASE_URL}/user/address/${userId}`)
+      .get(`${BASE_URL}/user/address`, {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      })
       .then((res) => {
         setAddress(res.data.addresses);
         setSelectedAddress(address[0]);

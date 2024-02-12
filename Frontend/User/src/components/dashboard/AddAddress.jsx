@@ -12,18 +12,26 @@ function AddAddress({ setIsToggle }) {
   const phone1 = useRef();
   const phone2 = useRef();
   const userId = localStorage.getItem("userId");
+  const token = localStorage.getItem("token");
+  console.log("TOKEN : ", token);
 
   const handleSubmit = () => {
+    const data = {
+      fullName: fullName.current.value,
+      address: address.current.value,
+      state: state.current.value,
+      street: street.current.value,
+      phone1: phone1.current.value,
+      pincode: pincode.current.value,
+      userId: userId,
+      phone2: phone2.current.value,
+    };
+
     axios
-      .post(`${BASE_URL}/user/address`, {
-        fullName: fullName.current.value,
-        address: address.current.value,
-        state: state.current.value,
-        street: street.current.value,
-        phone1: phone1.current.value,
-        pincode: pincode.current.value,
-        userId: userId,
-        phone2: phone2.current.value,
+      .post(`${BASE_URL}/user/address`, data, {
+        headers: {
+          Authorization: localStorage.getItem("token"),
+        },
       })
       .then((res) => {
         console.log("res : ", res);
@@ -38,7 +46,7 @@ function AddAddress({ setIsToggle }) {
     <>
       <div className="flex flex-wrap   justify-start lg:flex-nowrap gap-4 lg:gap-0">
         <form className="w-full max-w-md bg-white border p-4 shadow-md ml-4">
-          <h3 className="border-b pb-2 mb-2">Shipping address</h3>
+          <h3 className="border-b pb-2 mb-2">Shipping addressff</h3>
           <div className="flex flex-wrap -mx-3 mb-2">
             <div className="w-full md:w-1/2 px-3 mb-4 md:mb-0">
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
@@ -96,13 +104,13 @@ function AddAddress({ setIsToggle }) {
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                 Phone1
               </label>
-              <input ref={phone1} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="number" placeholder="Jane" required />
+              <input ref={phone1} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="number" pattern="[0-9]{10}" placeholder="Jane" required />
             </div>
             <div className="w-full md:w-2/4 mt-2 px-3 mb-6 md:mb-0">
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                 Phone2
               </label>
-              <input ref={phone2} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="number" placeholder="Jane" />
+              <input ref={phone2} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" pattern="[0-9]{10}" type="number" placeholder="Jane" />
             </div>
             <div className="flex  justify-between w-full items-center">
               <button onClick={handleSubmit} className="bg-[#FA8232] text-white px-4 py-2 rounded-sm ml-3 mt-2">

@@ -34,8 +34,6 @@ function SignIn() {
         alert(res.data.message);
         dispatch(loginSuccess(token));
         localStorage.setItem("token", token);
-        localStorage.setItem("userId", userId);
-        // console.log("navigating : /")
         navigate("/", { replace: true });
       })
       .catch((error) => {
