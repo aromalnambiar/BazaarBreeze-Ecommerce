@@ -12,7 +12,7 @@ import Wishlist from "../cart/Wishlist.jsx";
 function Dashboard() {
   return (
     <>
-      <div className="grid grid-cols-12  gap-4 my-10">
+      <div className="grid grid-cols-12 px-4  gap-4 my-10">
         <div className="col-span-3 border hidden sticky top-[100px] md:block h-max ">
           <SideNav />
         </div>

@@ -10,7 +10,18 @@ const UserSchema=new mongoose.Schema({
     isBlocked:{type:Boolean,default:false},
     gender:{type:String},
     age:{type:Number},
-    wallet:{type:Number},
+    wallet: {
+        balance: {
+          type: Number,
+          default: 0,
+        },
+        transactions: [
+          {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Transaction',
+          },
+        ],
+      }
 })
 
 const userModel=mongoose.model("User",UserSchema);

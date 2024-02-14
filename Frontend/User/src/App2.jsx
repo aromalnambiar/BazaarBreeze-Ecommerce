@@ -10,6 +10,7 @@ import MaxWidth from "./components/common/MaxWidth";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { logout } from "./redux/reducers/authSlice";
+import Wishlist from "./components/cart/Wishlist";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -23,6 +24,7 @@ function App() {
               <Route path="/shop/*" element={<Shop />} />
               <Route path="/user/*" element={isAuthenticated ? <Navigate to="/dashboard" /> : <User />} />
               <Route path="/cart/*" element={<Cart />} />
+              <Route path="/wishlist/*" element={<Wishlist />} />
               <Route path="/product/:id" element={<Product />} />
               <Route path="/dashboard/*" element={isAuthenticated ? <Dashboard /> : <Navigate to="/user/signin" />} />
               <Route path="/*" element={<Home />} />

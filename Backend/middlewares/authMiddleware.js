@@ -12,7 +12,7 @@ const authenticateJWT = (req, res, next) => {
     if (err) {
       return res.status(403).json({ message: 'Forbidden' });
     }
-    console.log("jwt verify user : ",user);
+    // console.log("jwt verify user : ",user);
     req.user = user;
     next();
   });

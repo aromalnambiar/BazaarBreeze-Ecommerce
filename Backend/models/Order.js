@@ -39,7 +39,7 @@ const OrderSchema=new mongoose.Schema({
     paymentMethod: {
         type: String,
         required: true,
-        enum: ['Credit Card', 'Debit Card', 'PayPal', 'Cash On Delivery'],
+        enum: ['Credit Card', 'RazorPay', 'PayPal', 'Cash On Delivery'],
       },
     shippingAddress:{ 
         street: { type: String, required: true },

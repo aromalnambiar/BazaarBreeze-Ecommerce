@@ -12,9 +12,14 @@ function ShoppingCart() {
   const [quantity, setQuantity] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
-  const userId = localStorage.getItem("userId");
-  console.log("User Id : ", userId);
+  const [couponCode, setCouponCode] = useState("");
+  const [couponStatus, setCouponStatus] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(false);
   const navigate = useNavigate();
+  const userId = localStorage.getItem("userId");
+
+  console.log("User Id : ", userId);
+
   useEffect(() => {
     axios
       .get(`${BASE_URL}/user/cart`, {
@@ -109,6 +114,36 @@ function ShoppingCart() {
     }
   };
 
+  const handleCoupon = async () => {
+    try {
+      const result = await axios.post(`${BASE_URL}/user/coupon`, {
+        couponCode,
+      });
+      // console.log("result of handleCoupon : ",result.data);
+      const { discountType, discountValue } = result.data;
+      if (!appliedCoupon) {
+        if (discountType === "Percentage") {
+          setGrandTotal((grandTotal / 100) * discountValue);
+        } else {
+          setGrandTotal(grandTotal - discountValue);
+        }
+
+        setAppliedCoupon(true);
+        setCouponStatus("Coupon applied");
+      } else {
+        setCouponStatus("Coupon already applied");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const handleApplyAnother = async () => {
+    setGrandTotal(() => cartItems.reduce((acc, curr) => acc + curr.productVariantId.salePrice * curr.quantity, 0));
+    setAppliedCoupon(false);
+    setCouponCode("");
+    setCouponStatus("");
+  };
+  console.log("couponCode : ", couponCode);
   return (
     <>
       {isProceed ? (
@@ -184,20 +219,26 @@ function ShoppingCart() {
               <div>
                 <label className="font-medium inline-block mb-3 text-sm uppercase">Shipping</label>
                 <select className="block p-2 text-gray-600 w-full text-sm">
-                  <option>Standard shipping - $10.00</option>
+                  <option>Standard shipping - $0.00</option>
                 </select>
               </div>
-              <div className="py-10">
+              <div className="py-10 relative">
                 <label htmlFor="promo" className="font-semibold inline-block mb-3 text-sm uppercase">
-                  Promo Code
+                  Coupon Code
                 </label>
-                <input type="text" id="promo" placeholder="Enter your code" className="p-2 text-sm w-full" />
+                <input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} type="text" id="promo" placeholder="Enter your code" className="p-2 text-sm w-full" />
+                <p className="text-red-400 left-2 absolute bottom-4 text-xs  ">{couponStatus}</p>
               </div>
-              <button className="bg-red-500 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase">Apply</button>
+              <button onClick={handleCoupon} className="bg-red-500 ml-2 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase">
+                Apply
+              </button>
+              <button onClick={handleApplyAnother} className="bg-indigo-500 ml-2 mt-4 hover:bg-indigo-700 px-5 py-2 text-sm text-white uppercase">
+                Apply another
+              </button>
               <div className="border-t mt-8">
                 <div className="flex font-semibold justify-between py-6 text-sm uppercase">
                   <span>Total cost</span>
-                  <span>${grandTotal + 10}</span>
+                  <span>${grandTotal}</span>
                 </div>
                 <button onClick={handleCheckout} className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full" disabled={cartItems.length === 0}>
                   proceed to Checkout

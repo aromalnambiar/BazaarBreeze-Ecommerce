@@ -99,10 +99,22 @@ const ProductVariant=require('../../models/ProductVariant');
       res.status(500).json({message:"internal server issue"});
     }
   }
-
+  const clearCart = async (req, res) => {
+    try {
+        console.log("clear cart : ");
+        const { userId } = req.user;
+        await Cart.findOneAndDelete({ user: userId });
+        
+        res.status(200).json({ message: 'Cart cleared after order' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
 
   module.exports={
     addToCart,
     deleteFromCart,
-    showCart
+    showCart,
+    clearCart
   }

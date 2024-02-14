@@ -11,6 +11,7 @@ function Product() {
   const [category, setCategory] = useState("");
   const [isSpecification, setIsSpecification] = useState(false);
   const [isCartFound, setIsCartFound] = useState(false);
+  const [isWishlistFound, setIsWishlistFound] = useState(false);
   const [dataRetrieved, setDataRetrieved] = useState(false);
   const navigate = useNavigate();
 
@@ -26,13 +27,15 @@ function Product() {
       setItem(response.data.productDetails);
       setCategory(response.data.category);
       setIsCartFound(response.data.isCartFound);
+      setIsWishlistFound(response.data.isWishlistFound);
+
       setDataRetrieved(true);
     };
 
     fetchDetails();
     window.scrollTo(0, 0);
   }, [productId]);
-
+  // console.log("Item  : ", item);
   const handleAddToCart = async (id) => {
     try {
       console.log("ID : ", id);
@@ -56,7 +59,44 @@ function Product() {
       console.log(error.response.data.message);
     }
   };
-  console.log("item : ", item.productDetails);
+  // console.log("item : ", item.productDetails);
+
+  const handleAddToWishlist = async (productVariant) => {
+    try {
+      const response = await axios.post(
+        `${BASE_URL}/user/wishlist`,
+        { productVariant },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      console.log(response.data);
+      setIsWishlistFound((prev) => !prev);
+    } catch (error) {
+      console.error("Error adding item to wishlist:", error);
+    }
+  };
+  const handleRemoveFromWishlist = async (productVariant) => {
+    try {
+      const response = await axios.put(
+        `${BASE_URL}/user/wishlist`,
+        { productVariant },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      setIsWishlistFound((prev) => !prev);
+
+      console.log(response.data);
+    } catch (error) {
+      console.error("Error adding item to wishlist:", error);
+    }
+  };
   return (
     <>
       <div className="grid grid-cols-12 mt-8 text-sm max-w-[940px]  gap-8">
@@ -116,10 +156,19 @@ function Product() {
             )}
             <button className="outline outline-[#FA8232] text-[#FA8232] h-full  rounded  px-6">BUY NOW</button>
           </div>
-          <div className="flex items-center gap-2 cursor-pointer">
+          <div
+            onClick={() => {
+              if (isWishlistFound) {
+                handleRemoveFromWishlist(item.productDetails._id);
+              } else {
+                handleAddToWishlist(item.productDetails._id);
+              }
+            }}
+            className="flex items-center gap-2 cursor-pointer"
+          >
             <svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M16 27C16 27 3.5 20 3.5 11.5C3.5 9.99736 4.02062 8.54113 4.97328 7.37907C5.92593 6.21702 7.25178 5.42092 8.72525 5.12623C10.1987 4.83154 11.7288 5.05645 13.0551 5.76271C14.3814 6.46897 15.4221 7.61295 16 9C16.5779 7.61295 17.6186 6.46897 18.9449 5.76271C20.2712 5.05645 21.8013 4.83154 23.2748 5.12623C24.7482 5.42092 26.0741 6.21702 27.0267 7.37907C27.9794 8.54113 28.5 9.99736 28.5 11.5C28.5 20 16 27 16 27Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-              <path d="M16 27C16 27 3.5 20 3.5 11.5C3.5 9.99736 4.02062 8.54113 4.97328 7.37907C5.92593 6.21702 7.25178 5.42092 8.72525 5.12623C10.1987 4.83154 11.7288 5.05645 13.0551 5.76271C14.3814 6.46897 15.4221 7.61295 16 9C16.5779 7.61295 17.6186 6.46897 18.9449 5.76271C20.2712 5.05645 21.8013 4.83154 23.2748 5.12623C24.7482 5.42092 26.0741 6.21702 27.0267 7.37907C27.9794 8.54113 28.5 9.99736 28.5 11.5C28.5 20 16 27 16 27Z" stroke="gray" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M16 27C16 27 3.5 20 3.5 11.5C3.5 9.99736 4.02062 8.54113 4.97328 7.37907C5.92593 6.21702 7.25178 5.42092 8.72525 5.12623C10.1987 4.83154 11.7288 5.05645 13.0551 5.76271C14.3814 6.46897 15.4221 7.61295 16 9C16.5779 7.61295 17.6186 6.46897 18.9449 5.76271C20.2712 5.05645 21.8013 4.83154 23.2748 5.12623C24.7482 5.42092 26.0741 6.21702 27.0267 7.37907C27.9794 8.54113 28.5 9.99736 28.5 11.5C28.5 20 16 27 16 27Z" fill={isWishlistFound ? "red" : "white"} />
+              <path d="M16 27C16 27 3.5 20 3.5 11.5C3.5 9.99736 4.02062 8.54113 4.97328 7.37907C5.92593 6.21702 7.25178 5.42092 8.72525 5.12623C10.1987 4.83154 11.7288 5.05645 13.0551 5.76271C14.3814 6.46897 15.4221 7.61295 16 9C16.5779 7.61295 17.6186 6.46897 18.9449 5.76271C20.2712 5.05645 21.8013 4.83154 23.2748 5.12623C24.7482 5.42092 26.0741 6.21702 27.0267 7.37907C27.9794 8.54113 28.5 9.99736 28.5 11.5C28.5 20 16 27 16 27Z" fill={isWishlistFound ? "red" : "gray"} />
             </svg>
 
             <p>Add to wishlist</p>

@@ -2,6 +2,7 @@ const mongoose=require('mongoose');
 const Products=require('../../models/Products');
 const ProductVariant=require('../../models/ProductVariant');
 const Cart =require('../../models/Cart');
+const Wishlist =require('../../models/Wishlist');
 const Category=require('../../models/Category');
 
 
@@ -42,9 +43,8 @@ const listProducts = async (req, res) => {
     try {
       const productId = new mongoose.Types.ObjectId(req.params.productid);
   
-      // const userId = req?.query?.userId;
-      const {userId}=req.user;
-      console.log("user Id : ",userId);
+      const { userId } = req.user;
+  
       const result = await Products.aggregate([
         {
           $match: {
@@ -62,26 +62,34 @@ const listProducts = async (req, res) => {
       ]);
   
       const category = await Category.findById(result[0].category);
-      let isCartFound=false;
+      let isCartFound = false;
+      let isWishlistFound = false;
+  
       if (result.length > 0) {
         const product = result[0];
         const firstVariant = product.productDetails[0];
+        console.log("first Variant : ",firstVariant);
         product.productDetails = firstVariant;
         
-        console.log("user I d : ",userId);
-        
-        if (userId !== null || userId !== undefined) {
-          console.log("Inside userid");
-          const cart = await Cart.findOne({ user: userId });
-          
+        if (userId) {
           // Check if the product variant exists in the cart
+          const cart = await Cart.findOne({ user: userId });
           isCartFound = cart && cart.product.some(item => item.productVariantId.equals(firstVariant._id));
-          console.log("cart : ", cart);
+          
+          // Check if the product variant exists in the wishlist
+          const wishlist = await Wishlist.findOne({ userId });
+          console.log("Wishlist : ",wishlist);
+          isWishlistFound = wishlist && wishlist.items.some(item => item.productVariant.equals(firstVariant._id));
+          console.log("isWishlistFound : ",isWishlistFound);
         }
   
-        console.log(product);
-  
-        res.status(200).json({ message: 'success', productDetails: product, isCartFound, category: category.name });
+        res.status(200).json({
+          message: 'success',
+          productDetails: product,
+          isCartFound,
+          isWishlistFound,
+          category: category.name,
+        });
       } else {
         res.status(404).json({ message: 'Product not found' });
       }
@@ -90,7 +98,7 @@ const listProducts = async (req, res) => {
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
-
+  
   const productVariants = async (req, res) => {
     try {
       let variantIds = req.query.variantIds;
@@ -125,10 +133,18 @@ const listProducts = async (req, res) => {
     }
   };
   
+  const listCategoryProducts=async(req,res)=>{
+    try {
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
 
   module.exports={
     listProducts,
     productDetails,
-    productVariants
+    productVariants,
+    listCategoryProducts
   }

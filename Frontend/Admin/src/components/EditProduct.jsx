@@ -164,7 +164,7 @@ const EditProduct = () => {
       });
 
       // Perform the API request with formData
-      const response = await axios.post(`${BASE_URL}/admin/products`, {
+      const response = await axios.put(`${BASE_URL}/admin/products`, {
         brand,
         name: productName,
         category,
@@ -228,7 +228,7 @@ const EditProduct = () => {
         variantFormData.append(`specification[${index}][value]`, spec.value);
       });
 
-      const variantResponse = await axios.post(`${BASE_URL}/admin/products/variant`, variantFormData);
+      const variantResponse = await axios.put(`${BASE_URL}/admin/products/variant/${variant._id}`, variantFormData);
       navigate("/products/view-all");
       console.log(variantResponse.data);
       alert(variantResponse.data.message);

@@ -7,6 +7,8 @@ const category=require('../controllers/adminController/categoryController.js');
 const order=require('../controllers/adminController/orderController.js');
 const product=require('../controllers/adminController/productController.js');
 const user=require('../controllers/adminController/userController.js');
+const coupon=require('../controllers/adminController/couponController.js');
+const offer=require('../controllers/adminController/offerController.js');
 
 
 const storage = multer.diskStorage({
@@ -50,6 +52,21 @@ router.put('/users/:userId', user.blockUser);
 // router.put('/users/:user-id/disable');
 // router.get('/users/search');
 // router.get('/users/users/:user-id');
+
+// Coupons
+router.get('/coupon',coupon.getAllCoupons);
+router.post('/coupon',coupon.createCoupon);
+router.post('/coupon/:couponId',coupon.createCoupon);
+router.get('/coupon/:couponId',coupon.getCouponById);
+router.put('/coupon/:couponId',coupon.updateCouponById);
+router.delete('/coupon/:couponId',coupon.deleteCouponById);
+
+// Offers
+router.get('/offer',offer.getAllOffers);
+router.post('/offer',offer.createOffer);
+router.get('/offer/:offerId',offer.getOfferById);
+router.put('/offer/:offerId',offer.updateOfferById);
+router.delete('/offer/:offerId',offer.deleteOfferById);
 
 // router.get('/orders');
 // router.put('/orders/:order-id');

@@ -11,6 +11,7 @@ function Checkout(props) {
   const navigate = useNavigate("");
   const [selectedPayment, setSelectedPayment] = useState({});
   const [address, setAddress] = useState(props?.address);
+  const [total, setTotal] = useState(props?.grandTotal);
 
   const paymentOptions = [
     { id: 1, name: "Cash On Delivery", icon: <FaMoneyBill /> },
@@ -24,58 +25,117 @@ function Checkout(props) {
   };
 
   console.log("Selected payment : ", selectedPayment);
-  const placeOrder = () => {
+
+  const initPayment = (data) => {
+    const options = {
+      key: import.meta.env.VITE_KEY_ID,
+      amount: data.amount,
+      currency: data.currency,
+      name: "Teachtreasures",
+      description: "Test Transaction",
+      order_id: data.id,
+      handler: async (response) => {
+        try {
+          const verifyUrl = `${BASE_URL}/user/orders/razorpay/verify`;
+          const { data } = await axios.post(verifyUrl, response);
+          console.log("razorPay init : ", data);
+          placeOrder("Completed");
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open();
+  };
+
+  const handlePayment = async () => {
+    try {
+      console.log("HandlePayment");
+      const orderUrl = `${BASE_URL}/user/orders/razorpay`;
+      const { data } = await axios.post(orderUrl, { amount: total });
+      console.log(" razorPay : ", data);
+      initPayment(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const clearTheCart = async () => {
+    try {
+      const result = await axios.delete(`${BASE_URL}/user/cart/clear`, {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      });
+      console.log("Clear the cart : ", result);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const placeOrder = (status = "Pending") => {
+    const orderedItems = props.cartItems.map((item) => {
+      return {
+        product: item.productVariantId._id,
+        quantity: item.quantity,
+        price: item.productVariantId.salePrice,
+      };
+    });
+    console.log("orderedItems : ", orderedItems);
+
+    axios
+      .post(
+        `${BASE_URL}/user/order/add`,
+        {
+          orderedItems,
+          paymentStatus: status,
+          deliveryDate: new Date(),
+          offers: [],
+          paymentMethod: selectedPayment.name,
+          shippingAddress: props.address,
+          orderDate: new Date(),
+          coupons: [],
+          totalAmount: props.grandTotal,
+          orderStatus: "Pending",
+        },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log("response : ", res);
+        console.log("Order placed successfully:", res.data.message);
+        clearTheCart();
+        navigate("/shop/checkoutsuccess");
+      })
+      .catch((err) => {
+        console.error("Error placing order:", err);
+        alert("Failed to place the order. Please try again.");
+      });
+    console.log("props : ", props);
+  };
+
+  const handlePlaceOrder = () => {
     console.log("Props : ", props);
     if (!selectedPayment) {
       alert("Please select a payment method.");
       return;
     }
 
-    if (selectedPayment.name !== "Cash On Delivery") {
-      alert("Currently, we only support Cash on Delivery.");
-      return;
-    }
-    if (confirm("Are you sure?")) {
-      const orderedItems = props.cartItems.map((item) => {
-        return {
-          product: item.productVariantId._id,
-          quantity: item.quantity,
-          price: item.productVariantId.salePrice,
-        };
-      });
-      console.log("orderedItems : ", orderedItems);
-
-      axios
-        .post(
-          `${BASE_URL}/user/order/add`,
-          {
-            orderedItems,
-            paymentStatus: "Pending",
-            deliveryDate: new Date(),
-            offers: [],
-            paymentMethod: selectedPayment.name,
-            shippingAddress: props.address,
-            orderDate: new Date(),
-            coupons: [],
-            totalAmount: props.grandTotal,
-            orderStatus: "Pending",
-          },
-          {
-            headers: {
-              Authorization: `${localStorage.getItem("token")}`,
-            },
-          }
-        )
-        .then((res) => {
-          console.log("response : ", res);
-          console.log("Order placed successfully:", res.data.message);
-          navigate("/shop/checkoutsuccess");
-        })
-        .catch((err) => {
-          console.error("Error placing order:", err);
-          alert("Failed to place the order. Please try again.");
-        });
-      console.log("props : ", props);
+    // if (selectedPayment.name !== "Cash On Delivery" || selectedPayment.name !== "RazorPay") {
+    //   alert("Currently, we only support Cash on Delivery.");
+    //   return;
+    // }
+    if (selectedPayment.name === "RazorPay" && confirm("Are you sure ? ")) {
+      handlePayment();
+    } else if (confirm("Are you sure ? ")) {
+      placeOrder();
     }
   };
 
@@ -178,9 +238,9 @@ function Checkout(props) {
             </div>
             <div className="flex px-2 justify-between">
               <h3 className=" font-bold">Amount Payable</h3>
-              <p>{props.grandTotal}</p>
+              <p>{total}</p>
             </div>
-            <button onClick={() => placeOrder()} className="bg-[#FA8232] hover:bg-[#fa5914] text-white uppercase font-bold mt-4 mx-2 rounded-sm py-4 px-4">
+            <button onClick={() => handlePlaceOrder()} className="bg-[#FA8232] hover:bg-[#fa5914] text-white uppercase font-bold mt-4 mx-2 rounded-sm py-4 px-4">
               place order
             </button>
           </div>
