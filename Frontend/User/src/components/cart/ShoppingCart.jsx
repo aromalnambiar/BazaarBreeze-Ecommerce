@@ -15,6 +15,7 @@ function ShoppingCart() {
   const [couponCode, setCouponCode] = useState("");
   const [couponStatus, setCouponStatus] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(false);
+  const [couponId, setCouponId] = useState("");
   const navigate = useNavigate();
   const userId = localStorage.getItem("userId");
 
@@ -37,6 +38,7 @@ function ShoppingCart() {
       .catch((res) => {
         console.log(res);
       });
+    window.scrollTo(0, 0);
   }, [isUpdated]);
 
   // console.log("cartItems : ", cartItems);
@@ -119,8 +121,9 @@ function ShoppingCart() {
       const result = await axios.post(`${BASE_URL}/user/coupon`, {
         couponCode,
       });
-      // console.log("result of handleCoupon : ",result.data);
+      console.log("result of handleCoupon : ", result.data);
       const { discountType, discountValue } = result.data;
+      setCouponId(result.data.couponId);
       if (!appliedCoupon) {
         if (discountType === "Percentage") {
           setGrandTotal((grandTotal / 100) * discountValue);
@@ -143,11 +146,12 @@ function ShoppingCart() {
     setCouponCode("");
     setCouponStatus("");
   };
-  console.log("couponCode : ", couponCode);
+  // console.log("couponCode : ", couponCode);
+  console.log("couponeId : ", couponId);
   return (
     <>
       {isProceed ? (
-        <ChooseAddress grandTotal={grandTotal} cartItems={cartItems} />
+        <ChooseAddress grandTotal={grandTotal} cartItems={cartItems} couponId={couponId} />
       ) : (
         <div className="grid grid-cols-12 gap-4 my-14 min-h-[80vh]">
           <div className="col-span-8  ">
@@ -229,10 +233,10 @@ function ShoppingCart() {
                 <input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} type="text" id="promo" placeholder="Enter your code" className="p-2 text-sm w-full" />
                 <p className="text-red-400 left-2 absolute bottom-4 text-xs  ">{couponStatus}</p>
               </div>
-              <button onClick={handleCoupon} className="bg-red-500 ml-2 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase">
+              <button onClick={handleCoupon} className="bg-red-500 ml-2 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase" disabled={cartItems.length === 0}>
                 Apply
               </button>
-              <button onClick={handleApplyAnother} className="bg-indigo-500 ml-2 mt-4 hover:bg-indigo-700 px-5 py-2 text-sm text-white uppercase">
+              <button onClick={handleApplyAnother} className="bg-indigo-500 ml-2 mt-4 hover:bg-indigo-700 px-5 py-2 text-sm text-white uppercase" disabled={cartItems.length === 0}>
                 Apply another
               </button>
               <div className="border-t mt-8">

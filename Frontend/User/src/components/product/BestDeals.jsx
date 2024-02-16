@@ -12,7 +12,7 @@ function BestDeals() {
     const result = axios
       .get(`${BASE_URL}/user/products`)
       .then((res) => {
-        console.log(res.data.products);
+        // console.log(res.data.products);
         setproducts(res.data.products);
       })
       .catch((res) => {
@@ -35,12 +35,12 @@ function BestDeals() {
       <div className="flex flex-wrap justify-center gap-3">
         {products.map((item) => {
           return (
-            <div key={item._id} onClick={() => handleClick(item)} className="flex w-48 h-64 relative cursor-pointer flex-col p-2 border">
-              {console.log(item.firstVariant?.images[0])}
+            <div key={item._id} onClick={() => handleClick(item)} className="flex w-48 h-64  relative cursor-pointer flex-col p-2 border">
+              {/* {console.log(item.firstVariant?.images[0])} */}
               <img className="w-52" src={`${BASE_URL}/uploads/${item.firstVariant?.images[0]}` || product} alt="" />
               <div className="absolute bottom-2">
                 <p className="text-sm w-44 overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">{item.description}</p>
-                <p>{item.firstVariant?.salePrice}</p>
+                <p>₹ {item.firstVariant?.salePrice}</p>
               </div>
             </div>
           );

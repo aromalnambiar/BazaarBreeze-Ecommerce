@@ -126,44 +126,47 @@ const editProduct=async(req,res)=>{
       }
 }
 
-const editProductVariant=async(req,res)=>{
-    try {
-        const variantId=req.params.variantid;
-        const { stock, regularprice, color, specialprice, variantName } = req.body;
-        let { specification } = req.body;
-        const files = req.files;
-    
-        const images = files.map((item) => {
-          return item.filename;
-        });
-    
-        specification = specification.map((item) => item);
-    
-        // Assuming ProductVariant is the model for the ProductVariant collection
-        const updatedProductVariant = await ProductVariant.findByIdAndUpdate(
-          variantId,
-          {
-            stock,
-            color,
-            regularprice,
-            specialprice,
-            variantName,
-            images,
-            specification,
-          },
-          { new: true } // This option returns the modified document instead of the original
-        );
-    
-        if (!updatedProductVariant) {
-          return res.status(404).json({ message: 'Product variant not found' });
-        }
-    
-        res.status(200).json({ message: 'Product variant updated successfully', updatedProductVariant });
-      } catch (error) {
-        console.error(error);
-         res.status(500).json({ error: 'Internal Server Error' });
-      }
-}
+const editProductVariant = async (req, res) => {
+  try {
+    const { variantId } = req.params;
+    const { stock, regularprice, color, specialprice, variantName } = req.body;
+    let { specification } = req.body;
+    const files = req.files;
+    console.log("req.body : ",req.body);
+    console.log("req.file: ",req.files);
+
+    // Retrieve the existing product variant data
+    const originalProductVariant = await ProductVariant.findById(variantId);
+
+    // Prepare updated data, handling undefined values
+    const updatedData = {
+      stock: stock || originalProductVariant.stock, // Use default if undefined
+      regularPrice: regularprice || originalProductVariant.regularPrice,
+      color: color || originalProductVariant.color,
+      salePrice: specialprice || originalProductVariant.salePrice,
+      variantName: variantName || originalProductVariant.variantName,
+      images: files ? files.map((item) => item.filename) : originalProductVariant.images, // Update or keep originals
+      specification: specification ? specification.map((item) => item) : originalProductVariant.specification, // Update or keep originals
+    };
+
+    // Perform the update using findByIdAndUpdate with safe: true
+    const updatedProductVariant = await ProductVariant.findByIdAndUpdate(
+      { _id: variantId },
+      updatedData,
+      { new: true } // Return modified document and ensure write completion
+    );
+
+    if (!updatedProductVariant) {
+      return res.status(404).json({ message: 'Product variant not found' });
+    }
+
+    res.status(200).json({ message: 'Product variant updated successfully', updatedProductVariant });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
 
 const deleteProduct=async(req,res)=>{
     try {

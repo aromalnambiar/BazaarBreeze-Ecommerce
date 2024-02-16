@@ -10,9 +10,9 @@ import { Link, useParams } from "react-router-dom";
 
 function Home() {
   const d = useParams();
-  console.log(d);
+  // console.log(d);
   const section = d["*"];
-  console.log(section);
+  // console.log(section);
 
   const renderComponentBasedOnRoute = () => {
     switch (section) {

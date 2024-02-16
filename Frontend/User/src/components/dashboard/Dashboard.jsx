@@ -8,6 +8,7 @@ import ShoppingCart from "../cart/ShoppingCart.jsx";
 import { Routes, Route } from "react-router-dom";
 import Address from "./Address.jsx";
 import Wishlist from "../cart/Wishlist.jsx";
+import Wallet from "./Wallet.jsx";
 
 function Dashboard() {
   return (
@@ -23,6 +24,7 @@ function Dashboard() {
             <Route path="carts" element={<ShoppingCart />} />
             <Route path="profile" element={<EditProfile />} />
             <Route path="wishlists" element={<Wishlist />} />
+            <Route path="wallet" element={<Wallet />} />
             {/* <Route path="address" element={<Address />} /> */}
             <Route path="settings" element={<Settings />} />
             <Route path="order-details/:orderId" element={<OrderDetails />} />

@@ -1,26 +1,67 @@
 import { useNavigate, Link } from "react-router-dom";
 import Logo from "../../assets/icons/Logo.png";
+import { BASE_URL } from "../../../../Admin/config";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function Header() {
   const navigate = useNavigate();
+  const [query, setQuery] = useState("");
+  const [products, setProducts] = useState([]);
+  useEffect(() => {
+    const handleSearch = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/user/products/search?query=${query}`);
+        setProducts([...response.data]);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    if (query == "" || query.trim() == "") {
+      setProducts([]);
+    } else handleSearch();
+    // }
+  }, [query]);
+  console.log("products : ", products);
   return (
     <>
       <div className="bg-[#1B6392] sticky top-0 z-50">
         <div></div>
-        <div className="flex max-w-[1020px] h-[88px] justify-center items-center mx-auto">
+        <div className="flex max-w-[1020px] h-[88px] justify-center items-center mx-auto ">
           <Link to={"/"}>
             <div className="max-w-[190px] pt-[10px]">
               <img src={Logo} alt="" srcSet="" />
             </div>
           </Link>
-          <div className="flex grow items-center md:mx-24 mx-4 h-10 relative rounded-md overflow-hidden">
-            <input placeholder="Search for anything..." className="w-full px-4 pr-10 h-10" type="text" />
-            <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
-              <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M9.5625 15.625C13.1869 15.625 16.125 12.6869 16.125 9.0625C16.125 5.43813 13.1869 2.5 9.5625 2.5C5.93813 2.5 3 5.43813 3 9.0625C3 12.6869 5.93813 15.625 9.5625 15.625Z" stroke="#191C1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M14.2031 13.7031L18 17.5" stroke="#191C1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              </svg>
+          <div className="flex grow items-center md:mx-24 mx-4 h-10 relative rounded-md ">
+            <div className="w-full  h-10 rounded-md overflow-hidden relative">
+              <input
+                value={query}
+                onChange={(e) => {
+                  setQuery(e.target.value);
+                }}
+                placeholder="Search for anything..."
+                className="w-full px-4 pr-10 h-10"
+                type="text"
+              />
+              <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
+                <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9.5625 15.625C13.1869 15.625 16.125 12.6869 16.125 9.0625C16.125 5.43813 13.1869 2.5 9.5625 2.5C5.93813 2.5 3 5.43813 3 9.0625C3 12.6869 5.93813 15.625 9.5625 15.625Z" stroke="#191C1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M14.2031 13.7031L18 17.5" stroke="#191C1F" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </div>
             </div>
+            {products.length > 0 && (
+              <div className="bg-white border py-4 min-h-max rounded-md shadow-lg w-full top-12 absolute ">
+                {products.map((item, idx) => {
+                  return (
+                    <Link key={item._id} to={`product/${item._id}`}>
+                      <div className="border hover:bg-slate-100 p-2 pl-4">{item.name}</div>
+                    </Link>
+                  );
+                })}
+              </div>
+            )}
           </div>
 
           <ul className="flex gap-4 text-sm">

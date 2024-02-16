@@ -1,15 +1,28 @@
 const Order=require('../../models/Order.js');
 
-const viewOrders=async(req,res)=>{
-    try {
-        const orders=await Order.find();
-        console.log("Orders : ",orders);
-        res.status(200).json({message:"successfull",orders});
-    } catch (error) {
-        console.log(error);
-        res.status(500).json("Internal server error");
-    }
-}
+const viewOrders = async (req, res) => {
+  try {
+      const orders = await Order.find().populate('userId');
+      
+      const simplifiedOrders = orders.map(order => ({
+          orderId: order._id,
+          userId: order.userId._id,
+          username: order.userId.username,
+          orderDate: order.orderDate,
+          paymentStatus: order.paymentStatus,
+          paymentMethod: order.paymentMethod,
+          orderStatus: order.orderStatus,
+          totalAmount: order.totalAmount,
+      }));
+
+      res.status(200).json({ message: "successful", orders: simplifiedOrders });
+  } catch (error) {
+      console.log(error);
+      res.status(500).json("Internal server error");
+  }
+};
+
+
 
 const changeOrderStatus = async (req, res) => {
     try {

@@ -8,6 +8,7 @@ const EditProduct = () => {
   const [productName, setProductName] = useState("");
   const [variantName, setVariantName] = useState("");
   const [variant, setVariant] = useState({});
+  const [variantId, setVariantId] = useState("");
   const [brand, setBrand] = useState("");
   const [category, setCategory] = useState("");
   const [productVariant, setProductVariant] = useState("");
@@ -20,10 +21,11 @@ const EditProduct = () => {
   const [description, setDescription] = useState("");
   const [activeTab, setActiveTab] = useState(0);
   const { productId } = useParams();
-  console.log("Product ID : ", productId);
+  // console.log("Product ID : ", productId);
 
   const [specifications, setSpecifications] = useState([{ name: "", value: "" }]);
   const [images, setImages] = useState([]);
+  const [backendImages, setBackendImages] = useState([]);
   const [imagesObjects, setImagesObjects] = useState([]);
   const [isProductAdded, setIsProductAdded] = useState(false);
   //   const [productId, setProductId] = useState("");
@@ -37,7 +39,7 @@ const EditProduct = () => {
       try {
         const response = await axios.get(`${BASE_URL}/admin/products/${productId}`);
         const product = response.data.product;
-        console.log("proudct : ", product);
+        // console.log("proudct : ", product);
         setProductName(product.name);
         setBrand(product.brand);
         setCategoryId(product.category);
@@ -48,7 +50,22 @@ const EditProduct = () => {
     };
     fetchData();
   }, []);
+
   //categoryItemsfetching
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/admin/categories`);
+        // console.log("category list : ", response);
+        setCategoryOptions(response.data.categories);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchData();
+  }, []);
+
+  //categoryItemfetching
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -80,8 +97,10 @@ const EditProduct = () => {
           setStock(variantData[0].stock);
           setSalePrice(variantData[0].salePrice);
           setRegularPrice(variantData[0].regularPrice);
-          setImages(variantData[0].images);
+          // setImages(variantData[0].images);
+          setBackendImages(variantData[0].images);
           setSpecifications(variantData[0].specification);
+          setVariantId(variantData[0]._id);
           //   setCategoryOptions(response.data.categories);
         }
       } catch (error) {
@@ -172,7 +191,6 @@ const EditProduct = () => {
       });
 
       console.log("RESPONSE : ", response.data);
-      setProductId(response.data.productId);
 
       setIsProductAdded(true);
     } catch (error) {
@@ -181,9 +199,11 @@ const EditProduct = () => {
   };
 
   const handleImageUpload = (e) => {
-    if (isProductAdded && images.length < 8) {
+    console.log("I am working fine ");
+    console.log("handleImageUpload");
+    if (images.length < 8) {
       const file = e.target.files[0];
-
+      console.log("handleImage : ", file);
       if (file) {
         setImages([...images, URL.createObjectURL(file)]);
         setImagesObjects([...imagesObjects, file]);
@@ -228,8 +248,8 @@ const EditProduct = () => {
         variantFormData.append(`specification[${index}][value]`, spec.value);
       });
 
-      const variantResponse = await axios.put(`${BASE_URL}/admin/products/variant/${variant._id}`, variantFormData);
-      navigate("/products/view-all");
+      const variantResponse = await axios.put(`${BASE_URL}/admin/products/variant/${variantId}`, variantFormData);
+      // navigate("/products/view-all");
       console.log(variantResponse.data);
       alert(variantResponse.data.message);
     } catch (error) {
@@ -243,9 +263,14 @@ const EditProduct = () => {
     setStock(variant[index].stock);
     setSalePrice(variant[index].salePrice);
     setRegularPrice(variant[index].regularPrice);
-    setImages(variant[index].images);
+    // setImages(variant[index].images);
+    setBackendImages(variant[index].images);
     setSpecifications(variant[index].specification);
+    setSpecifications(variant[index].specification);
+    setVariantId(variant[index]._id);
   };
+
+  console.log("variantId  : ", variantId);
   return (
     <div className="bg-white p-8 shadow-md rounded-md max-w-3xl mx-auto text-[#566A7F]">
       <h2 className="text-left text-2xl font-bold mb-6">Product Information</h2>
@@ -262,21 +287,21 @@ const EditProduct = () => {
         </div>
         <div className="w-1/2 pl-2">
           <label className="block text-sm font-semibold mb-1">Category</label>
-          <select className="w-full border border-gray-300 p-2" value="hello" onChange={(e) => handleInputChange("category", e.target.value)}>
+          <select className="w-full border border-gray-300 p-2" value={category} onChange={(e) => handleInputChange("category", e.target.value)}>
             <option value="" disabled>
               Select a category
             </option>
-            {category ? (
-              <option value="">{category}</option>
-            ) : (
-              <>
-                {categoryOptions?.map((option) => (
-                  <option key={option._id} value={option._id}>
-                    {option.name}
-                  </option>
-                ))}
-              </>
-            )}
+            {/* {category ? ( */}
+            {category && <option value="">{category}</option>}
+            {/* ) : ( */}
+            {/* <> */}
+            {categoryOptions?.map((option) => (
+              <option key={option._id} value={option._id}>
+                {option.name}
+              </option>
+            ))}
+            {/* </> */}
+            {/* )} */}
           </select>
         </div>
       </div>
@@ -308,7 +333,7 @@ const EditProduct = () => {
       <div>
         <div className="mb-4">
           <label className="block text-sm font-semibold mb-1">Variant name</label>
-          <input value={productVariant} type="text" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("productVariant", e.target.value)} />
+          <input value={variantName} type="text" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("productVariant", e.target.value)} />
         </div>
         <div className="mb-4">
           <label className="block text-sm font-semibold mb-1">Stock</label>
@@ -325,7 +350,7 @@ const EditProduct = () => {
             <input value={salePrice} type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("salePrice", e.target.value)} />
           </div>
         </div>
-        <AddImages editproduct={true} images={images} onImageUpload={handleImageUpload} onRemoveImage={handleRemoveImage} />
+        <AddImages backendImages={backendImages} editproduct={true} images={images} onImageUpload={handleImageUpload} onRemoveImage={handleRemoveImage} />
         <div className="mt-10">
           <label className="block text-xl font-semibold mb-4">Specifications</label>
           {specifications.map((spec, index) => (

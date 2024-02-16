@@ -10,6 +10,7 @@ const category=require('../controllers/userController/categoryController.js')
 const wishlist=require('../controllers/userController/wishlistController.js')
 const payment=require('../controllers/userController/paymentController.js')
 const coupon=require('../controllers/userController/couponController.js');
+const wallet=require('../controllers/userController/walletController.js');
 
 const {authenticateJWT} = require('../middlewares/authMiddleware.js');
 
@@ -37,6 +38,7 @@ router.get('/products',product.listProducts);
 router.get('/products/variants',product.productVariants)
 router.get('/products/:productid/product',authenticateJWT,product.productDetails);
 router.get('/products/:categoryId/product',authenticateJWT,product.productDetails);
+router.get('/products/search',product.searchProducts);
 
 // user
 router.get('/',authenticateJWT,user.showUser);
@@ -70,6 +72,8 @@ router.post('/orders/razorpay/verify',payment.verifyOrder);
 // coupons
 router.post('/coupon',coupon.applyCoupon);
 
+//wallet
+router.get('/wallet',authenticateJWT,wallet.getWalletHistory)
 
 // categories
 router.get('/categories', category.viewCategories);

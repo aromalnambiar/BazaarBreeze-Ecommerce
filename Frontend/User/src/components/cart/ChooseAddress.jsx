@@ -5,7 +5,7 @@ import { BASE_URL } from "../../../config";
 import axios from "axios";
 import Checkout from "../shop/Checkout";
 
-function ChooseAddress({ grandTotal, cartItems }) {
+function ChooseAddress({ grandTotal, cartItems, couponId }) {
   const [selectedAddress, setSelectedAddress] = useState({});
   const [address, setAddress] = useState([]);
   const navigate = useNavigate("");
@@ -54,7 +54,7 @@ function ChooseAddress({ grandTotal, cartItems }) {
   return (
     <>
       {isDeliver ? (
-        <Checkout address={selectedAddress} grandTotal={grandTotal} cartItems={cartItems} />
+        <Checkout address={selectedAddress} grandTotal={grandTotal} cartItems={cartItems} couponId={couponId} />
       ) : (
         <div className="grid grid-cols-12 py-16">
           <div className="col-span-12">

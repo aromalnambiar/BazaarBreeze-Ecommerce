@@ -8,7 +8,7 @@ const Category=require('../../models/Category');
 
 const listProducts = async (req, res) => {
     try {
-      console.log("List products : ");
+      // console.log("List products : ");
       // const products=[];
       const products = await Products.aggregate([
         {
@@ -31,7 +31,7 @@ const listProducts = async (req, res) => {
         },
       ]);
   
-      console.log(products);
+      // console.log(products);
       res.status(200).json({ message: 'success', products });
     } catch (error) {
       console.error(error);
@@ -68,7 +68,7 @@ const listProducts = async (req, res) => {
       if (result.length > 0) {
         const product = result[0];
         const firstVariant = product.productDetails[0];
-        console.log("first Variant : ",firstVariant);
+        // console.log("first Variant : ",firstVariant);
         product.productDetails = firstVariant;
         
         if (userId) {
@@ -78,9 +78,9 @@ const listProducts = async (req, res) => {
           
           // Check if the product variant exists in the wishlist
           const wishlist = await Wishlist.findOne({ userId });
-          console.log("Wishlist : ",wishlist);
+          // console.log("Wishlist : ",wishlist);
           isWishlistFound = wishlist && wishlist.items.some(item => item.productVariant.equals(firstVariant._id));
-          console.log("isWishlistFound : ",isWishlistFound);
+          // console.log("isWishlistFound : ",isWishlistFound);
         }
   
         res.status(200).json({
@@ -102,18 +102,18 @@ const listProducts = async (req, res) => {
   const productVariants = async (req, res) => {
     try {
       let variantIds = req.query.variantIds;
-      console.log("query : ",req.query);
+      // console.log("query : ",req.query);
       if (!variantIds) {
         return res.status(400).json({ error: 'Missing variantIds parameter' });
       }
   
       // Convert variantIds to an array if it is a string
       variantIds = variantIds.split(',');
-      console.log("variantIds : ",variantIds);
+      // console.log("variantIds : ",variantIds);
   
       // Convert variant IDs to mongoose ObjectIds
       const variantObjectIds = variantIds.map((id) =>new mongoose.Types.ObjectId(id));
-      console.log("variantObjectIds : ",variantObjectIds);
+      // console.log("variantObjectIds : ",variantObjectIds);
       const variants = await ProductVariant.aggregate([
         {
           $match: {
@@ -141,10 +141,40 @@ const listProducts = async (req, res) => {
     }
   }
 
+  const searchProducts=async (req, res)=> {
+    const { query } = req.query;
+    console.log("query : ",req.query);
+    try {
+      const regex = new RegExp(query, 'i');
+  
+      // Fetch products matching the search query
+      const products = await Products.find(
+        {
+          $and: [
+            { isDelete: false },
+            {
+              $or: [
+                { name: { $regex: regex } },
+                { brand: { $regex: regex } },
+              ],
+            },
+          ],
+        },
+        { _id: 1, name: 1 }
+      );
+  
+      res.json(products);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }
+  
 
   module.exports={
     listProducts,
     productDetails,
     productVariants,
-    listCategoryProducts
+    listCategoryProducts,
+    searchProducts
   }

@@ -13,7 +13,7 @@ function CategoryList() {
   const [categoriesHolder, setCategoriesHolder] = useState([]);
   useEffect(() => {
     const result = axios
-      .get(`${BASE_URL}/admin/products/category`)
+      .get(`${BASE_URL}/admin/categories`)
       .then((res) => {
         // console.log(res.data.categories);
         setCategories(res.data.categories);
@@ -29,7 +29,7 @@ function CategoryList() {
     console.log(categoryId);
     if (confirm("Are you sure ?")) {
       const result = axios
-        .delete(`${BASE_URL}/admin/products/category/${categoryId}`)
+        .delete(`${BASE_URL}/admin/categories/${categoryId}`)
         .then((res) => {
           console.log(res);
           alert(res.data.message);

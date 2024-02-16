@@ -12,6 +12,9 @@ import Headerbar from "./components/common/Headerbar";
 import EditProduct from "./components/EditProduct";
 
 import OrdersList from "./components/OrdersList";
+import Dashboard from "./components/Dashboard";
+import SalesReport from "./components/SalesReport";
+import DatePick from "./components/DatePick";
 
 function App() {
   return (
@@ -23,6 +26,9 @@ function App() {
             <Headerbar />
             <Routes>
               <Route path="/" element={<AdminSignIn />} />
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/date" element={<DatePick />} />
+              <Route path="/dashboard/sales-report" element={<SalesReport />} />
               <Route path="/products/view-all" element={<ViewProducts />} />
               {/* <Route path="/products/view" element={<AdminSignIn />} /> */}
               {/* <Route path="/products/edit" element={<AdminSignIn />} /> */}

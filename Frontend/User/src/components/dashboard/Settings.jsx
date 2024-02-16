@@ -6,7 +6,6 @@ function Settings() {
   return (
     <>
       <EditProfile />
-      <Address />
     </>
   );
 }

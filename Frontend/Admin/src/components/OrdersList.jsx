@@ -59,9 +59,7 @@ function OrdersList() {
     });
   };
 
-  // const handleBlur = (orderId) => {
-  //   handleOrderStatusChange(orderId);
-  // };
+
   return (
     <div className=" border border-gray-300 overflow-hidden shadow-md rounded-2xl mb-20">
       <div className="bg-white p-6 flex justify-between py-8">
@@ -74,7 +72,7 @@ function OrdersList() {
         <thead>
           <tr className="text-[#566a7f] border-t text-sm">
             {/* <th className="py-2 text-start pl-8 font-medium border-b">ORDER ID</th> */}
-            <th className="py-2 text-start pl-8 font-medium border-b">USER ID</th>
+            <th className="py-2 text-start pl-4 font-medium border-b">USER NAME</th>
             <th className="py-2 text-start pl-4 font-medium border-b">ORDER DATE</th>
             <th className="py-2 text-start pl-4 font-medium border-b">PAYMENT STATUS</th>
             <th className="py-2 text-start pl-4 font-medium border-b">PAYMENT METHOD</th>
@@ -84,8 +82,8 @@ function OrdersList() {
         </thead>
         <tbody>
           {orders.map((item) => (
-            <tr key={item?._id} className="text-[#697a8d] text-sm">
-              <td className="py-2 px-4 border-b">{item?.userId}</td>
+            <tr key={item?.orderId} className="text-[#697a8d] text-sm">
+              <td className="py-2 px-4 border-b">{item?.username}</td>
               <td className="py-2 px-4 border-b">{item.orderDate ? new Date(item.orderDate).toLocaleDateString() : ""}</td>
               <td className="py-2 px-4 border-b">{item?.paymentStatus}</td>
               <td className="py-2 px-4 border-b">{item.paymentMethod}</td>

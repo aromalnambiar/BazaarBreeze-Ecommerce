@@ -15,9 +15,9 @@ function Checkout(props) {
 
   const paymentOptions = [
     { id: 1, name: "Cash On Delivery", icon: <FaMoneyBill /> },
-    { id: 2, name: "PayPal", icon: <FaPaypal /> },
+    // { id: 2, name: "PayPal", icon: <FaPaypal /> },
     { id: 3, name: "RazorPay", icon: <SiRazorpay /> },
-    { id: 4, name: "Credit Card", icon: <FaRegCreditCard /> },
+    // { id: 4, name: "Credit Card", icon: <FaRegCreditCard /> },
   ];
 
   const handlePaymentChange = (payment) => {
@@ -63,7 +63,7 @@ function Checkout(props) {
       console.log(error);
     }
   };
-
+  console.log("Cart Items : checkout : ", props.cartItems);
   const clearTheCart = async () => {
     try {
       const result = await axios.delete(`${BASE_URL}/user/cart/clear`, {
@@ -98,7 +98,7 @@ function Checkout(props) {
           paymentMethod: selectedPayment.name,
           shippingAddress: props.address,
           orderDate: new Date(),
-          coupons: [],
+          coupons: [props.couponId],
           totalAmount: props.grandTotal,
           orderStatus: "Pending",
         },
@@ -224,6 +224,19 @@ function Checkout(props) {
           </div>
         </div>
         <div className=" col-span-3">
+          <div className="border p-2 text-sm">
+            {props.cartItems.map((item) => {
+              return (
+                <div className="flex items-center gap-4 ">
+                  <img className="w-12 h-12" src={`${BASE_URL}/uploads/${item.productVariantId.images[0]}`} alt="" />
+                  <div>
+                    <p>{item.productVariantId.variantName||"variant Name"}</p>
+                    <p>x {item.quantity}</p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
           <div className="border text-sm p-2 text-gray-500 font-semibold">
             <h3>PRICE DETAILS</h3>
           </div>

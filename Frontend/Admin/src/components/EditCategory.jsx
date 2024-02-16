@@ -15,7 +15,7 @@ function EditCategory({ categoryId, setIsEdit }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/admin/products/category/${categoryId}`);
+        const response = await axios.get(`${BASE_URL}/admin/categories/${categoryId}`);
         const fetchedCategory = response.data.category;
         name.current.value = fetchedCategory.name || "";
         description.current.value = fetchedCategory.description || "";

@@ -2,6 +2,8 @@ const Order=require('../../models/Order');
 const ProductVariant=require('../../models/ProductVariant');
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
+const Wallet=require("../../models/Wallet");
+const Transaction=require("../../models/Transaction");
 
 const showOrders = async (req, res) => {
     try {
@@ -49,7 +51,7 @@ const addOrder = async (req, res) => {
         payment,
         shippingAddress,
         orderDate,
-        coupons,
+        coupons:coupons||[],
         totalAmount,
         paymentMethod,
         userId,
@@ -79,52 +81,6 @@ const addOrder = async (req, res) => {
     }
 };
 
-const razorpay=async (req, res) => {
-	try {
-		const instance = new Razorpay({
-			key_id: process.env.KEY_ID,
-			key_secret: process.env.KEY_SECRET,
-		});
-
-		const options = {
-			amount: req.body.amount * 100,
-			currency: "INR",
-			receipt: crypto.randomBytes(10).toString("hex"),
-		};
-
-		instance.orders.create(options, (error, order) => {
-			if (error) {
-				console.log(error);
-				return res.status(500).json({ message: "Something Went Wrong!" });
-			}
-			res.status(200).json({ data: order });
-		});
-	} catch (error) {
-		res.status(500).json({ message: "Internal Server Error!" });
-		console.log(error);
-	}
-};
-
-const verify=async (req, res) => {
-	try {
-		const { razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
-		const sign = razorpay_order_id + "|" + razorpay_payment_id;
-		const expectedSign = crypto
-			.createHmac("sha256", process.env.KEY_SECRET)
-			.update(sign.toString())
-			.digest("hex");
-
-		if (razorpay_signature === expectedSign) {
-			return res.status(200).json({ message: "Payment verified successfully" });
-		} else {
-			return res.status(400).json({ message: "Invalid signature sent!" });
-		}
-	} catch (error) {
-		res.status(500).json({ message: "Internal Server Error!" });
-		console.log(error);
-	}
-};
-
 const showOrder=async(req,res)=>{
   try {
     const {orderId}=req.params;
@@ -135,10 +91,34 @@ const showOrder=async(req,res)=>{
     res.status(500).json({message:"Internal server error"});
   }
 }
+// const changeOrderStatus = async (req, res) => {
+//   try {
+//     const { orderId, orderStatus } = req.body;
+
+
+//     if (!Order.schema.path('orderStatus').enumValues.includes(orderStatus)) {
+//       return res.status(400).json({ error: 'Invalid orderStatus value' });
+//     }
+
+//     const updatedOrder = await Order.findByIdAndUpdate(
+//       orderId,
+//       { $set: { orderStatus } },
+//       { new: true }
+//     );
+
+//     if (!updatedOrder) {
+//       return res.status(404).json({ error: 'Order not found' });
+//     }
+
+//     res.status(200).json({ message: 'Order status updated successfully', order: updatedOrder });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// };
 const changeOrderStatus = async (req, res) => {
   try {
     const { orderId, orderStatus } = req.body;
-
 
     if (!Order.schema.path('orderStatus').enumValues.includes(orderStatus)) {
       return res.status(400).json({ error: 'Invalid orderStatus value' });
@@ -148,10 +128,41 @@ const changeOrderStatus = async (req, res) => {
       orderId,
       { $set: { orderStatus } },
       { new: true }
-    );
+    ).populate('userId payment');
 
     if (!updatedOrder) {
       return res.status(404).json({ error: 'Order not found' });
+    }
+
+    // Check if the orderStatus is "Cancelled" or "Returned" and paymentMethod is "RazorPay"
+    if (
+      (orderStatus === 'Cancelled' || orderStatus === 'Returned') &&
+      updatedOrder.paymentMethod === 'RazorPay'
+    ) {
+      // Find or create a wallet for the user
+      let wallet = await Wallet.findOne({ user: updatedOrder.userId });
+
+      if (!wallet) {
+        // Create a new wallet if it doesn't exist
+        wallet = new Wallet({ user: updatedOrder.userId });
+      }
+
+      // Add the refunded amount to the wallet balance
+      wallet.balance += updatedOrder.totalAmount;
+
+      // Create a transaction record for the refund
+      const refundTransaction = new Transaction({
+        type: 'Refund',
+        amount: updatedOrder.totalAmount,
+        orderId: updatedOrder._id,
+      });
+
+      // Push the refund transaction to the wallet's transactions array
+      wallet.transactions.push(refundTransaction);
+
+      // Save the updated or new wallet
+      await wallet.save();
+      await refundTransaction.save();
     }
 
     res.status(200).json({ message: 'Order status updated successfully', order: updatedOrder });

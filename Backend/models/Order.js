@@ -1,7 +1,7 @@
 const mongoose=require('mongoose');
 
 const OrderSchema=new mongoose.Schema({
-    userId:{type:mongoose.Types.ObjectId,required:true},
+    userId:{type:mongoose.Types.ObjectId,ref:"User",required:true},
     orderedItems: { 
         type: [
             { 
@@ -54,7 +54,7 @@ const OrderSchema=new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
-    coupons:{ type: [{ type: mongoose.Schema.Types.ObjectId }] },
+    coupons:{ type: [] , default: [],},
     totalAmount: { type: Number, required: true },
     orderStatus:{
         type:String,

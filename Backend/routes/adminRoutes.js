@@ -9,6 +9,9 @@ const product=require('../controllers/adminController/productController.js');
 const user=require('../controllers/adminController/userController.js');
 const coupon=require('../controllers/adminController/couponController.js');
 const offer=require('../controllers/adminController/offerController.js');
+const sales=require('../controllers/adminController/salesController.js');
+const sample=require('../controllers/adminController/sample.js');
+
 
 
 const storage = multer.diskStorage({
@@ -67,6 +70,17 @@ router.post('/offer',offer.createOffer);
 router.get('/offer/:offerId',offer.getOfferById);
 router.put('/offer/:offerId',offer.updateOfferById);
 router.delete('/offer/:offerId',offer.deleteOfferById);
+
+//sales
+router.get('/sales',sales.generateSalesReport);
+router.get('/salesReport',sales.getSalesReport);
+router.get('/salesCount',sales.getOverallSalesCount);
+router.get('/orderAmount',sales.getOverallOrderAmount);
+router.get('/overallSalesCountAndAmount',sales.getOverallSalesCountAndAmount);
+
+router.post('/salesCSV',sample.exportCSV);
+router.post('/salesExcel',sample.exportExcel);
+router.get('/salesPDF',sample.exportPDF);
 
 // router.get('/orders');
 // router.put('/orders/:order-id');

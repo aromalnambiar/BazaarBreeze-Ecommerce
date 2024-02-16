@@ -4,6 +4,7 @@ import { FaUserPlus } from "react-icons/fa6";
 import user from "../../assets/icons/user.png";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
+import { Link } from "react-router-dom";
 
 function EditProfile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -100,12 +101,12 @@ function EditProfile() {
               ) : (
                 <img src={`${BASE_URL}/uploads/${user.image}` || user} alt="Profile" className="w-24 h-24 rounded-full" />
               )}
-              <input type="file" id="profileImage" name="profileImage" className="hidden" onChange={handleImageChange} />
+              <input type="file" id="profileImage" name="profileImage" className="hidden" disabled={!isEditing} onChange={handleImageChange} />
             </div>
           </label>
         </div>
 
-        <div className="w-3/4 space-y-4">
+        <div className={`w-3/4 space-y-4 ${!isEditing ? "text-gray-500" : ""}`}>
           <div>
             <label htmlFor="name" className="block text-sm font-medium text-gray-700">
               Name
@@ -117,21 +118,21 @@ function EditProfile() {
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email
             </label>
-            <input type="email" id="email" ref={email} name="email" className="mt-1 p-2 w-full border rounded-md" disabled />
+            <input type="email" id="email" ref={email} name="email" className=" mt-1 p-2 w-full border rounded-md" disabled />
           </div>
 
           <div>
             <label htmlFor="phone1" className="block text-sm font-medium text-gray-700">
               Age
             </label>
-            <input ref={age} type="tel" id="phone1" name="phone1" className="mt-1 p-2 w-full border rounded-md" disabled={!isEditing} />
+            <input ref={age} type="tel" id="phone1" name="phone1" className=" mt-1 p-2 w-full border rounded-md" disabled={!isEditing} />
           </div>
 
           <div>
             <label htmlFor="gender" className="block text-sm font-medium text-gray-700">
               Gender
             </label>
-            <select id="gender" name="gender" ref={genderSelect} value={user.gender || ""} className="mt-1 p-2 w-full border rounded-md" disabled={!isEditing}>
+            <select id="gender" name="gender" ref={genderSelect} value={user.gender || ""} className=" mt-1 p-2 w-full border rounded-md" disabled={!isEditing}>
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="other">Other</option>
@@ -140,7 +141,7 @@ function EditProfile() {
         </div>
       </div>
 
-      <div className="mt-6 flex justify-end">
+      <div className="mt-6 flex justify-end gap-4">
         <button
           type="button"
           onClick={() => {
@@ -153,6 +154,11 @@ function EditProfile() {
         >
           {isEditing ? "Submit" : "Edit"}
         </button>
+        <Link to={"/dashboard"}>
+          <button type="button" className={`px-4 py-2  bg-blue-500 text-white rounded-md transition duration-300 hover:bg-opacity-80`}>
+            discard
+          </button>
+        </Link>
       </div>
     </div>
   );
