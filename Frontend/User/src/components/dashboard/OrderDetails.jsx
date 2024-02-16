@@ -140,10 +140,10 @@ function OrderDetails() {
                     <span className="block text-gray-700 text-xs">{item.email}</span>
                   </div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">{item.price}</td>
-                <td className="px-6 py-4 whitespace-nowrap">{item.quantity}</td>
+                <td className="px-6 py-4 whitespace-nowrap">₹{item.price}</td>
+                <td className="px-6 py-4 whitespace-nowrap">x {item.quantity}</td>
 
-                <td className="px-6 py-4 whitespace-nowrap">{item.price * item.quantity}</td>
+                <td className="px-6 py-4 whitespace-nowrap">₹{item.price * item.quantity}</td>
               </tr>
             ))}
         </tbody>

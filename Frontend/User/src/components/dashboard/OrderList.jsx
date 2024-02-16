@@ -57,7 +57,7 @@ function OrderList() {
                   <td className="px-6 py-4 whitespace-nowrap">{item.orderStatus}</td>
                   <td className="px-6 py-4 whitespace-nowrap">{item.orderDate ? new Date(item.orderDate).toLocaleDateString() : ""}</td>
 
-                  <td className="px-6 py-4 whitespace-nowrap">{item.totalAmount}</td>
+                  <td className="px-6 py-4 whitespace-nowrap">₹{item.totalAmount}</td>
                   <td onClick={() => navigate(`/dashboard/order-details/${item._id}`)} className="px-6 py-4 whitespace-nowrap">
                     <a href="" className="flex gap-3 items-center text-[#2DA5F3] font-semibold">
                       View details

@@ -8,7 +8,7 @@ function AddAddress({ setIsEdit, addressDetails }) {
   const street = useRef();
   const state = useRef();
   const pincode = useRef();
-  const email = useRef();
+  // const email = useRef();
   const phone1 = useRef();
   const phone2 = useRef();
   const [error, setError] = useState("");
@@ -19,7 +19,7 @@ function AddAddress({ setIsEdit, addressDetails }) {
     street.current.value = addressDetails.street;
     state.current.value = addressDetails.state;
     pincode.current.value = addressDetails.pincode;
-    email.current.value = addressDetails.email;
+    // email.current.value = addressDetails.email;
     phone1.current.value = addressDetails.phone1;
     phone2.current.value = addressDetails.phone2;
     window.scrollTo(0, 0);
@@ -32,19 +32,19 @@ function AddAddress({ setIsEdit, addressDetails }) {
     const addressValue = address.current.value.trim();
     const stateValue = state.current.value.trim();
     const pincodeValue = pincode.current.value.trim();
-    const emailValue = email.current.value.trim();
+    // const emailValue = email.current.value.trim();
     const phone1Value = phone1.current.value.trim();
 
-    if (!fullNameValue || !addressValue || !stateValue || !pincodeValue || !emailValue || !phone1Value) {
+    if (!fullNameValue || !addressValue || !stateValue || !pincodeValue || !phone1Value) {
       setErrorMessage("Please fill in all required fields.");
       return false;
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(emailValue)) {
-      setErrorMessage("Please enter a valid email address.");
-      return false;
-    }
+    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // if (!emailRegex.test(emailValue)) {
+    //   setErrorMessage("Please enter a valid email address.");
+    //   return false;
+    // }
 
     const pincodeRegex = /^\d{6}$/;
     if (!pincodeRegex.test(pincodeValue)) {
@@ -158,12 +158,12 @@ function AddAddress({ setIsEdit, addressDetails }) {
               </label>
               <input ref={pincode} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="number" required placeholder="90210" />
             </div>
-            <div className="w-full mt-6 px-3 mb-6 md:mb-0">
+            {/* <div className="w-full mt-6 px-3 mb-6 md:mb-0">
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                 Email
               </label>
               <input ref={email} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" required placeholder="Jane" />
-            </div>
+            </div> */}
             <div className="w-full md:w-2/4 mt-2 px-3 mb-6 md:mb-0">
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                 Phone1

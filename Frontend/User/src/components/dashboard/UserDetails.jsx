@@ -32,7 +32,7 @@ function AccountInfo({ user, handleEditAccount }) {
             {user.gender || "Not set"}
           </p>
           <p className="text-gray-600">
-            <span className="text-black">Phone2 : </span>
+            <span className="text-black">Age : </span>
             {user.age || "Not set"}
           </p>
           <button onClick={handleEditAccount} className="uppercase border absolute bottom-0 border-[#D5EDFD] text-[#2DA5F3] font-bold py-3 px-4 rounded-md mb-4 w-max mx-auto">

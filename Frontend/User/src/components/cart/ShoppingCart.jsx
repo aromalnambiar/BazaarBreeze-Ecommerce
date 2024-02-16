@@ -194,8 +194,8 @@ function ShoppingCart() {
                           </svg>
                         </div>
                         {/* {console.log("item : ", item)} */}
-                        <span className="text-center w-1/5 font-semibold text-sm">${item.productVariantId.salePrice}</span>
-                        <span className="text-center w-1/5 font-semibold text-sm">${item.productVariantId.salePrice * item.quantity}</span>
+                        <span className="text-center w-1/5 font-semibold text-sm">₹{item.productVariantId.salePrice}</span>
+                        <span className="text-center w-1/5 font-semibold text-sm">₹{item.productVariantId.salePrice * item.quantity}</span>
                       </div>
                     );
                   })}
@@ -218,12 +218,12 @@ function ShoppingCart() {
               <h1 className="font-semibold text-2xl border-b pb-8">Order Summary</h1>
               <div className="flex justify-between mt-10 mb-5">
                 <span className="font-semibold text-sm uppercase">Items {cartItems?.length}</span>
-                <span className="font-semibold text-sm">{grandTotal}$</span>
+                <span className="font-semibold text-sm">{grandTotal}₹</span>
               </div>
               <div>
                 <label className="font-medium inline-block mb-3 text-sm uppercase">Shipping</label>
                 <select className="block p-2 text-gray-600 w-full text-sm">
-                  <option>Standard shipping - $0.00</option>
+                  <option>Standard shipping - ₹0.00</option>
                 </select>
               </div>
               <div className="py-10 relative">
