@@ -18,6 +18,7 @@ function Product() {
   useEffect(() => {
     const fetchDetails = async () => {
       const userId = localStorage.getItem("userId");
+
       const response = await axios.get(`${BASE_URL}/user/products/${productId}/product`, {
         headers: {
           Authorization: `${localStorage.getItem("token")}`,

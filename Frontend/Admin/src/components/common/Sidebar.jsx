@@ -9,104 +9,65 @@ const Sidebar = () => {
     setExpandedMenu((prev) => (prev === index ? null : index));
   };
 
-  const renderArrowIcon = (index) => {
-    if (expandedMenu === index) {
-      return (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline-block  absolute right-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 15l7-7 7 7" />
-        </svg>
-      );
-    } else {
-      return (
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 inline-block absolute right-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-        </svg>
-      );
-    }
-  };
+  const renderArrowIcon = (index) => (
+    <svg xmlns="http://www.w3.org/2000/svg" className={`h-4 w-4 inline-block absolute right-4 ${expandedMenu === index ? "rotate-180" : ""}`} fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={expandedMenu === index ? "M5 15l7-7 7 7" : "M19 9l-7 7-7-7"} />
+    </svg>
+  );
+
+  const menuItems = [
+    {
+      label: "Dashboard",
+      links: [
+        { to: "/dashboard", text: "View Dashboard" },
+        { to: "/dashboard/sales-report", text: "Sales report" },
+      ],
+    },
+    {
+      label: "Products",
+      links: [
+        { to: "/products/view-all", text: "View all products" },
+        { to: "/products/add", text: "Add product" },
+      ],
+    },
+    { label: "Order", links: [{ to: "/orders/view-all", text: "View all orders" }, { text: "Submenu 6" }] },
+    {
+      label: "Users",
+      links: [
+        { to: "/users/view-all", text: "All users" },
+        { to: "/users/view", text: "User details" },
+      ],
+    },
+    {
+      label: "Categories",
+      links: [
+        { to: "/category/view-all", text: "View all categories" },
+        { to: "/category/add", text: "Add category" },
+      ],
+    },
+  ];
 
   return (
-    <div className="col-span-2 border p-4 h-full bg-white min-w-[230px] text-[#697a8d] z-50 fixed ">
-      <h1 className="font-bold pl-2 text-2xl my-6">Admin</h1>
-      <ul className="list-none  relative">
-        <li className={` p-2 my-2 px-2 rounded-md cursor-pointer ${expandedMenu === 0 ? "bg-gray-100" : "  "}`}>
-          <span className="inline-block w-full" onClick={() => handleMenuClick(0)}>
-            Dashboard
-          </span>
-          {renderArrowIcon(0)}
-          {expandedMenu === 0 && (
-            <ul className="flex flex-col gap-4 pt-4">
-              <Link to="/dashboard">
-                <li className="pl-4 my-1">View Dashboard</li>
-              </Link>
-              <Link to="/dashboard/sales-report">
-                <li className="pl-4 my-1">Sales report</li>
-              </Link>
-            </ul>
-          )}
-        </li>
-        <li className={`p-2 my-2 px-2 rounded-md cursor-pointer ${expandedMenu === 1 ? "bg-gray-100" : "  "}`}>
-          <span className="inline-block w-full" onClick={() => handleMenuClick(1)}>
-            Products
-          </span>
-          {renderArrowIcon(1)}
-          {expandedMenu === 1 && (
-            <ul className="flex flex-col gap-4 pt-4">
-              <Link to="/products/view-all">
-                <li className="pl-4 my-1">View all products</li>
-              </Link>
-              <Link to="/products/add">
-                <li className="pl-4 my-1">Add product</li>
-              </Link>
-            </ul>
-          )}
-        </li>
-        <li className={`p-2 my-2  rounded-md cursor-pointer ${expandedMenu === 2 ? "bg-gray-100" : "  "}`}>
-          <span className="inline-block w-full" onClick={() => handleMenuClick(2)}>
-            Order
-          </span>
-          {renderArrowIcon(2)}
-          {expandedMenu === 2 && (
-            <ul className="flex flex-col gap-4 pt-4">
-              <Link to={"/orders/view-all"}>
-                <li className="pl-4 my-1">View all orders</li>
-              </Link>
-              <li className="pl-4 my-1">Submenu 6</li>
-            </ul>
-          )}
-        </li>
-        <li className={`p-2 my-2 px-2 rounded-md cursor-pointer ${expandedMenu === 3 ? "bg-gray-100" : "  "}`}>
-          <span className="inline-block w-full" onClick={() => handleMenuClick(3)}>
-            Users
-          </span>
-          {renderArrowIcon(3)}
-          {expandedMenu === 3 && (
-            <ul className="flex flex-col gap-4 pt-4">
-              <Link to={"/users/view-all"}>
-                <li className="pl-4 my-1">All users</li>
-              </Link>
-              <Link to={"/users/view"}>
-                <li className="pl-4 my-1">User details</li>
-              </Link>
-            </ul>
-          )}
-        </li>
-        <li className={`p-2 my-2 px-2 rounded-md cursor-pointer ${expandedMenu === 4 ? "bg-gray-100" : "  "}`}>
-          <span className="inline-block w-full" onClick={() => handleMenuClick(4)}>
-            Categories
-          </span>
-          {renderArrowIcon(4)}
-          {expandedMenu === 4 && (
-            <ul className="flex flex-col gap-4 pt-4">
-              <Link to="/category/view-all">
-                <li className="pl-4 my-1">View all categories</li>
-              </Link>
-              <Link to="/category/add">
-                <li className="pl-4 my-1">Add category</li>
-              </Link>
-            </ul>
-          )}
-        </li>
+    <div className="col-span-2 border p-4 px-[4px] h-full bg-white min-w-[230px] text-[#333] z-50 fixed">
+      <h1 className="font-bold text-2xl ml-2 text-blue-600 mb-4">Admin Panel</h1>
+      <ul className="list-none relative">
+        {menuItems.map((menuItem, index) => (
+          <li key={index} className={`p-2 my-2 px-2 rounded-md cursor-pointer transition-colors duration-300 ${expandedMenu === index ? "bg-blue-100" : "hover:bg-blue-50"}`}>
+            <span className="inline-block w-full text-base font-normal" onClick={() => handleMenuClick(index)}>
+              {menuItem.label}
+            </span>
+            {renderArrowIcon(index)}
+            {expandedMenu === index && (
+              <ul className="flex flex-col gap-2 pt-2">
+                {menuItem.links.map((link, subIndex) => (
+                  <Link key={subIndex} to={link.to}>
+                    <li className="pl-6 my-1 text-sm hover:text-blue-600">{link.text}</li>
+                  </Link>
+                ))}
+              </ul>
+            )}
+          </li>
+        ))}
       </ul>
     </div>
   );

@@ -1,19 +1,21 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios"; // Import axios for making API requests
-import AddImages from "./AddImages";
+import axios from "axios";
 import { BASE_URL } from "../../../User/config";
 import { useNavigate } from "react-router-dom";
+import AddImages from "./AddImages";
 
 const AddProduct = () => {
-  const [productName, setProductName] = useState("");
-  const [brand, setBrand] = useState("");
-  const [category, setCategory] = useState("");
-  const [productVariant, setProductVariant] = useState("");
-  const [color, setColor] = useState("");
-  const [stock, setStock] = useState(0);
-  const [regularPrice, setRegularPrice] = useState(0);
-  const [salePrice, setSalePrice] = useState(0);
-  const [description, setDescription] = useState("");
+  const [formData, setFormData] = useState({
+    productName: "",
+    brand: "",
+    category: "",
+    productVariant: "",
+    color: "",
+    stock: 0,
+    regularPrice: 0,
+    salePrice: 0,
+    description: "",
+  });
 
   const [specifications, setSpecifications] = useState([{ name: "", value: "" }]);
   const [images, setImages] = useState([]);
@@ -24,11 +26,11 @@ const AddProduct = () => {
 
   const navigate = useNavigate();
 
+  //for category fetching
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(`${BASE_URL}/admin/categories`);
-        console.log("category list : ", response);
         setCategoryOptions(response.data.categories);
       } catch (error) {
         console.log(error);
@@ -37,89 +39,25 @@ const AddProduct = () => {
     fetchData();
   }, []);
 
-  const handleAddSpecification = () => {
-    setSpecifications([...specifications, { name: "", value: "" }]);
-  };
-
-  const handleSpecificationChange = (index, field, e) => {
-    const updatedSpecifications = [...specifications];
-    updatedSpecifications[index][field] = e.target.value;
-    setSpecifications(updatedSpecifications);
-  };
-
-  const handleRemoveSpecification = (index) => {
-    const updatedSpecifications = [...specifications];
-    updatedSpecifications.splice(index, 1);
-    setSpecifications(updatedSpecifications);
-  };
-
-  const handleInputChange = (fieldName, value) => {
-    switch (fieldName) {
-      case "productName":
-        setProductName(value);
-        break;
-      case "brand":
-        setBrand(value);
-        break;
-      case "category":
-        setCategory(value);
-        break;
-      case "productVariant":
-        setProductVariant(value);
-        break;
-      case "color":
-        setColor(value);
-        break;
-      case "stock":
-        setStock(value);
-        break;
-      case "regularPrice":
-        setRegularPrice(value);
-        break;
-      case "salePrice":
-        setSalePrice(value);
-        break;
-      case "description":
-        setDescription(value);
-        break;
-      default:
-        break;
-    }
+  const handleInputChange = (field, value) => {
+    setFormData({ ...formData, [field]: value });
   };
 
   const handleAddProduct = async () => {
     try {
-      if (!productName || !brand || !category || !description) {
+      if (!formData.productName || !formData.brand || !formData.category || !formData.description) {
         alert("Please fill in all required fields.");
         return;
       }
-      const formData = new FormData();
-      formData.append("name", productName);
-      formData.append("brand", brand);
-      formData.append("category", category);
-      formData.append("productVariant", productVariant);
-      formData.append("color", color);
-      formData.append("stock", stock);
-      formData.append("regularPrice", regularPrice);
-      formData.append("salePrice", salePrice);
-      formData.append("description", description);
 
-      specifications.forEach((spec, index) => {
-        formData.append(`specifications[${index}][name]`, spec.name);
-        formData.append(`specifications[${index}][value]`, spec.value);
-      });
-
-      // Perform the API request with formData
       const response = await axios.post(`${BASE_URL}/admin/products`, {
-        brand,
-        name: productName,
-        category,
-        description,
+        brand: formData.brand,
+        name: formData.productName,
+        category: formData.category,
+        description: formData.description,
       });
 
-      console.log("RESPONSE : ", response.data);
       setProductId(response.data.productId);
-
       setIsProductAdded(true);
     } catch (error) {
       console.error("Error adding product:", error);
@@ -150,19 +88,12 @@ const AddProduct = () => {
     try {
       const variantFormData = new FormData();
       variantFormData.append("productId", productId);
-      variantFormData.append("stock", stock);
-      variantFormData.append("color", color);
-      variantFormData.append("regularprice", regularPrice);
-      variantFormData.append("specialprice", salePrice);
-      variantFormData.append("variantName", productVariant);
+      variantFormData.append("stock", formData.stock);
+      variantFormData.append("color", formData.color);
+      variantFormData.append("regularprice", formData.regularPrice);
+      variantFormData.append("specialprice", formData.salePrice);
+      variantFormData.append("variantName", formData.productVariant);
 
-      // images.forEach((image, index) => {
-      //   variantFormData.append(`photos[${index}]`, image);
-      // });
-
-      // imagesObjects.forEach((image, index) => {
-      //   variantFormData.append(`photos[${index}]`, image);
-      // });
       imagesObjects.forEach((image, index) => {
         variantFormData.append("photos", image);
       });
@@ -175,22 +106,65 @@ const AddProduct = () => {
       });
 
       const variantResponse = await axios.post(`${BASE_URL}/admin/products/variant`, variantFormData);
-      // navigate("/products/view-all");
       console.log(variantResponse.data);
       alert(variantResponse.data.message);
     } catch (error) {
       console.error("Error adding product variant:", error);
     }
   };
+
   const clearVariant = () => {
-    setStock(0);
-    setColor("");
-    setRegularPrice(0);
-    setSalePrice(0);
+    setFormData({
+      ...formData,
+      stock: 0,
+      color: "",
+      regularPrice: 0,
+      salePrice: 0,
+    });
     setSpecifications([{ name: "", value: "" }]);
     setImages([]);
     setImagesObjects([]);
   };
+
+  const handleAddSpecification = () => {
+    setSpecifications([...specifications, { name: "", value: "" }]);
+  };
+
+  const handleSpecificationChange = (index, field, e) => {
+    const updatedSpecifications = [...specifications];
+    updatedSpecifications[index][field] = e.target.value;
+    setSpecifications(updatedSpecifications);
+  };
+  
+  const handleRemoveSpecification = (index) => {
+    const updatedSpecifications = [...specifications];
+    updatedSpecifications.splice(index, 1);
+    setSpecifications(updatedSpecifications);
+  };
+
+  const renderProductInformation = () => (
+    <>
+      <div className="mb-4">
+        <label className="block text-sm font-semibold mb-1">Variant name</label>
+        <input value={formData.productVariant} type="text" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("productVariant", e.target.value)} />
+      </div>
+      <div className="mb-4">
+        <label className="block text-sm font-semibold mb-1">Stock</label>
+        <input type="number" value={formData.stock} className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("stock", e.target.value)} />
+      </div>
+      <div className="flex mb-4">
+        <div className="w-1/2 pr-2">
+          <label className="block text-sm font-semibold mb-1">Regular Price</label>
+          <input value={formData.regularPrice} type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("regularPrice", e.target.value)} />
+        </div>
+        <div className="w-1/2 pl-2">
+          <label className="block text-sm font-semibold mb-1">Sale Price</label>
+          <input value={formData.salePrice} type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("salePrice", e.target.value)} />
+        </div>
+      </div>
+    </>
+  );
+
   return (
     <div className="bg-white p-8 shadow-md rounded-md max-w-3xl mx-auto text-[#566A7F]">
       <h2 className="text-left text-2xl font-bold mb-6">Product Information</h2>
@@ -207,7 +181,7 @@ const AddProduct = () => {
         </div>
         <div className="w-1/2 pl-2">
           <label className="block text-sm font-semibold mb-1">Category</label>
-          <select className="w-full border border-gray-300 p-2" value={category} onChange={(e) => handleInputChange("category", e.target.value)}>
+          <select className="w-full border border-gray-300 p-2" value={formData.category} onChange={(e) => handleInputChange("category", e.target.value)}>
             <option value="" disabled>
               Select a category
             </option>
@@ -231,25 +205,7 @@ const AddProduct = () => {
 
       {isProductAdded && (
         <>
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-1">Variant name</label>
-            <input value={productVariant} type="text" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("productVariant", e.target.value)} />
-          </div>
-          <div className="mb-4">
-            <label className="block text-sm font-semibold mb-1">Stock</label>
-            <input type="number" value={stock} className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("stock", e.target.value)} />
-          </div>
-
-          <div className="flex mb-4">
-            <div className="w-1/2 pr-2">
-              <label className="block text-sm font-semibold mb-1">Regular Price</label>
-              <input value={regularPrice} type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("regularPrice", e.target.value)} />
-            </div>
-            <div className="w-1/2 pl-2">
-              <label className="block text-sm font-semibold mb-1">Sale Price</label>
-              <input value={salePrice} type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("salePrice", e.target.value)} />
-            </div>
-          </div>
+          {renderProductInformation()}
           <AddImages images={images} onImageUpload={handleImageUpload} onRemoveImage={handleRemoveImage} />
           <div className="mt-10">
             <label className="block text-xl font-semibold mb-4">Specifications</label>

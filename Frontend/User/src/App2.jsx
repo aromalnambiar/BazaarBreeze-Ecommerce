@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { logout } from "./redux/reducers/authSlice";
 import Wishlist from "./components/cart/Wishlist";
+import Filter from "./pages/Filter";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
@@ -27,6 +28,7 @@ function App() {
               <Route path="/wishlist/*" element={<Wishlist />} />
               <Route path="/product/:id" element={<Product />} />
               <Route path="/dashboard/*" element={isAuthenticated ? <Dashboard /> : <Navigate to="/user/signin" />} />
+              <Route path="/filter/*" element={<Filter />} />
               <Route path="/*" element={<Home />} />
             </Routes>
           </MaxWidth>

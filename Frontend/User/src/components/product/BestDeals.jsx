@@ -32,15 +32,18 @@ function BestDeals() {
         <h4 className="font-bold">Best Deals</h4>
         <p className="text-[#2DA5F3] font-medium cursor-pointer">Browse All product </p>
       </div>
-      <div className="flex flex-wrap justify-center gap-3">
+      <div className="flex flex-wrap justify-center gap-3 ">
         {products.map((item) => {
           return (
             <div key={item._id} onClick={() => handleClick(item)} className="flex w-48 h-64  relative cursor-pointer flex-col p-2 border">
               {/* {console.log(item.firstVariant?.images[0])} */}
-              <img className="w-52" src={`${BASE_URL}/uploads/${item.firstVariant?.images[0]}` || product} alt="" />
-              <div className="absolute bottom-2">
-                <p className="text-sm w-44 overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">{item.description}</p>
-                <p>₹ {item.firstVariant?.salePrice}</p>
+              {/* <img className="w-52" src={`${BASE_URL}/uploads/${item.firstVariant?.images[0]}` || product} alt="" /> */}
+              <div className="w-52 h-44  overflow-hidden">
+                <img className="w-44  rounded-sm" src={`${BASE_URL}/uploads/${item.firstVariant?.images[0]}` || product} alt="" />
+              </div>
+              <div className="absolute bottom-2 ">
+                <p className="text-base font-semibold text-gray-500 w-44 overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">{item.description}</p>
+                <p className="text-xs text-[#2DA5F3]">₹ {item.firstVariant?.salePrice}</p>
               </div>
             </div>
           );

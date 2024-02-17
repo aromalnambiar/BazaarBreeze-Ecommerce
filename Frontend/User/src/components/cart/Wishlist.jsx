@@ -70,18 +70,19 @@ function Wishlist() {
             </tr>
           )}
           {wishList.map((item, idx) => (
-            <tr key={item.productVariant._id}>
+            <tr key={item?.productVariant?._id}>
               <td className="flex items-center gap-x-3 py-3 px-6 whitespace-nowrap">
                 {/* <p>{item._id}</p> */}
-                <img src={`${BASE_URL}/uploads/${item.productVariant.images[0]}`} className="w-10 h-10 " />
+                {console.log("item : ", item)}
+                <img src={`${BASE_URL}/uploads/${item?.productVariant?.images[0]}`} className="w-10 h-10 " />
                 <div>
-                  <span className="block text-gray-700 text-sm font-medium">{item.name}</span>
-                  <span className="block text-gray-700 text-xs">{item.email}</span>
+                  <span className="block text-gray-700 text-sm font-medium">{item?.name}</span>
+                  <span className="block text-gray-700 text-xs">{item?.email}</span>
                 </div>
               </td>
-              <td className="px-6 py-4 whitespace-nowrap">{item.productVariant?.salePrice}</td>
-              <td className="px-6 py-4 whitespace-nowrap">{item.productVariant.stock == 0 ? "out of stock" : "in stock"}</td>
-              <td onClick={() => handleRemoveFromWishlist(item.productVariant._id)} className="px-6 py-4 whitespace-nowrap text-red-500 cursor-pointer">
+              <td className="px-6 py-4 whitespace-nowrap">{item?.productVariant?.salePrice}</td>
+              <td className="px-6 py-4 whitespace-nowrap">{item?.productVariant?.stock == 0 ? "out of stock" : "in stock"}</td>
+              <td onClick={() => handleRemoveFromWishlist(item?.productVariant?._id)} className="px-6 py-4 whitespace-nowrap text-red-500 cursor-pointer">
                 Remove
               </td>
             </tr>

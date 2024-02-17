@@ -12,21 +12,23 @@ function OrdersList() {
   const [selectedOrderStatus, setSelectedOrderStatus] = useState({});
 
   useEffect(() => {
-    const result = axios
-      .get(`${BASE_URL}/admin/orders`)
-      .then((res) => {
-        console.log("res : ", res.data.orders);
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/admin/orders`);
+        // console.log("res : ", res.data.orders);
         const ordersWithStatus = res.data.orders.reduce((acc, order) => {
-          acc[order._id] = order.orderStatus;
+          acc[order.orderId] = order.orderStatus;
           return acc;
         }, {});
+        // console.log("orders with status : ", ordersWithStatus);
         setSelectedOrderStatus(ordersWithStatus);
         setOrders(res.data.orders);
-        // setUsers(()=>);
-      })
-      .catch((res) => {
-        console.log(res);
-      });
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleOrderStatusChange = async (orderId, newOrderStatus) => {
@@ -59,19 +61,14 @@ function OrdersList() {
     });
   };
 
-
   return (
     <div className=" border border-gray-300 overflow-hidden shadow-md rounded-2xl mb-20">
       <div className="bg-white p-6 flex justify-between py-8">
         <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search user..." />
-        {/* <div>
-          <button className="bg-[#696cff] text-white px-8 py-2 rounded-md shadow-lg">Add Customer</button>
-        </div> */}
       </div>
       <table className="min-w-full bg-white ">
         <thead>
           <tr className="text-[#566a7f] border-t text-sm">
-            {/* <th className="py-2 text-start pl-8 font-medium border-b">ORDER ID</th> */}
             <th className="py-2 text-start pl-4 font-medium border-b">USER NAME</th>
             <th className="py-2 text-start pl-4 font-medium border-b">ORDER DATE</th>
             <th className="py-2 text-start pl-4 font-medium border-b">PAYMENT STATUS</th>
@@ -88,7 +85,7 @@ function OrdersList() {
               <td className="py-2 px-4 border-b">{item?.paymentStatus}</td>
               <td className="py-2 px-4 border-b">{item.paymentMethod}</td>
               <td className="py-2 px-4 border-b">
-                <select value={selectedOrderStatus[item._id] || item.orderStatus} onChange={(e) => handleChange(item._id, e.target.value)} className="p-2">
+                <select value={selectedOrderStatus[item.orderId] || item.orderStatus} onChange={(e) => handleChange(item.orderId, e.target.value)} className="p-2">
                   <option value="Pending">Pending</option>
                   <option value="Processing">Processing</option>
                   <option value="Shipped">Shipped</option>

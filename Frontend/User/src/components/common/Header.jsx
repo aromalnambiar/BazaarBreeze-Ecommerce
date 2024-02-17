@@ -8,9 +8,11 @@ function Header() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState([]);
+  // const [isActive, setIsActive] = useState(false);
   useEffect(() => {
     const handleSearch = async () => {
       try {
+        // setIsActive(true);
         const response = await axios.get(`${BASE_URL}/user/products/search?query=${query}`);
         setProducts([...response.data]);
       } catch (error) {
@@ -23,6 +25,10 @@ function Header() {
     // }
   }, [query]);
   console.log("products : ", products);
+  // const handleBlur = () => {
+  //   console.log("blur");
+  //   setIsActive((prev) => !prev);
+  // };
   return (
     <>
       <div className="bg-[#1B6392] sticky top-0 z-50">
@@ -43,6 +49,7 @@ function Header() {
                 placeholder="Search for anything..."
                 className="w-full px-4 pr-10 h-10"
                 type="text"
+                // onBlur={handleBlur}
               />
               <div className="absolute right-2 top-1/2 transform -translate-y-1/2">
                 <svg width="21" height="20" viewBox="0 0 21 20" fill="none" xmlns="http://www.w3.org/2000/svg">

@@ -82,6 +82,7 @@ const EditProduct = () => {
     };
     fetchData();
   }, [categoryId]);
+
   //productVariantfetching
   useEffect(() => {
     const fetchData = async () => {
@@ -89,7 +90,7 @@ const EditProduct = () => {
         if (productId) {
           const response = await axios.get(`${BASE_URL}/admin/products/variant/${productId}`);
           const variantData = response.data.variant;
-          console.log("variant: ", variantData);
+          // console.log("variant: ", variantData);
           setVariant(variantData);
           setProductVariantArray(variantData);
           setVariantName(variantData[0].variantName);
@@ -97,8 +98,18 @@ const EditProduct = () => {
           setStock(variantData[0].stock);
           setSalePrice(variantData[0].salePrice);
           setRegularPrice(variantData[0].regularPrice);
+          const blobPromises = variantData[0].images.map(async (imageUrl) => {
+            const response = await fetch(`${BASE_URL}/uploads/${imageUrl}`);
+            const blob = await response.blob();
+            return URL.createObjectURL(blob);
+          });
+          const blobs = await Promise.all(blobPromises);
+          setImages(blobs);
+          // setImagesObjects(blobs);
+          // console.log("blobs : ", blobs);
+          // Wait for all blob promises to resolve
           // setImages(variantData[0].images);
-          setBackendImages(variantData[0].images);
+          // setImages(variantData[0].images);
           setSpecifications(variantData[0].specification);
           setVariantId(variantData[0]._id);
           //   setCategoryOptions(response.data.categories);
@@ -126,6 +137,8 @@ const EditProduct = () => {
     setSpecifications(updatedSpecifications);
   };
 
+  console.log("variant Name : ", variantName);
+
   const handleInputChange = (fieldName, value) => {
     switch (fieldName) {
       case "productName":
@@ -138,7 +151,7 @@ const EditProduct = () => {
         setCategory(value);
         break;
       case "productVariant":
-        setProductVariant(value);
+        setVariantName(value);
         break;
       case "color":
         setColor(value);
@@ -166,22 +179,6 @@ const EditProduct = () => {
         alert("Please fill in all required fields.");
         return;
       }
-      const formData = new FormData();
-      formData.append("name", productName);
-      formData.append("brand", brand);
-      formData.append("category", category);
-      formData.append("productVariant", productVariant);
-      formData.append("color", color);
-      formData.append("stock", stock);
-      formData.append("regularPrice", regularPrice);
-      formData.append("salePrice", salePrice);
-      formData.append("description", description);
-
-      specifications.forEach((spec, index) => {
-        formData.append(`specifications[${index}][name]`, spec.name);
-        formData.append(`specifications[${index}][value]`, spec.value);
-      });
-
       // Perform the API request with formData
       const response = await axios.put(`${BASE_URL}/admin/products`, {
         brand,
@@ -228,7 +225,7 @@ const EditProduct = () => {
       variantFormData.append("color", color);
       variantFormData.append("regularprice", regularPrice);
       variantFormData.append("specialprice", salePrice);
-      variantFormData.append("variantName", productVariant);
+      variantFormData.append("variantName", variantName);
 
       // images.forEach((image, index) => {
       //   variantFormData.append(`photos[${index}]`, image);
@@ -350,7 +347,8 @@ const EditProduct = () => {
             <input value={salePrice} type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("salePrice", e.target.value)} />
           </div>
         </div>
-        <AddImages backendImages={backendImages} editproduct={true} images={images} onImageUpload={handleImageUpload} onRemoveImage={handleRemoveImage} />
+
+        <AddImages editproduct={true} images={images} onImageUpload={handleImageUpload} onRemoveImage={handleRemoveImage} />
         <div className="mt-10">
           <label className="block text-xl font-semibold mb-4">Specifications</label>
           {specifications.map((spec, index) => (

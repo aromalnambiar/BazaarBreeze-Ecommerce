@@ -147,7 +147,6 @@ const listProducts = async (req, res) => {
     try {
       const regex = new RegExp(query, 'i');
   
-      // Fetch products matching the search query
       const products = await Products.find(
         {
           $and: [

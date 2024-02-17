@@ -185,17 +185,17 @@ function ShoppingCart() {
                           </div>
                         </div>
                         <div className="flex justify-center w-1/5">
-                          <svg onClick={() => decreaseQuantity(item.productVariantId._id, index)} className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512">
+                          <svg onClick={() => decreaseQuantity(item?.productVariantId._id, index)} className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512">
                             <path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
                           </svg>
                           <input className="mx-2 border text-center w-8" type="text" value={quantity[index]} readOnly />
-                          <svg onClick={() => increaseQuantity(item.productVariantId._id, index)} className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512">
+                          <svg onClick={() => increaseQuantity(item?.productVariantId._id, index)} className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512">
                             <path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
                           </svg>
                         </div>
                         {/* {console.log("item : ", item)} */}
-                        <span className="text-center w-1/5 font-semibold text-sm">₹{item.productVariantId.salePrice}</span>
-                        <span className="text-center w-1/5 font-semibold text-sm">₹{item.productVariantId.salePrice * item.quantity}</span>
+                        <span className="text-center w-1/5 font-semibold text-sm">₹{item?.productVariantId?.salePrice}</span>
+                        <span className="text-center w-1/5 font-semibold text-sm">₹{item?.productVariantId?.salePrice * item?.quantity}</span>
                       </div>
                     );
                   })}
@@ -242,7 +242,7 @@ function ShoppingCart() {
               <div className="border-t mt-8">
                 <div className="flex font-semibold justify-between py-6 text-sm uppercase">
                   <span>Total cost</span>
-                  <span>${grandTotal}</span>
+                  <span>₹{grandTotal}</span>
                 </div>
                 <button onClick={handleCheckout} className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full" disabled={cartItems.length === 0}>
                   proceed to Checkout
