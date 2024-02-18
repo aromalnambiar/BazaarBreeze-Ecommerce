@@ -41,7 +41,7 @@ const viewProductVariant=async(req,res)=>{
 
 const addProduct=async(req,res)=>{
     try {
-        const details=req.body;
+        // const details=req.body;
         const {brand,name,category,description}=req.body;
         // console.log("details : ",details);
         // console.log("details : ");
@@ -64,6 +64,37 @@ const addProduct=async(req,res)=>{
         throw new Error;
     }
 }
+
+// const updateProduct=async(req,res)=>{
+//     try {
+//         // const details=req.body;
+//         const {brand,name,category,description,productId}=req.body;
+//         // console.log("details : ",details);
+//         // console.log("details : ");
+//         const product=await Products.findByIdAndUpdate({_id:productId},{
+//             brand,
+//             name,
+//             category,
+//             description,
+//             updatedDate:Date.now(),
+//         })
+//         // const product=new Products({
+//         //     brand,
+//         //     name,
+//         //     category,
+//         //     description,
+//         //     updatedDate:null,
+//         //     createdDate:Date.now(),
+            
+//         // })
+//         // console.log("product Id : ",productId);
+//         res.status(201).json({message:"success",productId});
+//         // console.log(images);
+//     } catch (error) {
+//         console.log(error);
+//         throw new Error;
+//     }
+// }
 
 const addProductVariant=async(req,res)=>{
     try {
@@ -98,9 +129,10 @@ const addProductVariant=async(req,res)=>{
 const editProduct=async(req,res)=>{
     try {
         console.log("editProduct working");
-        const productId  = req.params.productid; // Assuming the productId is in the request params
+        const productId  = req.params.productId; // Assuming the productId is in the request params
         console.log(productId);
         const { brand, name, category, description } = req.body;
+        console.log("body : ",req.body);
     
         // Assuming Products is the model for the Product collection
         const updatedProduct = await Products.findByIdAndUpdate(
@@ -129,6 +161,7 @@ const editProduct=async(req,res)=>{
 const editProductVariant = async (req, res) => {
   try {
     const { variantId } = req.params;
+    console.log("variant Id : ",variantId);
     const { stock, regularprice, color, specialprice, variantName } = req.body;
     let { specification } = req.body;
     const files = req.files;

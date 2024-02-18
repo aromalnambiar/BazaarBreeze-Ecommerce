@@ -31,6 +31,7 @@ router.post('/login', auth.login);
 router.get('/products', product.viewProducts);
 router.get('/products/:productId', product.viewProduct);
 router.post('/products', product.addProduct);
+router.put('/products', product.addProduct);
 router.get('/products/variant/:productId', product.viewProductVariant);
 router.post('/products/variant', upload.array('photos', 12), product.addProductVariant);
 router.put('/products/:productId', product.editProduct);

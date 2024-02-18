@@ -11,7 +11,6 @@ const EditProduct = () => {
   const [variantId, setVariantId] = useState("");
   const [brand, setBrand] = useState("");
   const [category, setCategory] = useState("");
-  const [productVariant, setProductVariant] = useState("");
   const [productVariantArray, setProductVariantArray] = useState([]);
   const [color, setColor] = useState("");
   const [stock, setStock] = useState(0);
@@ -21,14 +20,12 @@ const EditProduct = () => {
   const [description, setDescription] = useState("");
   const [activeTab, setActiveTab] = useState(0);
   const { productId } = useParams();
+  const [index, setIndex] = useState(0);
   // console.log("Product ID : ", productId);
 
   const [specifications, setSpecifications] = useState([{ name: "", value: "" }]);
   const [images, setImages] = useState([]);
-  const [backendImages, setBackendImages] = useState([]);
   const [imagesObjects, setImagesObjects] = useState([]);
-  const [isProductAdded, setIsProductAdded] = useState(false);
-  //   const [productId, setProductId] = useState("");
   const [categoryOptions, setCategoryOptions] = useState([]);
 
   const navigate = useNavigate();
@@ -73,7 +70,7 @@ const EditProduct = () => {
           const response = await axios.get(`${BASE_URL}/admin/categories/${categoryId}`);
           const categoryName = response.data.category.name;
           setCategory(categoryName);
-          console.log("category Name : ", categoryName);
+          // console.log("category Name : ", categoryName);
           //   setCategoryOptions(response.data.categories);
         }
       } catch (error) {
@@ -91,27 +88,29 @@ const EditProduct = () => {
           const response = await axios.get(`${BASE_URL}/admin/products/variant/${productId}`);
           const variantData = response.data.variant;
           // console.log("variant: ", variantData);
+          // console.log("variant ID ::: ", variantData[0]._id);
+          setVariantId(variantData[index]._id);
           setVariant(variantData);
           setProductVariantArray(variantData);
-          setVariantName(variantData[0].variantName);
+          setVariantName(variantData[index].variantName);
           //   setProductName(variant[0].variantName);
-          setStock(variantData[0].stock);
-          setSalePrice(variantData[0].salePrice);
-          setRegularPrice(variantData[0].regularPrice);
-          const blobPromises = variantData[0].images.map(async (imageUrl) => {
+          setStock(variantData[index].stock);
+          setSalePrice(variantData[index].salePrice);
+          setRegularPrice(variantData[index].regularPrice);
+          let file = [];
+          const blobPromises = variantData[index].images.map(async (imageUrl) => {
             const response = await fetch(`${BASE_URL}/uploads/${imageUrl}`);
             const blob = await response.blob();
+            const fileOne = new File([blob], `${imageUrl}`, { type: blob.type });
+            file.push(fileOne);
+            // console.log("file : ", file);
             return URL.createObjectURL(blob);
           });
           const blobs = await Promise.all(blobPromises);
+          // console.log("file : ", file);
           setImages(blobs);
-          // setImagesObjects(blobs);
-          // console.log("blobs : ", blobs);
-          // Wait for all blob promises to resolve
-          // setImages(variantData[0].images);
-          // setImages(variantData[0].images);
-          setSpecifications(variantData[0].specification);
-          setVariantId(variantData[0]._id);
+          setImagesObjects(file);
+          setSpecifications(variantData[index].specification);
           //   setCategoryOptions(response.data.categories);
         }
       } catch (error) {
@@ -119,7 +118,8 @@ const EditProduct = () => {
       }
     };
     fetchData();
-  }, [productId]);
+  }, [variantId]);
+  // console.count("count");
 
   const handleAddSpecification = () => {
     setSpecifications([...specifications, { name: "", value: "" }]);
@@ -137,7 +137,9 @@ const EditProduct = () => {
     setSpecifications(updatedSpecifications);
   };
 
-  console.log("variant Name : ", variantName);
+  // console.log("variant id : ", variantId);
+  // console.log("variant Name : ", variantName);
+  // console.log("image object : ", imagesObjects);
 
   const handleInputChange = (fieldName, value) => {
     switch (fieldName) {
@@ -149,6 +151,7 @@ const EditProduct = () => {
         break;
       case "category":
         setCategory(value);
+        setCategoryId(value);
         break;
       case "productVariant":
         setVariantName(value);
@@ -173,31 +176,35 @@ const EditProduct = () => {
     }
   };
 
+  // console.log("category Id : ", categoryId);
+  // console.log("category  : ", category);
+
   const handleAddProduct = async () => {
     try {
-      if (!productName || !brand || !category || !stock || !regularPrice || !salePrice || !description) {
+      if (!productName || !brand || !category || !description) {
         alert("Please fill in all required fields.");
         return;
       }
       // Perform the API request with formData
-      const response = await axios.put(`${BASE_URL}/admin/products`, {
+      const response = await axios.put(`${BASE_URL}/admin/products/${productId}`, {
         brand,
         name: productName,
-        category,
+        category: categoryId,
         description,
       });
 
-      console.log("RESPONSE : ", response.data);
+      // console.log("RESPONSE : ", response.data);
 
-      setIsProductAdded(true);
+      alert("product added successfully");
     } catch (error) {
       console.error("Error adding product:", error);
+      alert("Error adding product");
     }
   };
 
   const handleImageUpload = (e) => {
-    console.log("I am working fine ");
-    console.log("handleImageUpload");
+    // console.log("I am working fine ");
+    // console.log("handleImageUpload");
     if (images.length < 8) {
       const file = e.target.files[0];
       console.log("handleImage : ", file);
@@ -238,8 +245,8 @@ const EditProduct = () => {
         variantFormData.append("photos", image);
       });
 
-      console.log("Images : ", imagesObjects);
-      console.log("variantFormData : ", variantFormData);
+      // console.log("Images : ", imagesObjects);
+      // console.log("variantFormData : ", variantFormData);
       specifications.forEach((spec, index) => {
         variantFormData.append(`specification[${index}][name]`, spec.name);
         variantFormData.append(`specification[${index}][value]`, spec.value);
@@ -257,14 +264,15 @@ const EditProduct = () => {
   const handleTabClicks = async (index) => {
     setVariantName(variant[index].variantName);
     //   setProductName(variant[0].variantName);
+    setVariantId(variant[index]._id);
+    setIndex(index);
     setStock(variant[index].stock);
     setSalePrice(variant[index].salePrice);
     setRegularPrice(variant[index].regularPrice);
     // setImages(variant[index].images);
-    setBackendImages(variant[index].images);
+    // setBackendImages(variant[index].images);
     setSpecifications(variant[index].specification);
     setSpecifications(variant[index].specification);
-    setVariantId(variant[index]._id);
   };
 
   console.log("variantId  : ", variantId);
@@ -348,7 +356,7 @@ const EditProduct = () => {
           </div>
         </div>
 
-        <AddImages editproduct={true} images={images} onImageUpload={handleImageUpload} onRemoveImage={handleRemoveImage} />
+        <AddImages images={images} onImageUpload={handleImageUpload} onRemoveImage={handleRemoveImage} />
         <div className="mt-10">
           <label className="block text-xl font-semibold mb-4">Specifications</label>
           {specifications.map((spec, index) => (

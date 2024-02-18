@@ -2,12 +2,12 @@ import React, { useState } from "react";
 import { BASE_URL } from "../../config";
 
 const AddImages = ({ images, onImageUpload, onRemoveImage, editproduct }) => {
-  console.log("PROPS : ", editproduct);
+  // console.log("PROPS : ", editproduct);
   return (
     <div className="max-w-md mx-auto bg-white p-4 rounded-md shadow-md mt-12">
       <label className="block text-lg font-bold mb-4">Add Images</label>
       <div className="flex flex-wrap gap-4 justify-around">
-        {console.log("image add image : ", images)}
+        {/* {console.log("image add image : ", images)} */}
         {images.map((image, index) => (
           <div key={index} className="mb-4 flex items-center">
             <img src={` ${image}`} alt={`Image ${index + 1}`} className="w-16 h-16 object-cover mr-4" />
