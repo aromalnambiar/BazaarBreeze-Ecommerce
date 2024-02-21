@@ -1,18 +1,17 @@
 // RadioButtonFilter.js
 import React, { useState } from "react";
 
-const BrandFilter = () => {
+const PriceFilter = ({ onPriceChange }) => {
   const [selectedOption, setSelectedOption] = useState(null);
 
   const options = [100, 300, 500, 1000, 2000];
 
   const handleOptionChange = (option) => {
     setSelectedOption(option);
-    // Perform filtering logic based on the selected option
     console.log(`Filtering by: ${option}`);
-    // You can update the state or perform other actions as needed
+    onPriceChange(option);
   };
-  console.log("selectedOption : ", selectedOption);
+  // console.log("selectedOption : ", selectedOption);
   return (
     <div className="flex flex-col space-y-2 mt-8 items-start pl-2 space-x-4">
       <span className="text-gray-700 pl-4 mb-4">Price Range : </span>
@@ -26,4 +25,4 @@ const BrandFilter = () => {
   );
 };
 
-export default BrandFilter;
+export default PriceFilter;

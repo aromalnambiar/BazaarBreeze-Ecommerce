@@ -1,7 +1,7 @@
 const router=require('express').Router();
 const multer=require('multer');
 const path=require('path');
-const { authenticateJWT} = require('../middlewares/authMiddleware.js');
+const { authenticateJWT,isAdmin} = require('../middlewares/authMiddleware.js');
 const auth=require('../controllers/adminController/authController.js');
 const category=require('../controllers/adminController/categoryController.js');
 const order=require('../controllers/adminController/orderController.js');
@@ -28,60 +28,63 @@ const storage = multer.diskStorage({
 router.post('/login', auth.login);
 
 // Products
-router.get('/products', product.viewProducts);
-router.get('/products/:productId', product.viewProduct);
-router.post('/products', product.addProduct);
-router.put('/products', product.addProduct);
-router.get('/products/variant/:productId', product.viewProductVariant);
-router.post('/products/variant', upload.array('photos', 12), product.addProductVariant);
-router.put('/products/:productId', product.editProduct);
-router.put('/products/variant/:variantId', upload.array('photos'), product.editProductVariant);
-router.delete('/products/:productId', product.deleteProduct);
+router.get('/products',authenticateJWT,isAdmin, product.viewProducts);
+router.get('/products/:productId', authenticateJWT,isAdmin,product.viewProduct);
+router.post('/products', authenticateJWT,isAdmin,product.addProduct);
+router.put('/products', authenticateJWT,isAdmin,product.addProduct);
+router.get('/products/variant/:productId', authenticateJWT,isAdmin,product.viewProductVariant);
+router.post('/products/variant',authenticateJWT,isAdmin, upload.array('photos', 12), product.addProductVariant);
+router.put('/products/:productId',authenticateJWT,isAdmin, product.editProduct);
+router.put('/products/variant/:variantId',authenticateJWT,isAdmin, upload.array('photos'), product.editProductVariant);
+router.patch('/products/:productId',authenticateJWT,isAdmin, product.deleteProduct);
 
 // Categories
-router.get('/categories', category.viewCategories);
-router.post('/categories', upload.single('image'), category.addCategory);
-router.put('/categories/:categoryId', upload.single('image'), category.editCategory);
-router.get('/categories/:categoryId', category.viewCategory);
-router.delete('/categories/:categoryId', category.deleteCategory);
+router.get('/categories',authenticateJWT,isAdmin, category.viewCategories);
+router.post('/categories',authenticateJWT,isAdmin, upload.single('image'), category.addCategory);
+router.put('/categories/:categoryId',authenticateJWT,isAdmin, upload.single('image'), category.editCategory);
+router.get('/categories/:categoryId',authenticateJWT,isAdmin, category.viewCategory);
+router.delete('/categories/:categoryId',authenticateJWT,isAdmin, category.deleteCategory);
 
 // Orders
-router.get('/orders', order.viewOrders);
-router.patch('/orders/status', order.changeOrderStatus);
+router.get('/orders',authenticateJWT,isAdmin, order.viewOrders);
+router.patch('/orders/status',authenticateJWT,isAdmin, order.changeOrderStatus);
+router.get('/orders/bestselling-products', order.getBestSellingProducts);
+router.get('/orders/bestselling-categories', order.getBestSellingCategories);
+router.get('/orders/bestselling-brands',authenticateJWT,isAdmin, order.getBestSellingBrands);
 
 // Users
-router.get('/users', user.viewUsers);
-router.put('/users/:userId', user.blockUser);
+router.get('/users',authenticateJWT,isAdmin, user.viewUsers);
+router.put('/users/:userId',authenticateJWT,isAdmin, user.blockUser);
 // router.delete('/users/:user-id');
 // router.put('/users/:user-id/disable');
 // router.get('/users/search');
 // router.get('/users/users/:user-id');
 
 // Coupons
-router.get('/coupon',coupon.getAllCoupons);
-router.post('/coupon',coupon.createCoupon);
-router.post('/coupon/:couponId',coupon.createCoupon);
-router.get('/coupon/:couponId',coupon.getCouponById);
-router.put('/coupon/:couponId',coupon.updateCouponById);
-router.delete('/coupon/:couponId',coupon.deleteCouponById);
+router.get('/coupon',authenticateJWT,isAdmin,coupon.getAllCoupons);
+router.post('/coupon',authenticateJWT,isAdmin,coupon.createCoupon);
+router.post('/coupon/:couponId',authenticateJWT,isAdmin,coupon.createCoupon);
+router.get('/coupon/:couponId',authenticateJWT,isAdmin,coupon.getCouponById);
+router.put('/coupon/:couponId',authenticateJWT,isAdmin,coupon.updateCouponById);
+router.delete('/coupon/:couponId',authenticateJWT,isAdmin,coupon.deleteCouponById);
 
 // Offers
-router.get('/offer',offer.getAllOffers);
-router.post('/offer',offer.createOffer);
-router.get('/offer/:offerId',offer.getOfferById);
-router.put('/offer/:offerId',offer.updateOfferById);
-router.delete('/offer/:offerId',offer.deleteOfferById);
+router.get('/offer',authenticateJWT,isAdmin,offer.getAllOffers);
+router.post('/offer',authenticateJWT,isAdmin,offer.createOffer);
+router.get('/offer/:offerId',authenticateJWT,isAdmin,offer.getOfferById);
+router.put('/offer/:offerId',authenticateJWT,isAdmin,offer.updateOfferById);
+router.delete('/offer/:offerId',authenticateJWT,isAdmin,offer.deleteOfferById);
 
 //sales
-router.get('/sales',sales.generateSalesReport);
-router.get('/salesReport',sales.getSalesReport);
-router.get('/salesCount',sales.getOverallSalesCount);
-router.get('/orderAmount',sales.getOverallOrderAmount);
-router.get('/overallSalesCountAndAmount',sales.getOverallSalesCountAndAmount);
+router.get('/sales',authenticateJWT,isAdmin,sales.generateSalesReport);
+router.get('/salesReport',authenticateJWT,isAdmin,sales.getSalesReport);
+router.get('/salesCount',authenticateJWT,isAdmin,sales.getOverallSalesCount);
+router.get('/orderAmount',authenticateJWT,isAdmin,sales.getOverallOrderAmount);
+router.get('/overallSalesCountAndAmount',authenticateJWT,isAdmin,sales.getOverallSalesCountAndAmount);
 
-router.post('/salesCSV',sample.exportCSV);
-router.post('/salesExcel',sample.exportExcel);
-router.get('/salesPDF',sample.exportPDF);
+router.post('/salesCSV',authenticateJWT,isAdmin,sample.exportCSV);
+router.post('/salesExcel',authenticateJWT,isAdmin,sample.exportExcel);
+router.get('/salesPDF',authenticateJWT,isAdmin,sample.exportPDF);
 
 // router.get('/orders');
 // router.put('/orders/:order-id');

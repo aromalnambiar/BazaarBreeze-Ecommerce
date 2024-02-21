@@ -2,6 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "../../../User/config";
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function AddCategory() {
   const name = useRef();
@@ -27,29 +28,49 @@ function AddCategory() {
     setPreviewImage(null);
   };
 
-  const addCategory = () => {
-    const formData = new FormData();
-    formData.append("name", name.current.value);
-    formData.append("description", description.current.value);
-    formData.append("image", image);
+  const addCategory = async () => {
+    try {
+      const confirmed = await Swal.fire({
+        title: "Are you sure?",
+        text: "You will be able to delete this category later!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Add it!",
+      });
 
-    const result = axios
-      .post(`${BASE_URL}/admin/products/category`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      })
-      .then((res) => {
+      if (confirmed.isConfirmed) {
+        const formData = new FormData();
+        formData.append("name", name.current.value);
+        formData.append("description", description.current.value);
+        formData.append("image", image);
+
+        const result = await axios.post(`${BASE_URL}/admin/categories`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
+        });
+
         name.current.value = "";
         description.current.value = "";
         setImage(null);
         setPreviewImage(null);
-        console.log(res.data.message);
-        alert(res.data.message);
-      })
-      .catch((err) => {
-        console.log(err);
+        console.log(result.data.message);
+        Swal.fire({
+          title: "Added!",
+          text: `${result.data.message}`,
+          icon: "success",
+        });
+      }
+    } catch (error) {
+      Swal.fire({
+        title: "Not Success!",
+        text: "Category not Added Successfully!!!",
+        icon: "error",
       });
+    }
   };
 
   return (

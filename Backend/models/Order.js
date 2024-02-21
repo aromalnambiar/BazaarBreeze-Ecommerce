@@ -54,7 +54,7 @@ const OrderSchema=new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
-    coupons:{ type: [] , default: [],},
+    coupons:{ type: String , default: '',},
     totalAmount: { type: Number, required: true },
     orderStatus:{
         type:String,

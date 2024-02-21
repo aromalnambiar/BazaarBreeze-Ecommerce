@@ -98,7 +98,7 @@ function Checkout(props) {
           paymentMethod: selectedPayment.name,
           shippingAddress: props.address,
           orderDate: new Date(),
-          coupons: [props.couponId],
+          coupons: props.couponId || "",
           totalAmount: props.grandTotal,
           orderStatus: "Pending",
         },
@@ -230,7 +230,7 @@ function Checkout(props) {
                 <div className="flex items-center gap-4 ">
                   <img className="w-12 h-12" src={`${BASE_URL}/uploads/${item.productVariantId.images[0]}`} alt="" />
                   <div>
-                    <p>{item.productVariantId.variantName||"variant Name"}</p>
+                    <p>{item.productVariantId.variantName || "variant Name"}</p>
                     <p>x {item.quantity}</p>
                   </div>
                 </div>
@@ -253,9 +253,6 @@ function Checkout(props) {
               <h3 className=" font-bold">Amount Payable</h3>
               <p>{total}</p>
             </div>
-            <button onClick={() => handlePlaceOrder()} className="bg-[#FA8232] hover:bg-[#fa5914] text-white uppercase font-bold mt-4 mx-2 rounded-sm py-4 px-4">
-              place order
-            </button>
           </div>
         </div>
       </div>

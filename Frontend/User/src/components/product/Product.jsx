@@ -4,38 +4,41 @@ import axios from "axios";
 import { BASE_URL } from "../../../config";
 import { useNavigate, useParams } from "react-router-dom";
 import Specification from "./Specification";
+import Modal from "../common/Modal";
 
 function Product() {
   const { id: productId } = useParams();
   const [item, setItem] = useState({});
   const [category, setCategory] = useState("");
   const [isSpecification, setIsSpecification] = useState(false);
+  const [galleryImages, setGalleryImages] = useState([]);
   const [isCartFound, setIsCartFound] = useState(false);
   const [isWishlistFound, setIsWishlistFound] = useState(false);
   const [dataRetrieved, setDataRetrieved] = useState(false);
+  const [image, setImage] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchDetails = async () => {
-      const userId = localStorage.getItem("userId");
-
       const response = await axios.get(`${BASE_URL}/user/products/${productId}/product`, {
         headers: {
           Authorization: `${localStorage.getItem("token")}`,
         },
       });
-      console.log("RESPONSE : ", response);
+      console.log("RESPONSE : ", response.data.productDetails);
       setItem(response.data.productDetails);
       setCategory(response.data.category);
       setIsCartFound(response.data.isCartFound);
       setIsWishlistFound(response.data.isWishlistFound);
-
+      setImage(response.data.productDetails.productDetails.images[0]);
+      setGalleryImages(response.data.productDetails.productDetails.images);
       setDataRetrieved(true);
     };
 
     fetchDetails();
     window.scrollTo(0, 0);
   }, [productId]);
+  // console.log("galary images : ", galleryImages);
   // console.log("Item  : ", item);
   const handleAddToCart = async (id) => {
     try {
@@ -98,14 +101,22 @@ function Product() {
       console.error("Error adding item to wishlist:", error);
     }
   };
+  const handleGalleryImageClick = (base_url) => {
+    setImage(base_url);
+  };
+
   return (
     <>
       <div className="grid grid-cols-12 mt-8 text-sm max-w-[940px]  gap-8">
-        <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6">
-          <div className="border max-w-[350px] min-h-[310px] p-10 mx-auto">
-            <img className="mx-auto w-full h-full" src={`${BASE_URL}/uploads/${item?.productDetails?.images[0]}` || photo} alt="" />
+        <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6 border p-4 rounded-md ">
+          <div className="border  rounded-lg  max-w-[350px] min-h-[310px] p-10 mx-auto">
+            <img className="mx-auto hover:scale-125 w-full h-full" src={`${BASE_URL}/uploads/${image}` || photo} alt="" />
+          </div>
+          <div className="mt-6 w-max   max-w-[24rem] mx-auto whitespace-nowrap overflow-x-scroll no-scrollbar ">
+            <div className="flex gap-4 ">{galleryImages.length > 1 && galleryImages.map((image, index) => <img key={index} className="cursor-pointer shadow-sm w-16 h-16 border rounded-lg" src={`${BASE_URL}/uploads/${image}`} alt={`Gallery Image ${index + 1}`} onClick={() => handleGalleryImageClick(image)} />)}</div>
           </div>
         </div>
+
         <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6">
           <h3 className="font-semibold mb-4">{item.description || "2020 Apple MacBook Pro with Apple M1 Chip (13-inch, 8GB RAM, 256GB SSD Storage) - Space Gray"}</h3>
           <div>
@@ -145,7 +156,7 @@ function Product() {
               <div>1TB SSD Storage</div>
             </div>
           </div>
-          <div className="flex items-center h-10 my-6 gap-4 text-xs font-bold justify-center">
+          <div className="flex items-center  h-10 my-6 mt-[60px] gap-4 text-xs font-bold justify-start">
             {dataRetrieved && isCartFound ? (
               <button onClick={() => navigate("/cart")} className="bg-[#FA8232] text-white  px-16 h-full rounded ">
                 VIEW CART
@@ -155,7 +166,7 @@ function Product() {
                 ADD TO CART
               </button>
             )}
-            <button className="outline outline-[#FA8232] text-[#FA8232] h-full  rounded  px-6">BUY NOW</button>
+            {/* <button className="outline outline-[#FA8232] text-[#FA8232] h-full  rounded  px-6">BUY NOW</button> */}
           </div>
           <div
             onClick={() => {
@@ -165,7 +176,7 @@ function Product() {
                 handleAddToWishlist(item.productDetails._id);
               }
             }}
-            className="flex items-center gap-2 cursor-pointer"
+            className="flex items-center justify-start w-max  gap-2 mt-[40px] cursor-pointer"
           >
             <svg width="22" height="22" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M16 27C16 27 3.5 20 3.5 11.5C3.5 9.99736 4.02062 8.54113 4.97328 7.37907C5.92593 6.21702 7.25178 5.42092 8.72525 5.12623C10.1987 4.83154 11.7288 5.05645 13.0551 5.76271C14.3814 6.46897 15.4221 7.61295 16 9C16.5779 7.61295 17.6186 6.46897 18.9449 5.76271C20.2712 5.05645 21.8013 4.83154 23.2748 5.12623C24.7482 5.42092 26.0741 6.21702 27.0267 7.37907C27.9794 8.54113 28.5 9.99736 28.5 11.5C28.5 20 16 27 16 27Z" fill={isWishlistFound ? "red" : "white"} />

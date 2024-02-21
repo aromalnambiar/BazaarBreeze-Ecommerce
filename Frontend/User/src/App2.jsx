@@ -29,6 +29,7 @@ function App() {
               <Route path="/product/:id" element={<Product />} />
               <Route path="/dashboard/*" element={isAuthenticated ? <Dashboard /> : <Navigate to="/user/signin" />} />
               <Route path="/filter/*" element={<Filter />} />
+              <Route path="/Offers/*" element={<Filter />} />
               <Route path="/*" element={<Home />} />
             </Routes>
           </MaxWidth>

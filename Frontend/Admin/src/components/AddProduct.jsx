@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../../User/config";
-import { useNavigate } from "react-router-dom";
 import AddImages from "./AddImages";
+import Swal from "sweetalert2";
 
 const AddProduct = () => {
   const [formData, setFormData] = useState({
@@ -24,13 +24,15 @@ const AddProduct = () => {
   const [productId, setProductId] = useState("");
   const [categoryOptions, setCategoryOptions] = useState([]);
 
-  const navigate = useNavigate();
-
   //for category fetching
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/admin/categories`);
+        const response = await axios.get(`${BASE_URL}/admin/categories`, {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
+        });
         setCategoryOptions(response.data.categories);
       } catch (error) {
         console.log(error);
@@ -50,17 +52,45 @@ const AddProduct = () => {
         return;
       }
 
-      const response = await axios.post(`${BASE_URL}/admin/products`, {
-        brand: formData.brand,
-        name: formData.productName,
-        category: formData.category,
-        description: formData.description,
-      });
+      const response = await axios.post(
+        `${BASE_URL}/admin/products`,
+        {
+          brand: formData.brand,
+          name: formData.productName,
+          category: formData.category,
+          description: formData.description,
+        },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
+        }
+      );
 
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: "success",
+        title: "Product added successfully",
+      });
       setProductId(response.data.productId);
       setIsProductAdded(true);
     } catch (error) {
-      console.error("Error adding product:", error);
+      // console.error("Error adding product:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
     }
   };
 
@@ -93,7 +123,6 @@ const AddProduct = () => {
       variantFormData.append("regularprice", formData.regularPrice);
       variantFormData.append("specialprice", formData.salePrice);
       variantFormData.append("variantName", formData.productVariant);
-
       imagesObjects.forEach((image, index) => {
         variantFormData.append("photos", image);
       });
@@ -105,11 +134,35 @@ const AddProduct = () => {
         variantFormData.append(`specification[${index}][value]`, spec.value);
       });
 
-      const variantResponse = await axios.post(`${BASE_URL}/admin/products/variant`, variantFormData);
+      const variantResponse = await axios.post(`${BASE_URL}/admin/products/variant`, variantFormData, {
+        headers: {
+          Authorization: `${localStorage.getItem("adminToken")}`,
+        },
+      });
       console.log(variantResponse.data);
-      alert(variantResponse.data.message);
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: false,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: "success",
+        title: `${variantResponse.data.message}`,
+      });
+      // alert(variantResponse.data.message);
     } catch (error) {
-      console.error("Error adding product variant:", error);
+      // console.error("Error adding product variant:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
     }
   };
 
@@ -135,7 +188,7 @@ const AddProduct = () => {
     updatedSpecifications[index][field] = e.target.value;
     setSpecifications(updatedSpecifications);
   };
-  
+
   const handleRemoveSpecification = (index) => {
     const updatedSpecifications = [...specifications];
     updatedSpecifications.splice(index, 1);

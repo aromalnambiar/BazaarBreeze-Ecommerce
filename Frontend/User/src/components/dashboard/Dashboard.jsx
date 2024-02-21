@@ -9,6 +9,7 @@ import { Routes, Route } from "react-router-dom";
 import Address from "./Address.jsx";
 import Wishlist from "../cart/Wishlist.jsx";
 import Wallet from "./Wallet.jsx";
+import Offers from "./Offers.jsx";
 
 function Dashboard() {
   return (
@@ -25,6 +26,7 @@ function Dashboard() {
             <Route path="profile" element={<EditProfile />} />
             <Route path="wishlists" element={<Wishlist />} />
             <Route path="wallet" element={<Wallet />} />
+            <Route path="offers" element={<Offers />} />
             {/* <Route path="address" element={<Address />} /> */}
             <Route path="settings" element={<Settings />} />
             <Route path="order-details/:orderId" element={<OrderDetails />} />

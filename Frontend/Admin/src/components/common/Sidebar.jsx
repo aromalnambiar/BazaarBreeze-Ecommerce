@@ -45,6 +45,20 @@ const Sidebar = () => {
         { to: "/category/add", text: "Add category" },
       ],
     },
+    {
+      label: "Offers",
+      links: [
+        { to: "/offers", text: "View all offers" },
+        { to: "/offers/add", text: "Add offer" },
+      ],
+    },
+    {
+      label: "Coupons",
+      links: [
+        { to: "/coupons", text: "View all coupons" },
+        { to: "/coupons/add", text: "Add coupon" },
+      ],
+    },
   ];
 
   return (

@@ -75,7 +75,29 @@ const removeCoupon = async (req, res) => {
     }
   };
 
+  const getAllValidCoupons = async (req, res) => {
+    try {
+      const currentDate = new Date();
+  
+      const validCoupons = await Coupon.find({
+        validFrom: { $lte: currentDate },
+        validUntil: { $gte: currentDate },
+        isActive: true,
+        $or: [
+          { usageLimit: null }, // No usage limit
+          { usageLimit: { $gt: 0 } }, // Usage limit greater than 0
+        ],
+      });
+  
+      res.status(200).json(validCoupons);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
 module.exports={
     applyCoupon,
-    removeCoupon
+    removeCoupon,
+    getAllValidCoupons
 }

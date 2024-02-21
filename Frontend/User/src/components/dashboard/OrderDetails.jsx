@@ -1,6 +1,7 @@
 import { useState } from "react";
 import photo from "../../assets/images/Laptop.png";
-import Steps from "../order/Steps";
+// import Steps from "../order/Steps";
+import Steps from "../order/Stepper";
 import Timeline from "../order/Timeline";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";

@@ -4,6 +4,7 @@ import { FaCircleUser } from "react-icons/fa6";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../config";
+import Swal from "sweetalert2";
 
 function UsersList() {
   const navigate = useNavigate();
@@ -12,30 +13,59 @@ function UsersList() {
 
   useEffect(() => {
     const result = axios
-      .get(`${BASE_URL}/admin/users`)
+      .get(`${BASE_URL}/admin/users`, {
+        headers: {
+          Authorization: `${localStorage.getItem("adminToken")}`,
+        },
+      })
       .then((res) => {
         console.log(res.data.users);
         setUsers(res.data.users);
-        // setUsers(()=>);
       })
       .catch((res) => {
         console.log(res);
       });
   }, [isToggle]);
 
-  const handleBlock = (item) => {
-    if (confirm(`Do you want to ${item.isBlocked ? "Unblock" : "Block"} the user`)) {
-      console.log(item);
-      const result = axios
-        .put(`${BASE_URL}/admin/users/${item._id}`) 
-        .then((res) => {
-          console.log(res);
-          alert(res.data.message);
-          setIsToggle((prev) => !prev);
-        })
-        .catch((res) => {
-          console.log(res);
+  const handleBlock = async (item) => {
+    // console.log(`${localStorage.getItem("adminToken")}`);
+    const confirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: `Do you want to ${item.isBlocked ? "Unblock" : "Block"} the user`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: `Yes, ${item.isBlocked ? "Unblock" : "Block"} it!`,
+    });
+
+    if (confirmed.isConfirmed) {
+      try {
+        const result = await axios.put(
+          `${BASE_URL}/admin/users/${item._id}`,
+          {},
+          {
+            headers: {
+              Authorization: `${localStorage.getItem("adminToken")}`,
+            },
+          }
+        );
+
+        console.log(result);
+        Swal.fire({
+          title: "Success!",
+          text: `${result.data.message}`,
+          icon: "success",
         });
+        setIsToggle((prev) => !prev);
+      } catch (error) {
+        console.log(error);
+        Swal.fire({
+          title: "Not Success!",
+          text: "operation not successful",
+          icon: "error",
+        });
+      }
     }
   };
   return (

@@ -33,6 +33,7 @@ const showAddresses = async (req, res) => {
       res.status(500).json({message:"Server error"});
     }
   }
+  
   const editProfile = async (req, res) => {
     try {
       console.log("editProfile");

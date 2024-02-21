@@ -8,7 +8,7 @@ const createOffer = async (req, res) => {
     res.status(201).json({ message: 'Offer created successfully', offer: savedOffer });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -19,7 +19,7 @@ const getAllOffers = async (req, res) => {
     res.status(200).json({ message: 'Success', offers });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -36,7 +36,7 @@ const getOfferById = async (req, res) => {
     res.status(200).json({ message: 'Success', offer });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 

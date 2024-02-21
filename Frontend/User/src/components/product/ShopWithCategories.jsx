@@ -24,7 +24,7 @@ function ShopWithCategories() {
         <div className="md:max-w-[1020px] whitespace-nowrap overflow-x-scroll no-scrollbar">
           {categories.map((item) => {
             return (
-              <div onClick={() => navigate("/filter")} key={item._id} className="inline-block relative cursor-pointer w-[150px] mx-4 border p-4  h-[150px]">
+              <div onClick={() => navigate("/filter", { state: { key: `${item.name}` } })} key={item._id} className="inline-block relative cursor-pointer w-[150px] mx-4 rounded-lg shadow-md border p-4  h-[150px]">
                 <img src={`${BASE_URL}/uploads/${item.image}`} alt="" className="object-cover" />
                 <h4 className="absolute bottom-2 left-0 right-0 mx-auto text-center text-xs">{item.name}</h4>
               </div>

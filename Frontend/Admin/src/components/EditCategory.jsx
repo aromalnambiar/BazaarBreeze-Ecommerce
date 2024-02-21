@@ -15,7 +15,11 @@ function EditCategory({ categoryId, setIsEdit }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/admin/categories/${categoryId}`);
+        const response = await axios.get(`${BASE_URL}/admin/categories/${categoryId}`, {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
+        });
         const fetchedCategory = response.data.category;
         name.current.value = fetchedCategory.name || "";
         description.current.value = fetchedCategory.description || "";
@@ -53,6 +57,7 @@ function EditCategory({ categoryId, setIsEdit }) {
       const response = await axios.put(`${BASE_URL}/admin/products/category/${categoryId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
+          Authorization: `${localStorage.getItem("adminToken")}`,
         },
       });
 

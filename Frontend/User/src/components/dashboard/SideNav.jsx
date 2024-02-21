@@ -4,6 +4,7 @@ import { CgTrack } from "react-icons/cg";
 import { LuShoppingCart } from "react-icons/lu";
 import { IoMdHeartEmpty } from "react-icons/io";
 import { LiaIdCardSolid } from "react-icons/lia";
+import { BiSolidOffer } from "react-icons/bi";
 import { GoGear } from "react-icons/go";
 import { LuWallet } from "react-icons/lu";
 import { TbLogout } from "react-icons/tb";
@@ -25,6 +26,7 @@ function SideNav() {
     LiaIdCardSolid,
     GoGear,
     LuWallet,
+    BiSolidOffer,
     TbLogout,
   };
   let lists = [
@@ -36,6 +38,7 @@ function SideNav() {
     { name: "Cards&Address", logo: "LiaIdCardSolid", path: "/dashboard/cards" },
     { name: "Settings", logo: "GoGear", path: "/dashboard/settings" },
     { name: "Wallet", logo: "LuWallet", path: "/dashboard/wallet" },
+    { name: "Offers", logo: "BiSolidOffer", path: "/dashboard/offers" },
     { name: "Logout", logo: "TbLogout", path: "/dashboard/logout" },
   ];
 

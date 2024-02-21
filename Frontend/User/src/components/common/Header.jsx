@@ -24,7 +24,7 @@ function Header() {
     } else handleSearch();
     // }
   }, [query]);
-  console.log("products : ", products);
+  // console.log("products : ", products);
   // const handleBlur = () => {
   //   console.log("blur");
   //   setIsActive((prev) => !prev);

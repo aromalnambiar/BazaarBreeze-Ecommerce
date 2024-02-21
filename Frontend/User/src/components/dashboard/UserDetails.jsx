@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { PiRocketLight } from "react-icons/pi";
-import { FaRegNewspaper, FaRegCheckSquare } from "react-icons/fa";
+import { FaRegNewspaper, FaUserCircle, FaRegCheckSquare } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
@@ -17,7 +17,7 @@ function AccountInfo({ user, handleEditAccount }) {
       </div>
       <div className="text-sm mx-4">
         <div className="flex text-xs items-center gap-4 my-4">
-          <img src={`${BASE_URL}/uploads/${user.image}` || profile} className="w-10 h-10 rounded-full" alt="" srcSet="" />
+          {user.image ? <img src={`${BASE_URL}/uploads/${user.image}`} className="w-10 h-10 rounded-full" alt="" srcSet="" /> : <FaUserCircle className="w-10 h-10 text-gray-400"/>}
           <div>
             <h3 className="text-sm ">{user.username}</h3>
           </div>

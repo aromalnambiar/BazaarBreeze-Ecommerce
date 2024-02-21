@@ -4,6 +4,7 @@ import { FaCircleUser } from "react-icons/fa6";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../config";
+import Swal from "sweetalert2";
 
 function OrdersList() {
   const navigate = useNavigate();
@@ -14,7 +15,11 @@ function OrdersList() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/admin/orders`);
+        const res = await axios.get(`${BASE_URL}/admin/orders`, {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
+        });
         // console.log("res : ", res.data.orders);
         const ordersWithStatus = res.data.orders.reduce((acc, order) => {
           acc[order.orderId] = order.orderStatus;
@@ -33,32 +38,50 @@ function OrdersList() {
 
   const handleOrderStatusChange = async (orderId, newOrderStatus) => {
     try {
-      console.log("orderId: ", orderId, "orderStatus: ", newOrderStatus);
       const response = await axios.patch(
         `${BASE_URL}/admin/orders/status`,
         { orderStatus: newOrderStatus, orderId },
         {
           headers: {
-            Authorization: `${localStorage.getItem("token")}`,
+            Authorization: `${localStorage.getItem("adminToken")}`,
           },
         }
       );
-      alert("updated successfully");
-      console.log("Order status updated successfully:", response.data);
+      Swal.fire({
+        title: "Success!",
+        text: `${response.data.message}`,
+        icon: "success",
+      });
     } catch (error) {
-      console.error("Error updating order status:", error);
+      // console.error("Error updating order status:", error);
+      Swal.fire({
+        title: "Not Success!",
+        text: "Order is not updated successfully",
+        icon: "error",
+      });
     }
   };
 
-  const handleChange = (orderId, value) => {
-    setSelectedOrderStatus((prevStatus) => {
-      const updatedStatus = {
-        ...prevStatus,
-        [orderId]: value,
-      };
-      handleOrderStatusChange(orderId, updatedStatus[orderId]); // Pass the updated value to the function
-      return updatedStatus; // Return the updated status
+  const handleChange = async (orderId, value) => {
+    const confirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, proceed !",
     });
+    if (confirmed.isConfirmed) {
+      setSelectedOrderStatus((prevStatus) => {
+        const updatedStatus = {
+          ...prevStatus,
+          [orderId]: value,
+        };
+        handleOrderStatusChange(orderId, updatedStatus[orderId]); // Pass the updated value to the function
+        return updatedStatus; // Return the updated status
+      });
+    }
   };
 
   return (
@@ -81,11 +104,11 @@ function OrdersList() {
           {orders.map((item) => (
             <tr key={item?.orderId} className="text-[#697a8d] text-sm">
               <td className="py-2 px-4 border-b">{item?.username}</td>
-              <td className="py-2 px-4 border-b">{item.orderDate ? new Date(item.orderDate).toLocaleDateString() : ""}</td>
+              <td className="py-2 px-4 border-b">{item?.orderDate ? new Date(item?.orderDate).toLocaleDateString() : ""}</td>
               <td className="py-2 px-4 border-b">{item?.paymentStatus}</td>
               <td className="py-2 px-4 border-b">{item.paymentMethod}</td>
               <td className="py-2 px-4 border-b">
-                <select value={selectedOrderStatus[item.orderId] || item.orderStatus} onChange={(e) => handleChange(item.orderId, e.target.value)} className="p-2">
+                <select value={selectedOrderStatus[item?.orderId] || item.orderStatus} onChange={(e) => handleChange(item?.orderId, e.target.value)} className="p-2">
                   <option value="Pending">Pending</option>
                   <option value="Processing">Processing</option>
                   <option value="Shipped">Shipped</option>

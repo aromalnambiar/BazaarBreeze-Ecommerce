@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import photo from "../../assets/images/Image2.png";
 // import Checkout from "../shop/Checkout";
+import Modal from "../common/Modal";
 import ChooseAddress from "./ChooseAddress";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
 
@@ -17,9 +18,18 @@ function ShoppingCart() {
   const [appliedCoupon, setAppliedCoupon] = useState(false);
   const [couponId, setCouponId] = useState("");
   const navigate = useNavigate();
-  const userId = localStorage.getItem("userId");
+  const location = useLocation();
+  const isDashboardCartPath = location.pathname === "/dashboard/carts";
 
-  console.log("User Id : ", userId);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => {
+    setModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setModalOpen(false);
+  };
 
   useEffect(() => {
     axios
@@ -153,7 +163,7 @@ function ShoppingCart() {
       {isProceed ? (
         <ChooseAddress grandTotal={grandTotal} cartItems={cartItems} couponId={couponId} />
       ) : (
-        <div className="grid grid-cols-12 gap-4 my-14 min-h-[80vh]">
+        <div className={`grid grid-cols-12 gap-4  ${isDashboardCartPath ? "my-0" : "my-14"}  min-h-[80vh]`}>
           <div className="col-span-8  ">
             <div className="container mx-auto  border">
               <div className="flex shadow-md ">
@@ -207,7 +217,6 @@ function ShoppingCart() {
                       </svg>
                       Continue Shopping
                     </a>
-                    {/* <button className="bg-indigo-500 max-w-32 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full">update cart</button> */}
                   </div>
                 </div>
               </div>
@@ -233,11 +242,16 @@ function ShoppingCart() {
                 <input value={couponCode} onChange={(e) => setCouponCode(e.target.value)} type="text" id="promo" placeholder="Enter your code" className="p-2 text-sm w-full" />
                 <p className="text-red-400 left-2 absolute bottom-4 text-xs  ">{couponStatus}</p>
               </div>
-              <button onClick={handleCoupon} className="bg-red-500 ml-2 hover:bg-red-600 px-5 py-2 text-sm text-white uppercase" disabled={cartItems.length === 0}>
-                Apply
-              </button>
-              <button onClick={handleApplyAnother} className="bg-indigo-500 ml-2 mt-4 hover:bg-indigo-700 px-5 py-2 text-sm text-white uppercase" disabled={cartItems.length === 0}>
-                Apply another
+              <div className={`flex items-center justify-center gap-4 `}>
+                <button onClick={handleCoupon} className={`bg-red-500  h-10 hover:bg-red-600 px-5 py-2 text-sm ${isDashboardCartPath ? "text-xs" : "text-sm"} text-white uppercase`} disabled={cartItems.length === 0}>
+                  Apply
+                </button>
+                <button onClick={handleApplyAnother} className={`bg-indigo-500 h-10  hover:bg-indigo-700 px-5 py-2 ${isDashboardCartPath ? "text-xs" : "text-sm"} text-white uppercase`} disabled={cartItems.length === 0}>
+                  Apply another
+                </button>
+              </div>
+              <button onClick={openModal} className="bg-lime-500  hover:bg-red-600  py-2 text-sm w-full max-w-[200px] mx-auto mt-4 block text-white uppercase" disabled={cartItems.length === 0}>
+                Show coupons
               </button>
               <div className="border-t mt-8">
                 <div className="flex font-semibold justify-between py-6 text-sm uppercase">
@@ -247,6 +261,8 @@ function ShoppingCart() {
                 <button onClick={handleCheckout} className="bg-indigo-500 font-semibold hover:bg-indigo-600 py-3 text-sm text-white uppercase w-full" disabled={cartItems.length === 0}>
                   proceed to Checkout
                 </button>
+
+                <Modal isOpen={isModalOpen} onClose={closeModal} />
               </div>
             </div>
           </div>

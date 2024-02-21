@@ -51,7 +51,7 @@ const addOrder = async (req, res) => {
         payment,
         shippingAddress,
         orderDate,
-        coupons:coupons||[],
+        coupons:coupons||'',
         totalAmount,
         paymentMethod,
         userId,

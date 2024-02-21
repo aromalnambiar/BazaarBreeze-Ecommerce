@@ -29,7 +29,7 @@ function Wallet() {
     <div className="max-w-screen-xl mx-auto px-4 md:px-8">
       <div className="flex justify-between my-6 px-4 font-bold text-green-500">
         <h1>Current Balance</h1>
-        <h1>{balance}</h1>
+        <h1>{balance||0}</h1>
       </div>
       <div className=" shadow-sm border rounded-lg custom-scroll overflow-x-auto">
         <table className="w-full table-auto text-sm text-left ">

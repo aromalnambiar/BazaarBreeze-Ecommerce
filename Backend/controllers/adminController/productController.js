@@ -161,12 +161,12 @@ const editProduct=async(req,res)=>{
 const editProductVariant = async (req, res) => {
   try {
     const { variantId } = req.params;
-    console.log("variant Id : ",variantId);
+    // console.log("variant Id : ",variantId);
     const { stock, regularprice, color, specialprice, variantName } = req.body;
     let { specification } = req.body;
     const files = req.files;
-    console.log("req.body : ",req.body);
-    console.log("req.file: ",req.files);
+    // console.log("req.body : ",req.body);
+    // console.log("req.file: ",req.files);
 
     // Retrieve the existing product variant data
     const originalProductVariant = await ProductVariant.findById(variantId);
@@ -204,10 +204,10 @@ const editProductVariant = async (req, res) => {
 const deleteProduct=async(req,res)=>{
     try {
         const {productId}=req.params;
-        const product=await Products.findByIdAndDelete(productId);
+        const product=await Products.findByIdAndUpdate(productId,{isDelete:true});
         console.log(product);
-        const productVariant=await ProductVariant.deleteMany({productId:productId});
-        console.log(productVariant);
+        // const productVariant=await ProductVariant.deleteMany({productId:productId});
+        // console.log(productVariant);
         res.status(200).json({message:"delete success"});
     } catch (error) {
         console.log(error);

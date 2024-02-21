@@ -1,5 +1,13 @@
 import { Link } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
+
 function Headerbar() {
+  const { logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <>
       {/* <div className="h-16 rounded-md shadow-md border  mt-4 mb-12 bg-white"></div> */}
@@ -31,7 +39,7 @@ function Headerbar() {
             <div>
               {/* Add user information or dropdown */}
               <p className="font-semibold">Admin User</p>
-              <button className="text-sm text-blue-200 hover:text-gray-300">Logout</button>
+              <button onClick={handleLogout} className="text-sm text-blue-200 hover:text-gray-300">Logout</button>
             </div>
           </div>
         </div>

@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import EditCategory from "./EditCategory";
 import axios from "axios";
 import { BASE_URL } from "../../config";
+import Swal from "sweetalert2";
 
 function CategoryList() {
   const [categories, setCategories] = useState([]);
@@ -13,7 +14,11 @@ function CategoryList() {
   const [categoriesHolder, setCategoriesHolder] = useState([]);
   useEffect(() => {
     const result = axios
-      .get(`${BASE_URL}/admin/categories`)
+      .get(`${BASE_URL}/admin/categories`, {
+        headers: {
+          Authorization: `${localStorage.getItem("adminToken")}`,
+        },
+      })
       .then((res) => {
         // console.log(res.data.categories);
         setCategories(res.data.categories);
@@ -24,21 +29,42 @@ function CategoryList() {
       });
   }, [isEdit]);
 
-  const handleDelete = (categoryId) => {
+  const handleDelete = async (categoryId) => {
     console.log("handleClick");
     console.log(categoryId);
-    if (confirm("Are you sure ?")) {
-      const result = axios
-        .delete(`${BASE_URL}/admin/categories/${categoryId}`)
-        .then((res) => {
-          console.log(res);
-          alert(res.data.message);
-          setCategories((prevCategories) => prevCategories.filter((category) => category._id !== categoryId));
-        })
-        .then((res) => {
-          console.log(res);
-          alert(res.response.data.message);
+    const confirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirmed.isConfirmed) {
+      try {
+        const result = await axios.delete(`${BASE_URL}/admin/categories/${categoryId}`, {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
         });
+        console.log(result);
+        setCategories((prevCategories) => prevCategories.filter((category) => category._id !== categoryId));
+        Swal.fire({
+          title: "Deleted!",
+          text: `${res.response.data.message}`,
+          icon: "success",
+        });
+        // alert("Deletion success");
+      } catch (error) {
+        console.error(error);
+        Swal.fire({
+          title: "Not Success!",
+          text: "Deletion not successful",
+          icon: "error",
+        });
+      }
     }
   };
   const handleEdit = (categoryId) => {

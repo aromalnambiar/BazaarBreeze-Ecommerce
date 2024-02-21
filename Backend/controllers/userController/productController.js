@@ -169,11 +169,75 @@ const listProducts = async (req, res) => {
     }
   }
   
+  const filterProducts = async (req, res) => {
+    try {
+      const { category, maxPrice, brand } = req.query;
+      console.log("filter products");
+      console.log("query : ",req.query);
+  
+      let filter = {};
+  
+      if (category) {
+        const categoryId = await Category.findOne({ name: category }).select('_id');
+        console.log("category Id : ",categoryId);
+        if (categoryId) {
+          filter.category = categoryId._id;
+        }
+      }
+  
+      if (maxPrice) {
+        filter['variant.salePrice'] = { $lte: parseInt(maxPrice) };
+      }
+  
+      if (brand) {
+        filter['brand'] = brand;
+      }
+      console.log("filter : ",filter);
+      const result = await Products.aggregate([
+        {
+          $match: filter,
+        },
+        {
+          $lookup: {
+            from: 'productvariants',
+            localField: '_id',
+            foreignField: 'productId',
+            as: 'variant',
+          },
+        },
+        {
+          $unwind: '$variant',
+        },
+        {
+          $match: filter,
+        },
+        {
+          $group: {
+            _id: '$_id',
+            name: { $first: '$name' },
+            description: { $first: '$description' },
+            category: { $first: '$category' },
+            brand: { $first: '$brand' },
+            createdDate: { $first: '$createdDate' },
+            updatedDate: { $first: '$updatedDate' },
+            isDelete: { $first: '$isDelete' },
+            variants: { $push: '$variant' },
+          },
+        },
+      ]);
+  
+      res.status(200).json(result);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
 
   module.exports={
     listProducts,
     productDetails,
     productVariants,
     listCategoryProducts,
-    searchProducts
+    searchProducts,
+    filterProducts
   }

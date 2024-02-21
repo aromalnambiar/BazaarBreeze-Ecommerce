@@ -3,13 +3,17 @@ import photo from "../assets/images/Image2.png";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../config";
+import Swal from "sweetalert2";
 
 function ViewProducts() {
-  const [isEdit, setIsEdit] = useState(false);
   const [products, setProducts] = useState([]);
   useEffect(() => {
     const result = axios
-      .get(`${BASE_URL}/admin/products`)
+      .get(`${BASE_URL}/admin/products`, {
+        headers: {
+          Authorization: `${localStorage.getItem("adminToken")}`,
+        },
+      })
       .then((res) => {
         console.log(res.data.products);
         setProducts(res.data.products);
@@ -19,18 +23,39 @@ function ViewProducts() {
       });
   }, []);
 
-  const handleDelete = (id) => {
-    if (confirm("Are you sure ?.")) {
-      const result = axios
-        .delete(`${BASE_URL}/admin/products/${id}`)
-        .then((res) => {
-          console.log(res);
-          alert("Deletion success");
-        })
-        .catch((res) => {
-          console.log(res);
-          alert("Deletion not success");
+  const handleDelete = async (id) => {
+    const confirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirmed.isConfirmed) {
+      try {
+        const response = await axios.delete(`${BASE_URL}/admin/products/${id}`, {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
         });
+        console.log(response);
+        // alert("Deletion success");
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      } catch (error) {
+        console.error(error);
+        Swal.fire({
+          title: "Not Success!",
+          text: "Deletion not successful",
+          icon: "error",
+        });
+      }
     }
   };
 

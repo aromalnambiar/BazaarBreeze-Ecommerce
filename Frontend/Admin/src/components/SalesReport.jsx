@@ -14,11 +14,15 @@ function SalesReport() {
   const [endDate, setEndDate] = useState(moment());
 
   useEffect(() => {
+    console.log("adminToken", `${localStorage.getItem("adminToken")}`);
     const result = axios
       .get(`${BASE_URL}/admin/salesReport`, {
         params: {
           startDate: startDate.format("YYYY-MM-DD"),
           endDate: endDate.format("YYYY-MM-DD"),
+        },
+        headers: {
+          Authorization: `${localStorage.getItem("adminToken")}`,
         },
       })
       .then((res) => {

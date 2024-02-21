@@ -1,7 +1,7 @@
 // CheckboxFilter.js
 import React, { useState } from "react";
 
-const CheckBoxFilter = () => {
+const CheckBoxFilter = ({ onOptionChange }) => {
   const [selectedOptions, setSelectedOptions] = useState([]);
 
   const options = ["Electronics", "Clothing", "Books", "Home Decor"];
@@ -17,9 +17,8 @@ const CheckBoxFilter = () => {
     }
 
     setSelectedOptions(updatedOptions);
-    // Perform filtering logic based on the selected options
+    onOptionChange(option);
     console.log("Filtering by:", updatedOptions);
-    // You can update the state or perform other actions as needed
   };
 
   return (

@@ -2,11 +2,11 @@ import React from "react";
 import { BASE_URL } from "../../../config";
 import axios from "axios";
 import { useEffect, useState } from "react";
+import { useLocation } from "react-router-dom";
 
 function Wishlist() {
-  useEffect(() => {
-    window.scrollTo(0, 0);
-  }, []);
+  const location = useLocation();
+  const isDashboardCartPath = location.pathname === "/dashboard/wishlists";
 
   const [wishList, setWishList] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
@@ -25,6 +25,7 @@ function Wishlist() {
         console.log(error);
       }
     };
+    window.scrollTo(0, 0);
     fetchData();
   }, [isUpdated]);
 
@@ -51,7 +52,7 @@ function Wishlist() {
   console.log("wishLists : ", wishList);
 
   return (
-    <div className="my-28">
+    <div className={`my-28 ${isDashboardCartPath ? "my-0" : "my-28"}`}>
       <table className="w-full  table-auto border text-sm text-left shadow-lg">
         <thead className="bg-[#F2F4F5] text-gray-600 font-medium border-b">
           <tr className="uppercase">
