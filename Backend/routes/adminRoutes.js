@@ -77,10 +77,10 @@ router.delete('/offer/:offerId',authenticateJWT,isAdmin,offer.deleteOfferById);
 
 //sales
 router.get('/sales',authenticateJWT,isAdmin,sales.generateSalesReport);
-router.get('/salesReport',authenticateJWT,isAdmin,sales.getSalesReport);
+router.get('/salesReport',sales.getSalesReport);
 router.get('/salesCount',authenticateJWT,isAdmin,sales.getOverallSalesCount);
 router.get('/orderAmount',authenticateJWT,isAdmin,sales.getOverallOrderAmount);
-router.get('/overallSalesCountAndAmount',authenticateJWT,isAdmin,sales.getOverallSalesCountAndAmount);
+router.get('/overallSalesCountAndAmount',sales.getOverallSalesCountAndAmount);
 
 router.post('/salesCSV',authenticateJWT,isAdmin,sample.exportCSV);
 router.post('/salesExcel',authenticateJWT,isAdmin,sample.exportExcel);

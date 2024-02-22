@@ -46,7 +46,7 @@ function BestDeals() {
               </div>
               <div className="absolute bottom-2 ">
                 <p className="text-base font-semibold text-gray-500 w-[140px] overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">{item.description}</p>
-                <div  className="absolute -right-8 top-2">
+                <div className="absolute -right-8 top-2">
                   <IoIosHeartEmpty className="text-blue-400" />
                 </div>
                 <p className="text-xs text-[#2DA5F3]">₹ {item.firstVariant?.salePrice}</p>

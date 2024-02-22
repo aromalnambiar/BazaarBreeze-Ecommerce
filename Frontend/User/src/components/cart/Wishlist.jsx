@@ -52,7 +52,7 @@ function Wishlist() {
   console.log("wishLists : ", wishList);
 
   return (
-    <div className={`my-28 ${isDashboardCartPath ? "my-0" : "my-28"}`}>
+    <div className={`${isDashboardCartPath ? "my-0" : "my-28"}`}>
       <table className="w-full  table-auto border text-sm text-left shadow-lg">
         <thead className="bg-[#F2F4F5] text-gray-600 font-medium border-b">
           <tr className="uppercase">

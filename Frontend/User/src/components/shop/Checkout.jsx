@@ -253,6 +253,7 @@ function Checkout(props) {
               <h3 className=" font-bold">Amount Payable</h3>
               <p>{total}</p>
             </div>
+            <button></button>
           </div>
         </div>
       </div>

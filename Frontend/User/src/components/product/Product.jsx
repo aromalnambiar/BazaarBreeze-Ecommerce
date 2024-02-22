@@ -15,6 +15,9 @@ function Product() {
   const [isCartFound, setIsCartFound] = useState(false);
   const [isWishlistFound, setIsWishlistFound] = useState(false);
   const [dataRetrieved, setDataRetrieved] = useState(false);
+  const [tabs, setTabs] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
+  const [specification, setSpecification] = useState([]);
   const [image, setImage] = useState("");
   const navigate = useNavigate();
 
@@ -25,11 +28,15 @@ function Product() {
           Authorization: `${localStorage.getItem("token")}`,
         },
       });
-      console.log("RESPONSE : ", response.data.productDetails);
+      // console.log("RESPONSE : ", response.data);
+      setTabs(response.data?.variantIds);
+      // console.log("RESPONSE : ", response.data.productDetails);
+      // setTabs(response.data.productDetails);
       setItem(response.data.productDetails);
       setCategory(response.data.category);
       setIsCartFound(response.data.isCartFound);
       setIsWishlistFound(response.data.isWishlistFound);
+      setSpecification(response.data.productDetails.productDetails.specification);
       setImage(response.data.productDetails.productDetails.images[0]);
       setGalleryImages(response.data.productDetails.productDetails.images);
       setDataRetrieved(true);
@@ -38,7 +45,7 @@ function Product() {
     fetchDetails();
     window.scrollTo(0, 0);
   }, [productId]);
-  // console.log("galary images : ", galleryImages);
+  console.log("specification: ", specification);
   // console.log("Item  : ", item);
   const handleAddToCart = async (id) => {
     try {
@@ -105,11 +112,36 @@ function Product() {
     setImage(base_url);
   };
 
+  const handleTabClick = async (index, id) => {
+    setActiveTab(index);
+    try {
+      const response = await axios.get(`${BASE_URL}/user/products/variants/${id}`, {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      });
+      // console.log("handleClick Tab : ", response.data);
+
+      // console.log("RESPONSE : ", response.data.productDetails);
+      // setTabs(response.data.productDetails);
+      setItem(response.data.productVariant);
+      setIsWishlistFound(response.data.isWishlistFound);
+      setImage(response.data.productVariant.images[0]);
+      setGalleryImages(response.data.productVariant.images);
+      setSpecification(response.data.productVariant.specification);
+    } catch (error) {
+      console.log(error);
+    }
+    // Add any additional logic you want to perform when a tab is clicked
+  };
+  // console.log("item : ", item);
+  // console.log("wishlistFound : ", isWishlistFound);
+  // console.log("galleryimages : ", galleryImages);
   return (
     <>
       <div className="grid grid-cols-12 mt-8 text-sm max-w-[940px]  gap-8">
         <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6 border p-4 rounded-md ">
-          <div className="border  rounded-lg  max-w-[350px] min-h-[310px] p-10 mx-auto">
+          <div className="border  rounded-lg  max-w-[350px] h-[310px] p-10 mx-auto">
             <img className="mx-auto hover:scale-125 w-full h-full" src={`${BASE_URL}/uploads/${image}` || photo} alt="" />
           </div>
           <div className="mt-6 w-max   max-w-[24rem] mx-auto whitespace-nowrap overflow-x-scroll no-scrollbar ">
@@ -137,7 +169,16 @@ function Product() {
               </p>
             </div>
           </div>
-          <p className="text-[#2DA5F3] font-bold my-6">{item.productDetails?.salePrice}₹</p>
+          {console.log("item ::: ", item)}
+          <p className="text-[#2DA5F3] font-bold my-6">{item.productDetails?.salePrice || item?.salePrice}₹</p>
+          {/* //tabs */}
+          <div className="flex">
+            {tabs.map((item, index) => (
+              <button key={index} className={`font-bold px-4 py-2 border-b-2 focus:outline-none ${index === activeTab ? "text-[#2DA5F3] border-[#2DA5F3]" : "text-gray-500"}`} onClick={() => handleTabClick(index, item)}>
+                variant {index + 1}
+              </button>
+            ))}
+          </div>
           <hr className="mb-6" />
           <div className="flex justify-between ">
             <div className="flex flex-col gap-2">
@@ -198,7 +239,7 @@ function Product() {
         </div>
         {isSpecification ? (
           <>
-            <Specification specifications={item.productDetails.specification} />
+            <Specification specifications={specification} />
           </>
         ) : (
           <>

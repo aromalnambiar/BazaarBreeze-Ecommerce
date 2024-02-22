@@ -12,6 +12,7 @@ const payment=require('../controllers/userController/paymentController.js')
 const coupon=require('../controllers/userController/couponController.js');
 const wallet=require('../controllers/userController/walletController.js');
 const offer=require('../controllers/userController/offerController.js');
+const invoice=require('../controllers/userController/invoiceController.js');
 
 const {authenticateJWT} = require('../middlewares/authMiddleware.js');
 const checkUserBlockStatus = require('../middlewares/checkUserBlockStatus.js');
@@ -38,6 +39,7 @@ router.post('/resend-otp',auth.resendOTP);
 // products
 router.get('/products',product.listProducts);
 router.get('/products/variants',product.productVariants)
+router.get('/products/variants/:id',authenticateJWT,product.getProductVariantDetails)
 router.get('/products/:productid/product',authenticateJWT,product.productDetails);
 router.get('/products/:categoryId/product',authenticateJWT,product.productDetails);
 router.get('/products/search',product.searchProducts);
@@ -69,8 +71,12 @@ router.get('/orders',authenticateJWT,order.showOrders);
 router.get('/orders/:orderId',authenticateJWT,order.showOrder);
 router.post('/order/add',authenticateJWT,order.addOrder);
 router.patch('/order/status',authenticateJWT,order.changeOrderStatus);
+
+//payment
 router.post('/orders/razorpay',payment.placeOrder);
 router.post('/orders/razorpay/verify',payment.verifyOrder);
+router.post('/orders/razorpay/paymentcapture',payment.paymentCapture);
+router.post('/orders/razorpay/refund',payment.paymentCapture);
 
 // coupons
 router.post('/coupon',coupon.applyCoupon);
@@ -84,6 +90,9 @@ router.get('/categories', category.viewCategories);
 
 //offers
 router.get('/offers', offer.getAllOffers);
+
+// invoice
+router.get('/generateinvoice',invoice.generateInvoice);
 
 
 module.exports=router;

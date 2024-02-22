@@ -64,6 +64,10 @@ const listProducts = async (req, res) => {
       const category = await Category.findById(result[0].category);
       let isCartFound = false;
       let isWishlistFound = false;
+      // console.log("result : ",result[0].productDetails.map(item=>item._id));
+      // const variantIds = product.productDetails.map(variant => variant._id);
+      // console.log("variantIds : ",variantIds);
+      const variantIds=result[0].productDetails.map(item=>item._id);
   
       if (result.length > 0) {
         const product = result[0];
@@ -87,6 +91,7 @@ const listProducts = async (req, res) => {
           message: 'success',
           productDetails: product,
           isCartFound,
+          variantIds,
           isWishlistFound,
           category: category.name,
         });
@@ -127,6 +132,39 @@ const listProducts = async (req, res) => {
       } else {
         res.status(404).json({ message: 'Product variants not found' });
       }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: 'Internal Server Error' });
+    }
+  };
+
+  const getProductVariantDetails = async (req, res) => {
+    try {
+      const productVariantId = new mongoose.Types.ObjectId(req.params.id);
+      const { userId } = req.user;
+      console.log("USER ID : ",userId);
+      // Fetch product variant details
+      const productVariant = await ProductVariant.findById(productVariantId);
+  
+      if (!productVariant) {
+        return res.status(404).json({ message: 'Product variant not found' });
+      }
+  
+      // Check if the product variant exists in the user's wishlist
+      let isWishlistFound = false;
+      if (userId) {
+        const wishlist = await Wishlist.findOne({ userId });
+        
+        if (wishlist) {
+          isWishlistFound = wishlist.items.some(item => item.productVariant.equals(productVariantId));
+        }
+      }
+      console.log("productVariant : ",productVariant);
+      res.status(200).json({
+        message: 'success',
+        productVariant,
+        isWishlistFound,
+      });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -239,5 +277,6 @@ const listProducts = async (req, res) => {
     productVariants,
     listCategoryProducts,
     searchProducts,
-    filterProducts
+    filterProducts,
+    getProductVariantDetails
   }
