@@ -59,31 +59,6 @@ function SideNav() {
     }
   };
 
-  const downloadInvoice = async () => {
-    try {
-      const response = await axios.get(`${BASE_URL}/user/generateinvoice`, { responseType: "blob" });
-
-      // Create a Blob from the PDF data
-      const blob = new Blob([response.data], { type: "application/pdf" });
-
-      // Create a link element and trigger a download
-      const link = document.createElement("a");
-      link.href = window.URL.createObjectURL(blob);
-      link.download = "invoice.pdf";
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    } catch (error) {
-      console.error("Error downloading invoice:", error);
-      // Handle error
-    }
-  };
-
-  // Call the function when you want to download the invoice
-  const handleClickMe = () => {
-    downloadInvoice();
-  };
-
   return (
     <ul className="py-4 shadow-md">
       {lists.map((item) => {
@@ -97,7 +72,6 @@ function SideNav() {
           </li>
         );
       })}
-      <li onClick={handleClickMe}>download invoice</li>
     </ul>
   );
 }

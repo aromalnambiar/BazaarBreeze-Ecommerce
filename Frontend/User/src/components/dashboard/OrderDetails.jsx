@@ -103,11 +103,37 @@ function OrderDetails() {
     }
   };
 
+  const downloadInvoice = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/user/generateinvoice?id=${order._id}`, {
+        responseType: "blob",
+      });
+
+      // Create a Blob from the PDF data
+      const blob = new Blob([response.data], { type: "application/pdf" });
+
+      // Create a link element and trigger a download
+      const link = document.createElement("a");
+      link.href = window.URL.createObjectURL(blob);
+      link.download = "invoice.pdf";
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    } catch (error) {
+      console.error("Error downloading invoice:", error);
+      // Handle error
+    }
+  };
+
+  const handleDownloadInvoice = async () => {
+    downloadInvoice();
+  };
+
   return (
     <>
       <h3 className="text-center mb-10 font-bold text-gray-600">Order Timeline</h3>
-      <Steps />
-      {console.log("order status : ", order.orderStatus)}
+      <Steps status={order?.orderStatus} />
+      {/* {console.log("order status : ", order.orderStatus)} */}
       {order.orderStatus !== "Cancelled" &&
         (order.orderStatus === "Delivered" ? (
           <div onClick={() => handleStatus(order._id, "Returned")} className="text-sm text-center text-[#FA8232] font-bold mb-16 cursor-pointer">
@@ -150,12 +176,17 @@ function OrderDetails() {
         </tbody>
       </table>
       {/* address */}
-      <div className="border max-w-xs h-max flex text-sm flex-col gap-4 p-10 my-8 shadow-lg">
-        <h3 className="text-lg font-semibold text-gray-800">Shipping address</h3>
-        <p>FullName : {order.shippingAddress?.fullName}</p>
-        <p>Address : {order.shippingAddress?.address}</p>
-        <p>Phone1 : {order.shippingAddress?.phone1}</p>
-        <p>Phone2 : {order.shippingAddress?.phone2}</p>
+      <div className="flex  flex-wrap justify-between gap-8">
+        <div className="border max-w-xs h-max flex text-sm flex-col gap-4 p-10 my-8 shadow-lg">
+          <h3 className="text-lg font-semibold text-gray-800">Shipping address</h3>
+          <p>FullName : {order.shippingAddress?.fullName}</p>
+          <p>Address : {order.shippingAddress?.address}</p>
+          <p>Phone1 : {order.shippingAddress?.phone1}</p>
+          <p>Phone2 : {order.shippingAddress?.phone2}</p>
+        </div>
+        <div onClick={handleDownloadInvoice} className="mt-10">
+          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Download Invoice</button>
+        </div>
       </div>
     </>
   );

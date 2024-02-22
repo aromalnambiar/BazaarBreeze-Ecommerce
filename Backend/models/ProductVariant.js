@@ -1,7 +1,7 @@
 const mongoose=require('mongoose');
 
 const ProductVariant=new mongoose.Schema({
-    productId:{type: mongoose.Schema.Types.ObjectId},
+    productId:{type: mongoose.Schema.Types.ObjectId,ref:'Product'},
     stock:{type:Number},
     regularPrice:{type:Number},
     color:{type:String},

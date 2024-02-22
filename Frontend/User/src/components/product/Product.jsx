@@ -9,6 +9,7 @@ import Modal from "../common/Modal";
 function Product() {
   const { id: productId } = useParams();
   const [item, setItem] = useState({});
+  const [description, setDescription] = useState();
   const [category, setCategory] = useState("");
   const [isSpecification, setIsSpecification] = useState(false);
   const [galleryImages, setGalleryImages] = useState([]);
@@ -33,6 +34,7 @@ function Product() {
       // console.log("RESPONSE : ", response.data.productDetails);
       // setTabs(response.data.productDetails);
       setItem(response.data.productDetails);
+      setDescription(response.data.productDetails.description);
       setCategory(response.data.category);
       setIsCartFound(response.data.isCartFound);
       setIsWishlistFound(response.data.isWishlistFound);
@@ -45,16 +47,14 @@ function Product() {
     fetchDetails();
     window.scrollTo(0, 0);
   }, [productId]);
-  console.log("specification: ", specification);
+  // console.log("specification: ", specification);
   // console.log("Item  : ", item);
   const handleAddToCart = async (id) => {
     try {
       console.log("ID : ", id);
-      const userId = localStorage.getItem("userId");
       const response = await axios.post(
         `${BASE_URL}/user/cart`,
         {
-          userId,
           productVariantId: id,
           quantity: 1,
         },
@@ -122,10 +122,11 @@ function Product() {
       });
       // console.log("handleClick Tab : ", response.data);
 
-      // console.log("RESPONSE : ", response.data.productDetails);
+      console.log("RESPONSE : ", response.data);
       // setTabs(response.data.productDetails);
       setItem(response.data.productVariant);
       setIsWishlistFound(response.data.isWishlistFound);
+      setIsCartFound(response.data.isCartFound);
       setImage(response.data.productVariant.images[0]);
       setGalleryImages(response.data.productVariant.images);
       setSpecification(response.data.productVariant.specification);
@@ -148,9 +149,9 @@ function Product() {
             <div className="flex gap-4 ">{galleryImages.length > 1 && galleryImages.map((image, index) => <img key={index} className="cursor-pointer shadow-sm w-16 h-16 border rounded-lg" src={`${BASE_URL}/uploads/${image}`} alt={`Gallery Image ${index + 1}`} onClick={() => handleGalleryImageClick(image)} />)}</div>
           </div>
         </div>
-
+        {/* {console.log("item : : ", item)} */}
         <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6">
-          <h3 className="font-semibold mb-4">{item.description || "2020 Apple MacBook Pro with Apple M1 Chip (13-inch, 8GB RAM, 256GB SSD Storage) - Space Gray"}</h3>
+          <h3 className="font-semibold mb-4">{description || "2020 Apple MacBook Pro with Apple M1 Chip (13-inch, 8GB RAM, 256GB SSD Storage) - Space Gray"}</h3>
           <div>
             <div className="flex justify-between text-[#5F6C72]">
               <p>
@@ -169,7 +170,7 @@ function Product() {
               </p>
             </div>
           </div>
-          {console.log("item ::: ", item)}
+          {/* {console.log("item ::: ", item)} */}
           <p className="text-[#2DA5F3] font-bold my-6">{item.productDetails?.salePrice || item?.salePrice}₹</p>
           {/* //tabs */}
           <div className="flex">
@@ -197,13 +198,14 @@ function Product() {
               <div>1TB SSD Storage</div>
             </div>
           </div>
+          {console.log("ITEM : ", item)}
           <div className="flex items-center  h-10 my-6 mt-[60px] gap-4 text-xs font-bold justify-start">
             {dataRetrieved && isCartFound ? (
               <button onClick={() => navigate("/cart")} className="bg-[#FA8232] text-white  px-16 h-full rounded ">
                 VIEW CART
               </button>
             ) : (
-              <button onClick={() => handleAddToCart(item.productDetails._id)} className="bg-[#FA8232] text-white  px-16 h-full rounded ">
+              <button onClick={() => handleAddToCart(item?.productDetails?._id || item?._id)} className="bg-[#FA8232] text-white  px-16 h-full rounded ">
                 ADD TO CART
               </button>
             )}
@@ -212,9 +214,9 @@ function Product() {
           <div
             onClick={() => {
               if (isWishlistFound) {
-                handleRemoveFromWishlist(item.productDetails._id);
+                handleRemoveFromWishlist(item?.productDetails?._id || item?._id);
               } else {
-                handleAddToWishlist(item.productDetails._id);
+                handleAddToWishlist(item?.productDetails?._id || item?._id);
               }
             }}
             className="flex items-center justify-start w-max  gap-2 mt-[40px] cursor-pointer"

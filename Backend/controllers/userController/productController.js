@@ -152,6 +152,8 @@ const listProducts = async (req, res) => {
   
       // Check if the product variant exists in the user's wishlist
       let isWishlistFound = false;
+      let isCartFound = false;
+      //for checking wishlist found
       if (userId) {
         const wishlist = await Wishlist.findOne({ userId });
         
@@ -159,11 +161,24 @@ const listProducts = async (req, res) => {
           isWishlistFound = wishlist.items.some(item => item.productVariant.equals(productVariantId));
         }
       }
-      console.log("productVariant : ",productVariant);
+      //for checking cartfound
+     if(userId){
+      const userCart = await Cart.findOne({ user: userId });
+
+      // Check if the product variant exists in the user's cart
+      if (userCart) {
+        const cart=await Cart.findOne({user:userId});
+        if(cart){
+          isCartFound = cart.product.some(item => item.productVariantId.equals(productVariantId));
+        }
+      }
+     }
+      console.log("isCartFound : ",isCartFound);
       res.status(200).json({
         message: 'success',
         productVariant,
         isWishlistFound,
+        isCartFound
       });
     } catch (error) {
       console.error(error);

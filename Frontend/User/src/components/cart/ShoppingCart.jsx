@@ -89,7 +89,6 @@ function ShoppingCart() {
         .post(
           `${BASE_URL}/user/cart`,
           {
-            userId: userId,
             quantity: -1,
             productVariantId: id,
           },
@@ -111,7 +110,7 @@ function ShoppingCart() {
   const deleteFromCart = (id) => {
     if (confirm("Are you sure ?")) {
       axios
-        .delete(`${BASE_URL}/user/cart?userId=${userId}&productVariantId=${id}`, {
+        .delete(`${BASE_URL}/user/cart?productVariantId=${id}`, {
           headers: {
             Authorization: `${localStorage.getItem("token")}`,
           },

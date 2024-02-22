@@ -253,7 +253,9 @@ function Checkout(props) {
               <h3 className=" font-bold">Amount Payable</h3>
               <p>{total}</p>
             </div>
-            <button></button>
+            <button onClick={() => handlePlaceOrder()} className="bg-[#FA8232] hover:bg-[#fa5914] text-white uppercase font-bold mt-4 mx-2 rounded-sm py-4 px-4">
+              place order
+            </button>
           </div>
         </div>
       </div>

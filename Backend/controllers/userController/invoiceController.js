@@ -1,10 +1,23 @@
 
 const easyinvoice = require('easyinvoice');
 var fs = require('fs');
+const Order=require("../../models/Order");
+const { productDetails } = require('./productController');
 
 const generateInvoice=async (req, res) => {
     try{
-        var data = {
+        const { id } = req.query;
+        console.log("IIDD : ", id);
+        const order = await Order.findById(id)
+          .populate({
+            path: 'orderedItems.product',
+            model: 'ProductVariant',
+            select: 'name description',
+          });
+
+        console.log("order : ",order);
+        
+        let data = {
             //"documentTitle": "RECEIPT", //Defaults to INVOICE
             //"locale": "de-DE", //Defaults to en-US, used for number formatting (see docs)
             "currency": "USD", //See documentation 'Locales and Currency' for more info
@@ -16,14 +29,12 @@ const generateInvoice=async (req, res) => {
             "logo": "https://public.easyinvoice.cloud/img/logo_en_original.png", //or base64
             "background": "https://public.easyinvoice.cloud/img/watermark-draft.jpg", //or base64 //img or pdf
             "sender": {
-                "company": "Sample Corp",
-                "address": "Sample Street 123",
-                "zip": "1234 AB",
-                "city": "Sampletown",
-                "country": "Samplecountry"
-                //"custom1": "custom value 1",
-                //"custom2": "custom value 2",
-                //"custom3": "custom value 3"
+                "company": "TeachTreasures",
+                "address": "Kannur, Kerala , India",
+                "zip": "670389",
+                "city": "Kannur",
+                "country": "India"
+                
             },
             "client": {
                    "company": "Client Corp",
@@ -37,22 +48,29 @@ const generateInvoice=async (req, res) => {
             },
             "invoiceNumber": "2021.0001",
             "invoiceDate": "1.1.2021",
-            "products": [
-                {
-                    "quantity": "2",
-                    "description": "Test1",
-                    "tax": 6,
-                    "price": 33.87
-                },
-                {
-                    "quantity": "4",
-                    "description": "Test2",
-                    "tax": 21,
-                    "price": 10.45
+            "products": order.orderedItems.map(item=>{
+                console.log("product : ",item);
+                return {   
+                    quantity:item.quantity,
+                    price:item.price,
+                    name:item.name,
+                    description:item.description
                 }
-            ],
+        }),
             "bottomNotice": "Kindly pay your invoice within 15 days.",
         }
+        // {
+        //     "quantity": "2",
+        //     "description": "Test1",
+        //     "tax": 6,
+        //     "price": 33.87
+        // },
+        // {
+        //     "quantity": "4",
+        //     "description": "Test2",
+        //     "tax": 21,
+        //     "price": 10.45
+        // }
 
         const result = await easyinvoice.createInvoice(data);
         const pdfBuffer = Buffer.from(result.pdf, 'base64');

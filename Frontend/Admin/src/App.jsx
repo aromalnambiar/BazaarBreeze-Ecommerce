@@ -36,7 +36,7 @@ function App() {
               <Headerbar />
               <Routes>
                 {/* <Route path="/" element={<Dashboard />} /> */}
-                <Route path="/" element={<SalesChart />} />
+                <Route path="/dashboard" element={<SalesChart />} />
                 <Route path="/date" element={<DatePick />} />
                 <Route path="/dashboard/sales-report" element={<SalesReport />} />
                 <Route path="/products/view-all" element={<ViewProducts />} />
