@@ -34,7 +34,11 @@ const EditProduct = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/admin/products/${productId}`);
+        const response = await axios.get(`${BASE_URL}/admin/products/${productId}`, {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
+        });
         const product = response.data.product;
         // console.log("proudct : ", product);
         setProductName(product.name);
@@ -52,7 +56,11 @@ const EditProduct = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/admin/categories`);
+        const response = await axios.get(`${BASE_URL}/admin/categories`, {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
+        });
         // console.log("category list : ", response);
         setCategoryOptions(response.data.categories);
       } catch (error) {
@@ -67,7 +75,11 @@ const EditProduct = () => {
     const fetchData = async () => {
       try {
         if (categoryId) {
-          const response = await axios.get(`${BASE_URL}/admin/categories/${categoryId}`);
+          const response = await axios.get(`${BASE_URL}/admin/categories/${categoryId}`, {
+            headers: {
+              Authorization: `${localStorage.getItem("adminToken")}`,
+            },
+          });
           const categoryName = response.data.category.name;
           setCategory(categoryName);
           // console.log("category Name : ", categoryName);
@@ -85,7 +97,11 @@ const EditProduct = () => {
     const fetchData = async () => {
       try {
         if (productId) {
-          const response = await axios.get(`${BASE_URL}/admin/products/variant/${productId}`);
+          const response = await axios.get(`${BASE_URL}/admin/products/variant/${productId}`, {
+            headers: {
+              Authorization: `${localStorage.getItem("adminToken")}`,
+            },
+          });
           const variantData = response.data.variant;
           // console.log("variant: ", variantData);
           // console.log("variant ID ::: ", variantData[0]._id);

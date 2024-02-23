@@ -1,29 +1,49 @@
 import { useNavigate, Link } from "react-router-dom";
 import Logo from "../../assets/icons/Logo.png";
 import { BASE_URL } from "../../../../Admin/config";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
 function Header() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [products, setProducts] = useState([]);
-  // const [isActive, setIsActive] = useState(false);
+  const [showProducts, setShowProducts] = useState(false);
+
+  const productsRef = useRef(null);
+
   useEffect(() => {
     const handleSearch = async () => {
       try {
-        // setIsActive(true);
         const response = await axios.get(`${BASE_URL}/user/products/search?query=${query}`);
         setProducts([...response.data]);
+        setShowProducts(true);
       } catch (error) {
         console.error(error);
       }
     };
-    if (query == "" || query.trim() == "") {
+
+    if (query === "" || query.trim() === "") {
       setProducts([]);
-    } else handleSearch();
-    // }
+      setShowProducts(false);
+    } else {
+      handleSearch();
+    }
   }, [query]);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (productsRef.current && !productsRef.current.contains(event.target)) {
+        setShowProducts(false);
+      }
+    };
+
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
   // console.log("products : ", products);
   // const handleBlur = () => {
   //   console.log("blur");
@@ -39,7 +59,7 @@ function Header() {
               <img src={Logo} alt="" srcSet="" />
             </div>
           </Link>
-          <div className="flex grow items-center md:mx-24 mx-4 h-10 relative rounded-md ">
+          <div className="flex grow items-center md:mx-24 mx-4 h-10 relative rounded-md " ref={productsRef}>
             <div className="w-full  h-10 rounded-md overflow-hidden relative">
               <input
                 value={query}
@@ -58,17 +78,17 @@ function Header() {
                 </svg>
               </div>
             </div>
-            {products.length > 0 && (
+            {showProducts && products.length > 0 && (
               <div className="bg-white border py-4 min-h-max rounded-md shadow-lg w-full top-12 absolute ">
                 {products.map((item, idx) => {
                   return (
-                    <Link key={item._id} to={`product/${item._id}`}>
+                    <Link key={item._id} to={`product/${item._id}`} onClick={() => setShowProducts(false)}>
                       <div className="border hover:bg-slate-100 p-2 pl-4">{item.name}</div>
                     </Link>
                   );
                 })}
               </div>
-            )}
+            )} 
           </div>
 
           <ul className="flex gap-4 text-sm">

@@ -61,7 +61,7 @@ function ViewProducts() {
 
   return (
     <>
-      <div className=" border border-gray-300 overflow-hidden shadow-md rounded-2xl mb-20">
+      <div className=" border border-gray-300 w-full max-w-6xl mx-auto  overflow-x-auto shadow-md rounded-2xl mb-20">
         <div className="bg-white p-6 flex justify-between py-8">
           <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search products..." />
           <div>
@@ -70,7 +70,7 @@ function ViewProducts() {
             </Link>
           </div>
         </div>
-        <table className="min-w-full bg-white ">
+        <table className="min-w-full bg-white table-auto w-full">
           <thead>
             <tr className="text-[#566a7f] border-t ">
               <th className="py-2 text-start pl-8 font-medium border-b">PRODUCTS</th>
@@ -82,10 +82,10 @@ function ViewProducts() {
           <tbody>
             {products.map((item) => (
               <tr key={item._id} className="text-[#697a8d]">
-                <td className="py-2 px-4 border-b flex items-center gap-4 ">
-                  <div className="w-[2.375rem] h-[2.375rem] rounded-full ms-4 overflow-hidden border">
+                <td className="py-2 px-4 pl-8 border-b flex items-center gap-4 ">
+                  {/* <div className="w-[2.375rem] h-[2.375rem] rounded-full ms-4 overflow-hidden border">
                     <img src={photo} alt="" />
-                  </div>
+                  </div> */}
                   <div className="flex flex-col">
                     <p className="text-[#696cff] max-w-[250px] truncate">{item.name}</p>
                     <small className="text-[#a1acb8] max-w-[250px] truncate">{item.description}</small>

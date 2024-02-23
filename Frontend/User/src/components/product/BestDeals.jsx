@@ -42,7 +42,7 @@ function BestDeals() {
               {/* {console.log(item.firstVariant?.images[0])} */}
               {/* <img className="w-52" src={`${BASE_URL}/uploads/${item.firstVariant?.images[0]}` || product} alt="" /> */}
               <div className="w-52 h-44  overflow-hidden">
-                <img className="w-44  rounded-sm" src={`${BASE_URL}/uploads/${item.firstVariant?.images[0]}` || product} alt="" />
+                <img className="w-44 h-44 object-contain rounded-sm" src={`${BASE_URL}/uploads/${item.firstVariant?.images[0]}` || product} alt="" />
               </div>
               <div className="absolute bottom-2 ">
                 <p className="text-base font-semibold text-gray-500 w-[140px] overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">{item.description}</p>

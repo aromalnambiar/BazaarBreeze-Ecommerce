@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import photo from "../assets/images/Customer.png";
 import { FaCircleUser } from "react-icons/fa6";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -84,14 +83,17 @@ function UsersList() {
             <th className="py-2 text-start pl-4 font-medium border-b">STATE</th>
             <th className="py-2 text-start pl-4 font-medium border-b">ORDER</th>
             <th className="py-2 text-start pl-4 font-medium border-b">STATUS</th>
-            <th className="py-2 text-start pl-4 font-medium border-b">TOTAL SPENT</th>
+            {/* <th className="py-2 text-start pl-4 font-medium border-b">TOTAL SPENT</th> */}
           </tr>
         </thead>
         <tbody>
           {users.map((item) => (
             <tr key={item._id} className="text-[#697a8d]">
+              {console.log("item : ", item)}
               <td onClick={() => navigate("/users/view")} className="py-2 px-4 border-b flex items-center cursor-pointer gap-4 ">
-                <div className="w-[2.375rem] h-[2.375rem] rounded-full ms-4 overflow-hidden border">{photo ? <FaCircleUser className="w-full h-full" /> : <img src={photo} alt="" />}</div>
+                <div className="w-[2.375rem] h-[2.375rem] rounded-full ms-4 overflow-hidden border">
+                  {item?.image ? <img src={`${BASE_URL}/uploads/${item.image}`} /> : <FaCircleUser className="w-full h-full" />} 
+                </div>
                 <div className="flex flex-col">
                   <p className="text-[#696cff]">{item.username}</p>
                   <small className="text-[#a1acb8]">{item.email}</small>
@@ -103,7 +105,7 @@ function UsersList() {
               <td onClick={() => handleBlock(item)} className="py-2 px-4 border-b">
                 {item.isBlocked ? <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md ">Blocked</button> : <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md ">active</button>}
               </td>
-              <td className="py-2 px-4 border-b">{item.totalSpent || "0"}</td>
+              {/* <td className="py-2 px-4 border-b">{item.totalSpent || "0"}</td> */}
             </tr>
           ))}
         </tbody>

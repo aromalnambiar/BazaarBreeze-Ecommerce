@@ -10,6 +10,7 @@ function Product() {
   const { id: productId } = useParams();
   const [item, setItem] = useState({});
   const [description, setDescription] = useState();
+  const [brand, setBrand] = useState("");
   const [category, setCategory] = useState("");
   const [isSpecification, setIsSpecification] = useState(false);
   const [galleryImages, setGalleryImages] = useState([]);
@@ -34,6 +35,7 @@ function Product() {
       // console.log("RESPONSE : ", response.data.productDetails);
       // setTabs(response.data.productDetails);
       setItem(response.data.productDetails);
+      setBrand(response.data.productDetails.brand);
       setDescription(response.data.productDetails.description);
       setCategory(response.data.category);
       setIsCartFound(response.data.isCartFound);
@@ -141,9 +143,9 @@ function Product() {
   return (
     <>
       <div className="grid grid-cols-12 mt-8 text-sm max-w-[940px]  gap-8">
-        <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6 border p-4 rounded-md ">
+        <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6 h-max border p-4 rounded-md ">
           <div className="border  rounded-lg  max-w-[350px] h-[310px] p-10 mx-auto">
-            <img className="mx-auto hover:scale-125 w-full h-full" src={`${BASE_URL}/uploads/${image}` || photo} alt="" />
+            <img className="mx-auto hover:scale-125 object-contain w-full h-full" src={`${BASE_URL}/uploads/${image}` || photo} alt="" />
           </div>
           <div className="mt-6 w-max   max-w-[24rem] mx-auto whitespace-nowrap overflow-x-scroll no-scrollbar ">
             <div className="flex gap-4 ">{galleryImages.length > 1 && galleryImages.map((image, index) => <img key={index} className="cursor-pointer shadow-sm w-16 h-16 border rounded-lg" src={`${BASE_URL}/uploads/${image}`} alt={`Gallery Image ${index + 1}`} onClick={() => handleGalleryImageClick(image)} />)}</div>
@@ -163,7 +165,7 @@ function Product() {
             </div>
             <div className="flex justify-between text-[#5F6C72]">
               <p>
-                Brand: <span className="font-semibold">{item.brand || "Brand"}</span>
+                Brand: <span className="font-semibold">{brand || "Brand"}</span>
               </p>
               <p>
                 Category: <span className="font-semibold">{category}</span>
@@ -246,8 +248,9 @@ function Product() {
         ) : (
           <>
             <div className="p-12 border">
-              <p>The most powerful MacBook Pro ever is here. With the blazing-fast M1 Pro or M1 Max chip — the first Apple silicon designed for pros — you get groundbreaking performance and amazing battery life. Add to that a stunning Liquid Retina XDR display, the best camera and audio ever in a Mac notebook, and all the ports you need. The first notebook of its kind, this MacBook Pro is a beast. M1 Pro takes the exceptional performance of the M1 architecture to a whole new level for pro users.</p>
-              <p>Even the most ambitious projects are easily handled with up to 10 CPU cores, up to 16 GPU cores, a 16‑core Neural Engine, and dedicated encode and decode media engines that support H.264, HEVC, and ProRes codecs.</p>
+              {description}
+              {/* <p>The most powerful MacBook Pro ever is here. With the blazing-fast M1 Pro or M1 Max chip — the first Apple silicon designed for pros — you get groundbreaking performance and amazing battery life. Add to that a stunning Liquid Retina XDR display, the best camera and audio ever in a Mac notebook, and all the ports you need. The first notebook of its kind, this MacBook Pro is a beast. M1 Pro takes the exceptional performance of the M1 architecture to a whole new level for pro users.</p>
+              <p>Even the most ambitious projects are easily handled with up to 10 CPU cores, up to 16 GPU cores, a 16‑core Neural Engine, and dedicated encode and decode media engines that support H.264, HEVC, and ProRes codecs.</p> */}
             </div>
           </>
         )}

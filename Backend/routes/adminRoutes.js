@@ -50,7 +50,9 @@ router.get('/orders',authenticateJWT,isAdmin, order.viewOrders);
 router.patch('/orders/status',authenticateJWT,isAdmin, order.changeOrderStatus);
 router.get('/orders/bestselling-products', order.getBestSellingProducts);
 router.get('/orders/bestselling-categories', order.getBestSellingCategories);
-router.get('/orders/bestselling-brands',authenticateJWT,isAdmin, order.getBestSellingBrands);
+router.get('/orders/bestselling-brands', order.getBestSellingBrands);
+router.get('/orders/monthlysales', order.getMonthlySales);
+router.get('/orders/monthlysalesarray', order.getMonthlySalesArray);
 
 // Users
 router.get('/users',authenticateJWT,isAdmin, user.viewUsers);
