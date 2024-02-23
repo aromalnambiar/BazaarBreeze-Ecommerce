@@ -37,7 +37,7 @@ function ChooseAddress({ grandTotal, cartItems, couponId }) {
       })
       .then((res) => {
         setAddress(res.data.addresses);
-        setSelectedAddress(address[0]);
+        setSelectedAddress(res.data.addresses[0]);
       })
       .catch((err) => {
         console.log("Err : ", err);

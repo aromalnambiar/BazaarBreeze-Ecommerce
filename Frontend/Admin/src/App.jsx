@@ -35,7 +35,7 @@ function App() {
             <div className="col-span-12 mb-10 ml-[250px]">
               <Headerbar />
               <Routes>
-                {/* <Route path="/" element={<Dashboard />} /> */}
+                <Route path="/" element={<Dashboard />} />
                 <Route path="/dashboard" element={<Dashboard />} />
                 <Route path="/date" element={<DatePick />} />
                 <Route path="/dashboard/sales-report" element={<SalesReport />} />

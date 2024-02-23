@@ -9,8 +9,8 @@ import BestSellingCategories from "./BestSellingCategories";
 function Dashboard() {
   const [totalSalesCount, setTotalSalesCount] = useState();
   const [totalOrderAmount, setTotalOrderAmount] = useState();
+  const [totalMonthRevenue, setTotalMonthRevenue] = useState();
   useEffect(() => {
-    console.log("adminToken", `${localStorage.getItem("adminToken")}`);
     axios
       .get(`${BASE_URL}/admin/overallSalesCountAndAmount`, {
         headers: {
@@ -26,10 +26,25 @@ function Dashboard() {
         console.log("Error : ", err);
       });
   }, []);
+  useEffect(() => {
+    axios
+      .get(`${BASE_URL}/admin/orders/monthlysales?month=2`, {
+        headers: {
+          Authorization: `${localStorage.getItem("adminToken")}`,
+        },
+      })
+      .then((res) => {
+        console.log("response : ", res.data);
+        setTotalMonthRevenue(res.data.monthlySales);
+      })
+      .catch((err) => {
+        console.log("Error : ", err);
+      });
+  }, []);
 
   return (
     <>
-      <div className="grid grid-cols-12 gap-4 mb-20">
+      <div className="grid grid-cols-12 gap-4  mb-20">
         <div className="col-span-3 shadow-md min-h-40 border flex flex-col justify-center items-center gap-4 rounded-md bg-white">
           <p className="font-bold text-gray-600">Total salesCount</p>
           <h2 className="text-2xl text-gray-500">{totalSalesCount}</h2>
@@ -40,12 +55,12 @@ function Dashboard() {
         </div>
         <div className="col-span-3 shadow-md min-h-40 border flex flex-col justify-center items-center gap-4 rounded-md bg-white">
           <p className="font-bold text-gray-600">Monthly revenue</p>
-          <h2 className="text-2xl text-gray-500">₹ 1412</h2>
+          <h2 className="text-2xl text-gray-500">₹ {totalMonthRevenue}</h2>
         </div>
-        <div className="col-span-3 shadow-md min-h-40 border flex flex-col justify-center items-center gap-4 rounded-md bg-white">
+        {/* <div className="col-span-3 shadow-md min-h-40 border flex flex-col justify-center items-center gap-4 rounded-md bg-white">
           <p className="font-bold text-gray-600">Yearly revenue</p>
           <h2 className="text-2xl text-gray-500">₹ 1412</h2>
-        </div>
+        </div> */}
       </div>
       <SalesChart />
       <BestSellingProducts />

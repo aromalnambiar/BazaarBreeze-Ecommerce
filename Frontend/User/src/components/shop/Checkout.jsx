@@ -128,14 +128,12 @@ function Checkout(props) {
       return;
     }
 
-    // if (selectedPayment.name !== "Cash On Delivery" || selectedPayment.name !== "RazorPay") {
-    //   alert("Currently, we only support Cash on Delivery.");
-    //   return;
-    // }
     if (selectedPayment.name === "RazorPay" && confirm("Are you sure ? ")) {
       handlePayment();
-    } else if (confirm("Are you sure ? ")) {
-      placeOrder();
+    } else if (total > 1000) {
+      alert("Order above Rs 1000 should not be allowed for COD");
+    } else {
+      if (confirm("Are you sure ? ")) placeOrder();
     }
   };
 
@@ -228,7 +226,7 @@ function Checkout(props) {
             {props.cartItems.map((item) => {
               return (
                 <div className="flex items-center gap-4 ">
-                  <img className="w-12 h-12" src={`${BASE_URL}/uploads/${item.productVariantId.images[0]}`} alt="" />
+                  <img className="w-12 h-12 object-contain" src={`${BASE_URL}/uploads/${item.productVariantId.images[0]}`} alt="" />
                   <div>
                     <p>{item.productVariantId.variantName || "variant Name"}</p>
                     <p>x {item.quantity}</p>

@@ -48,30 +48,30 @@ const generateInvoice=async (req, res) => {
             },
             "invoiceNumber": "2021.0001",
             "invoiceDate": "1.1.2021",
-            "products": order.orderedItems.map(item=>{
-                console.log("product : ",item);
-                return {   
-                    quantity:item.quantity,
-                    price:item.price,
-                    name:item.name,
-                    description:item.description
-                }
-        }),
+            "products":[{
+                "quantity": "2",
+                "description": "Test1",
+                "tax": 6,
+                "price": 33.87
+            },
+            {
+                "quantity": "4",
+                "description": "Test2",
+                "tax": 21,
+                "price": 10.45
+            }] ,
             "bottomNotice": "Kindly pay your invoice within 15 days.",
         }
-        // {
-        //     "quantity": "2",
-        //     "description": "Test1",
-        //     "tax": 6,
-        //     "price": 33.87
-        // },
-        // {
-        //     "quantity": "4",
-        //     "description": "Test2",
-        //     "tax": 21,
-        //     "price": 10.45
-        // }
-
+        
+    //     order.orderedItems.map(item=>{
+    //         console.log("product : ",item);
+    //         return {   
+    //             quantity:item.quantity,
+    //             price:item.price,
+    //             name:item.name,
+    //             description:item.description
+    //         }
+    // })
         const result = await easyinvoice.createInvoice(data);
         const pdfBuffer = Buffer.from(result.pdf, 'base64');
 
