@@ -7,6 +7,7 @@ import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { BASE_URL } from "../../../config";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 function OrderDetails() {
   const [items, setItems] = useState([]);
@@ -82,7 +83,17 @@ function OrderDetails() {
 
   const handleStatus = async (orderId, orderStatus) => {
     try {
-      if (confirm("Are you sure ?")) {
+      console.log("handleStatus");
+      const confirmed = await Swal.fire({
+        title: "Are you sure?",
+        text: "You can't revert the changes!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Submit!",
+      });
+      if (confirmed.isConfirmed) {
         const result = await axios.patch(
           `${BASE_URL}/user/order/status`,
           {
@@ -96,6 +107,22 @@ function OrderDetails() {
           }
         );
         setIsToggle((prev) => !prev);
+
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Status changed successfully",
+        });
         console.log("status result : ", result);
       }
     } catch (error) {
@@ -126,7 +153,18 @@ function OrderDetails() {
   };
 
   const handleDownloadInvoice = async () => {
-    downloadInvoice();
+    const confirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to download invoice!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes!",
+    });
+    if (confirmed.isConfirmed) {
+      downloadInvoice();
+    }
   };
 
   return (

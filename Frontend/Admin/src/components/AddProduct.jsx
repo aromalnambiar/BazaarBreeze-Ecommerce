@@ -48,7 +48,12 @@ const AddProduct = () => {
   const handleAddProduct = async () => {
     try {
       if (!formData.productName || !formData.brand || !formData.category || !formData.description) {
-        alert("Please fill in all required fields.");
+        // alert("Please fill in all required fields.");
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please fill in all required fields!",
+        });
         return;
       }
 

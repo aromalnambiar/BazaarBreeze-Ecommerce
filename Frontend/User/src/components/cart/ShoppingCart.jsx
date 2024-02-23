@@ -24,6 +24,7 @@ function ShoppingCart() {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const openModal = () => {
+    console.log("OPEN MODEL ");
     setModalOpen(true);
   };
 

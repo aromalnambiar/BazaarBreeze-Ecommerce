@@ -109,31 +109,66 @@ function Checkout(props) {
         }
       )
       .then((res) => {
-        console.log("response : ", res);
-        console.log("Order placed successfully:", res.data.message);
+        // console.log("response : ", res);
+        // console.log("Order placed successfully:", res.data.message);
         clearTheCart();
         navigate("/shop/checkoutsuccess");
       })
       .catch((err) => {
         console.error("Error placing order:", err);
-        alert("Failed to place the order. Please try again.");
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Failed to place the order. Please try again.!",
+        });
       });
-    console.log("props : ", props);
+    // console.log("props : ", props);
   };
 
-  const handlePlaceOrder = () => {
+  const handlePlaceOrder = async () => {
     console.log("Props : ", props);
     if (!selectedPayment) {
-      alert("Please select a payment method.");
+      // alert("Please select a payment method.");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please select a payment method!",
+      });
       return;
     }
 
-    if (selectedPayment.name === "RazorPay" && confirm("Are you sure ? ")) {
-      handlePayment();
+    if (selectedPayment.name === "RazorPay") {
+      const confirmed = await Swal.fire({
+        title: "Are you sure?",
+        text: "Your edit will be submitted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Submit!",
+      });
+      if (confirmed.isConfirmed) {
+        handlePayment();
+      }
     } else if (total > 1000) {
-      alert("Order above Rs 1000 should not be allowed for COD");
+      Swal.fire({
+        title: "Not allowed!",
+        text: "Order above Rs 1000 should not be allowed for COD",
+        icon: "error",
+      });
     } else {
-      if (confirm("Are you sure ? ")) placeOrder();
+      const confirmed = await Swal.fire({
+        title: "Are you sure?",
+        text: "Your order will be placed!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes!",
+      });
+      if (confirmed.isConfirmed) {
+        placeOrder();
+      }
     }
   };
 

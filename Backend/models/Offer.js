@@ -31,10 +31,10 @@ const OfferSchema = new mongoose.Schema({
     required: true,
     enum: ['Product', 'Category', 'Referral'],
   },
-  productId: {
+  productId: [{
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Product',
-  },
+  }],
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',

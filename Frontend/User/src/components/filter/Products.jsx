@@ -8,13 +8,14 @@ function Products({ query }) {
   const [products, setproducts] = useState([]);
   const navigate = useNavigate();
   let location = useLocation();
-  console.log("location : ", query);
+  // console.log("query : ", query);
+  // console.log("location : ", location.state.key);
 
   useEffect(() => {
     const result = axios
       .get(`${BASE_URL}/user/products/filter?${query}`)
       .then((res) => {
-        console.log(res.data);
+        // console.log(res.data);
         setproducts(res.data);
       })
       .catch((res) => {

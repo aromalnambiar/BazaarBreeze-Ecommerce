@@ -40,7 +40,7 @@ const showAddresses = async (req, res) => {
       const { username, age, gender } = req.body;
       const {userId}=req.user;
       console.log("user  : ", req.body);
-  
+      console.log("req.file.filename : ",req.file);
       const updatedUser = await User.findByIdAndUpdate(
         { _id: userId },
         { 

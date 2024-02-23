@@ -35,10 +35,8 @@ function SideNav() {
   let lists = [
     { name: "Dashboard", logo: "MdOutlineDashboard", path: "/dashboard" },
     { name: "Order History", logo: "LuHistory", path: "/dashboard/orders" },
-    { name: "Track Order", logo: "CgTrack", path: "/dashboard/track" },
     { name: "Shopping Cart", logo: "LuShoppingCart", path: "/dashboard/carts" },
     { name: "Wishlist", logo: "IoMdHeartEmpty", path: "/dashboard/wishlists" },
-    { name: "Cards&Address", logo: "LiaIdCardSolid", path: "/dashboard/cards" },
     { name: "Settings", logo: "GoGear", path: "/dashboard/settings" },
     { name: "Wallet", logo: "LuWallet", path: "/dashboard/wallet" },
     { name: "Offers", logo: "BiSolidOffer", path: "/dashboard/offers" },

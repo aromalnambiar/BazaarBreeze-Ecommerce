@@ -4,6 +4,7 @@ const ProductVariant=require('../../models/ProductVariant.js');
 const viewProducts=async(req,res)=>{
     try {
         const products=await Products.find();
+        console.log("products : ",products);
         res.status(200).json({message:"Success",products});
     } catch (error) {
         console.log(error);

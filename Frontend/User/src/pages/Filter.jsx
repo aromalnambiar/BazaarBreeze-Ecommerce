@@ -12,6 +12,8 @@ function Filter() {
     selectedOptions: [],
     selectedPrice: null,
   });
+  let location = useLocation();
+  // console.log("location : ", location.state.key);
   const [query, setQuery] = useState();
   const handleCategoryChange = (categoryId) => {
     setFilter((prevFilter) => ({ ...prevFilter, category: categoryId }));
@@ -37,8 +39,9 @@ function Filter() {
 
         if (category) {
           queryParams.append("category", category);
+        } else if (location?.state?.key) {
+          queryParams.append("category", location?.state?.key);
         }
-
         if (selectedOptions.length > 0) {
           queryParams.append("selectedOptions", selectedOptions.join(","));
         }

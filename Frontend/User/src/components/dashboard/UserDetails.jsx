@@ -17,7 +17,8 @@ function AccountInfo({ user, handleEditAccount }) {
       </div>
       <div className="text-sm mx-4">
         <div className="flex text-xs items-center gap-4 my-4">
-          {user.image ? <img src={`${BASE_URL}/uploads/${user.image}`} className="w-10 h-10 rounded-full" alt="" srcSet="" /> : <FaUserCircle className="w-10 h-10 text-gray-400"/>}
+          {console.log("user image : ", user.image)}
+          {user.image ? <img src={`${BASE_URL}/uploads/${user.image}`} className="w-10 h-10 rounded-full" alt="" srcSet="" /> : <FaUserCircle className="w-10 h-10 text-gray-400" />}
           <div>
             <h3 className="text-sm ">{user.username}</h3>
           </div>

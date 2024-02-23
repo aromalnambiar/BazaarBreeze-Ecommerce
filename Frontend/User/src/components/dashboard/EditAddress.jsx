@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
+import Swal from "sweetalert2";
 
 function AddAddress({ setIsEdit, addressDetails }) {
   const fullName = useRef();
@@ -84,21 +85,51 @@ function AddAddress({ setIsEdit, addressDetails }) {
         console.log("err : ", err);
       });
   };
-  const handleDelete = () => {
-    if (confirm("Are you sure?")) {
+  const handleDelete = async () => {
+    const confirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: "Do you want to delete this address !",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Delete!",
+    });
+
+    if (confirmed.isConfirmed) {
       axios
-        .delete(`${BASE_URL}/user/address/${addressDetails._id}`,{
-          header:{
-            Authorization:localStorage.getItem('token')
-          }
+        .delete(`${BASE_URL}/user/address/${addressDetails._id}`, {
+          header: {
+            Authorization: localStorage.getItem("token"),
+          },
         })
-        .then((res) => {
+        .then(async (res) => {
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+              toast.onmouseenter = Swal.stopTimer;
+              toast.onmouseleave = Swal.resumeTimer;
+            },
+          });
+          Toast.fire({
+            icon: "success",
+            title: "Deleted successfully",
+          });
           console.log("res : ", res.data.message);
-          alert(res.data.message);
+          // alert(res.data.message);
           setIsEdit((prev) => !prev);
         })
         .catch((err) => {
-          console.log("err : ", err);
+          // console.log("err : ", err);
+          Swal.fire({
+            icon: "error",
+            title: "Oops...",
+            text: "Something went wrong!",
+          });
         });
     }
   };

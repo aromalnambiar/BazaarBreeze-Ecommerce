@@ -1,7 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaUserPlus } from "react-icons/fa6";
 // import User from "../../assets/icons/User.svg";
+import { FaCircleUser } from "react-icons/fa6";
 import user from "../../assets/icons/user.png";
+import Swal from "sweetalert2";
 import axios from "axios";
 import { BASE_URL } from "../../../config";
 import { Link } from "react-router-dom";
@@ -27,10 +29,10 @@ function EditProfile() {
         // console.log("res : ", );
         const user = res.data.user;
         setUser(res.data.user);
-        username.current.value = user.username;
-        email.current.value = user.email;
-        age.current.value = user.age;
-        genderSelect.current.value = user.gender;
+        username.current.value = user.username || "Not set";
+        email.current.value = user.email || "Not set";
+        age.current.value = user.age || 0;
+        genderSelect.current.value = user.gender || "Not set";
       })
       .catch((err) => {
         console.log(err);
@@ -72,15 +74,34 @@ function EditProfile() {
         },
       })
       .then((res) => {
-        alert("User data updated successfully");
+        // alert("User data updated successfully");
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Profile edited successfully",
+        });
         console.log("res : ", res);
         setIsEditing(false); // Turn off edit mode after successful submission
       })
       .catch((err) => {
         console.error("Error updating user data", err);
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Something went wrong!",
+        });
       });
 
-    // For demonstration purposes, log the user data to the console
     console.log("Submitted User Data:", user);
   };
 
@@ -99,7 +120,7 @@ function EditProfile() {
                   <img src={previewImage} alt="Profile" className="w-24 h-24 rounded-full" />
                 </>
               ) : (
-                <img src={`${BASE_URL}/uploads/${user.image}` || user} alt="Profile" className="w-24 h-24 rounded-full" />
+                <img src={`${BASE_URL}/uploads/${user.image}` || user} alt="Profile" className="" />
               )}
               <input type="file" id="profileImage" name="profileImage" className="hidden" disabled={!isEditing} onChange={handleImageChange} />
             </div>
@@ -125,7 +146,7 @@ function EditProfile() {
             <label htmlFor="phone1" className="block text-sm font-medium text-gray-700">
               Age
             </label>
-            <input ref={age} type="tel" id="phone1" name="phone1" className=" mt-1 p-2 w-full border rounded-md" disabled={!isEditing} />
+            <input ref={age} type="number" id="phone1" name="phone1" className=" mt-1 p-2 w-full border rounded-md" disabled={!isEditing} />
           </div>
 
           <div>

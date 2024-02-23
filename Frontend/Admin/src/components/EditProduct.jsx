@@ -3,6 +3,7 @@ import axios from "axios"; // Import axios for making API requests
 import AddImages from "./AddImages";
 import { BASE_URL } from "../../../User/config";
 import { useNavigate, useParams } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const EditProduct = () => {
   const [productName, setProductName] = useState("");
@@ -198,23 +199,46 @@ const EditProduct = () => {
   const handleAddProduct = async () => {
     try {
       if (!productName || !brand || !category || !description) {
-        alert("Please fill in all required fields.");
+        Swal.fire({
+          title: "Fill all!",
+          text: `"Please fill in all required fields."`,
+          icon: "error",
+        });
         return;
       }
-      // Perform the API request with formData
-      const response = await axios.put(`${BASE_URL}/admin/products/${productId}`, {
-        brand,
-        name: productName,
-        category: categoryId,
-        description,
+      const confirmed = await Swal.fire({
+        title: "Are you sure?",
+        text: "Your edit will be submitted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Submit!",
       });
-
+      if (confirmed.isConfirmed) {
+        // Perform the API request with formData
+        const response = await axios.put(`${BASE_URL}/admin/products/${productId}`, {
+          brand,
+          name: productName,
+          category: categoryId,
+          description,
+        });
+        Swal.fire({
+          title: "Edited!",
+          text: `Product edited successfully`,
+          icon: "success",
+        });
+        // alert("product added successfully");
+      }
       // console.log("RESPONSE : ", response.data);
-
-      alert("product added successfully");
     } catch (error) {
       console.error("Error adding product:", error);
-      alert("Error adding product");
+      // alert("Error adding product");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
     }
   };
 
@@ -242,38 +266,59 @@ const EditProduct = () => {
 
   const handleSendDataToVariant = async () => {
     try {
-      const variantFormData = new FormData();
-      variantFormData.append("productId", productId);
-      variantFormData.append("stock", stock);
-      variantFormData.append("color", color);
-      variantFormData.append("regularprice", regularPrice);
-      variantFormData.append("specialprice", salePrice);
-      variantFormData.append("variantName", variantName);
-
-      // images.forEach((image, index) => {
-      //   variantFormData.append(`photos[${index}]`, image);
-      // });
-
-      // imagesObjects.forEach((image, index) => {
-      //   variantFormData.append(`photos[${index}]`, image);
-      // });
-      imagesObjects.forEach((image, index) => {
-        variantFormData.append("photos", image);
+      const confirmed = await Swal.fire({
+        title: "Are you sure?",
+        text: "Your edit will be submitted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Submit!",
       });
+      if (confirmed.isConfirmed) {
+        const variantFormData = new FormData();
+        variantFormData.append("productId", productId);
+        variantFormData.append("stock", stock);
+        variantFormData.append("color", color);
+        variantFormData.append("regularprice", regularPrice);
+        variantFormData.append("specialprice", salePrice);
+        variantFormData.append("variantName", variantName);
+        imagesObjects.forEach((image, index) => {
+          variantFormData.append("photos", image);
+        });
+        specifications.forEach((spec, index) => {
+          variantFormData.append(`specification[${index}][name]`, spec.name);
+          variantFormData.append(`specification[${index}][value]`, spec.value);
+        });
 
-      // console.log("Images : ", imagesObjects);
-      // console.log("variantFormData : ", variantFormData);
-      specifications.forEach((spec, index) => {
-        variantFormData.append(`specification[${index}][name]`, spec.name);
-        variantFormData.append(`specification[${index}][value]`, spec.value);
-      });
+        const variantResponse = await axios.put(`${BASE_URL}/admin/products/variant/${variantId}`, variantFormData);
+        // navigate("/products/view-all");
+        // console.log(variantResponse.data);
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        });
+        Toast.fire({
+          icon: "success",
+          title: "Product Variant added successfully",
+        });
 
-      const variantResponse = await axios.put(`${BASE_URL}/admin/products/variant/${variantId}`, variantFormData);
-      // navigate("/products/view-all");
-      console.log(variantResponse.data);
-      alert(variantResponse.data.message);
+        // alert(variantResponse.data.message);
+      }
     } catch (error) {
       console.error("Error adding product variant:", error);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
     }
   };
 

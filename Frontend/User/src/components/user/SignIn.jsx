@@ -15,7 +15,12 @@ function SignIn() {
   const handleSignin = (e) => {
     e.preventDefault();
     if (email.current.value.trim() == "" || password.current.value.trim() == "") {
-      return alert("Fill the fields");
+      // return alert("Fill the fields");
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Fill all the fields!",
+      });
     }
     if (!email.current.value || !password.current.value) {
       setError("Please enter both email and password");
@@ -29,9 +34,8 @@ function SignIn() {
       })
       .then((res) => {
         const token = res.data.token;
-        const userId = res.data.userId;
-        console.log(res);
-        alert(res.data.message);
+        // console.log(res);
+        // alert(res.data.message);
         dispatch(loginSuccess(token));
         localStorage.setItem("token", token);
         navigate("/", { replace: true });
