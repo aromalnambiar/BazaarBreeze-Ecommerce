@@ -16,7 +16,7 @@ const authenticateJWT = (req, res, next) => {
     req.user = user;
     // console.log("req.user : ",req.user);
     next();
-  });
+  }); 
 };
 
 const isAdmin = (req, res, next) => {

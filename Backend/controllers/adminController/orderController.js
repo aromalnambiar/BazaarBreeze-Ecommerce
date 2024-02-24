@@ -56,7 +56,7 @@ const changeOrderStatus = async (req, res) => {
     try {
       // Fetch all delivered orders
       const orders = await Order.find({ orderStatus: 'Delivered' });
-      console.log('Delivered Orders:', orders);
+      // console.log('Delivered Orders:', orders);
   
       // Ensure that orders are available
       if (!orders || orders.length === 0) {
@@ -65,7 +65,7 @@ const changeOrderStatus = async (req, res) => {
   
       // Flatten orderedItems array from all orders
       const allOrderedItems = orders.flatMap(order => order.orderedItems);
-      console.log('All Ordered Items:', allOrderedItems);
+      // console.log('All Ordered Items:', allOrderedItems);
   
       // Ensure that orderedItems are available
       if (!allOrderedItems || allOrderedItems.length === 0) {
@@ -79,7 +79,7 @@ const changeOrderStatus = async (req, res) => {
         return acc;
       }, {});
   
-      console.log('Product Quantities:', productQuantities);
+      // console.log('Product Quantities:', productQuantities);
   
       // Ensure that productQuantities is not empty
       if (Object.keys(productQuantities).length === 0) {
@@ -91,7 +91,7 @@ const changeOrderStatus = async (req, res) => {
         .sort((a, b) => b[1] - a[1])
         .slice(0, 10);
   
-      console.log('Sorted Products:', sortedProducts);
+      // console.log('Sorted Products:', sortedProducts);
   
       // Retrieve product variant details based on the sorted product variant IDs
       const bestSellingProductVariants = await Promise.all(
@@ -107,7 +107,7 @@ const changeOrderStatus = async (req, res) => {
         })
       );
   
-      console.log('Best Selling Product Variants:', bestSellingProductVariants);
+      // console.log('Best Selling Product Variants:', bestSellingProductVariants);
   
       // Filter out null values (product variants that could not be found)
       const validProductVariants = bestSellingProductVariants.filter(
@@ -227,7 +227,7 @@ const changeOrderStatus = async (req, res) => {
       const productVariant = await ProductVariant.findById(productId);
   
       if (!productVariant) {
-        console.log(`ProductVariant not found for ID: ${productId}`);
+        // console.log(`ProductVariant not found for ID: ${productId}`);
         return acc;
       }
   
@@ -446,21 +446,21 @@ const getMonthlySalesArray = async (req, res) => {
       const productVariant = await ProductVariant.findById(productId);
   
       if (!productVariant) {
-        console.log(`ProductVariant not found for ID: ${productId}`);
+        // console.log(`ProductVariant not found for ID: ${productId}`);
         return acc;
       }
   
       const product = await Product.findById(productVariant.productId);
   
       if (!product) {
-        console.log(`Product not found for ID: ${productVariant.productId}`);
+        // console.log(`Product not found for ID: ${productVariant.productId}`);
         return acc;
       }
   
       const brand = product.brand;
   
       if (!brand) {
-        console.log(`Product with ID ${product._id} does not have a valid brand`);
+        // console.log(`Product with ID ${product._id} does not have a valid brand`);
         return acc;
       }
   

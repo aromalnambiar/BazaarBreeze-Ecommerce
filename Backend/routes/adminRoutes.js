@@ -35,7 +35,7 @@ router.put('/products', authenticateJWT,isAdmin,product.addProduct);
 router.get('/products/variant/:productId', authenticateJWT,isAdmin,product.viewProductVariant);
 router.post('/products/variant',authenticateJWT,isAdmin, upload.array('photos', 12), product.addProductVariant);
 router.put('/products/:productId',authenticateJWT,isAdmin, product.editProduct);
-router.put('/products/variant/:variantId',authenticateJWT,isAdmin, upload.array('photos'), product.editProductVariant);
+router.put('/products/variant/:variantId', upload.array('photos'), product.editProductVariant);
 router.patch('/products/:productId',authenticateJWT,isAdmin, product.deleteProduct);
 
 // Categories
@@ -75,6 +75,7 @@ router.get('/offer',authenticateJWT,isAdmin,offer.getAllOffers);
 router.post('/offer',authenticateJWT,isAdmin,offer.createOffer);
 router.get('/offer/:offerId',authenticateJWT,isAdmin,offer.getOfferById);
 router.put('/offer/:offerId',authenticateJWT,isAdmin,offer.updateOfferById);
+router.put('/offer/:Id/status',offer.updateOfferStatus);
 router.delete('/offer/:offerId',authenticateJWT,isAdmin,offer.deleteOfferById);
 
 //sales
@@ -84,9 +85,9 @@ router.get('/salesCount',authenticateJWT,isAdmin,sales.getOverallSalesCount);
 router.get('/orderAmount',authenticateJWT,isAdmin,sales.getOverallOrderAmount);
 router.get('/overallSalesCountAndAmount',sales.getOverallSalesCountAndAmount);
 
-router.post('/salesCSV',authenticateJWT,isAdmin,sample.exportCSV);
-router.post('/salesExcel',authenticateJWT,isAdmin,sample.exportExcel);
-router.get('/salesPDF',authenticateJWT,isAdmin,sample.exportPDF);
+router.post('/salesCSV',sample.exportCSV);
+router.post('/salesExcel',sample.exportExcel);
+router.get('/salesPDF',sample.exportPDF);
 
 // router.get('/orders');
 // router.put('/orders/:order-id');

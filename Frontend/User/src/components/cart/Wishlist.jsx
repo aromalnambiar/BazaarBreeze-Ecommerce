@@ -2,10 +2,12 @@ import React from "react";
 import { BASE_URL } from "../../../config";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function Wishlist() {
   const location = useLocation();
+  const navigate = useNavigate();
   const isDashboardCartPath = location.pathname === "/dashboard/wishlists";
 
   const [wishList, setWishList] = useState([]);
@@ -19,7 +21,7 @@ function Wishlist() {
             Authorization: `${localStorage.getItem("token")}`,
           },
         });
-        console.log("result wishlist : ", result.data.wishlistItems);
+        console.log("result wishlist : ", result.data);
         setWishList(result.data.wishlistItems);
       } catch (error) {
         console.log(error);
@@ -31,7 +33,17 @@ function Wishlist() {
 
   const handleRemoveFromWishlist = async (productVariant) => {
     try {
-      if (confirm("Are you sure ?")) {
+      const confirmed = await Swal.fire({
+        title: "Are you sure?",
+        text: "Do you want to remove from wishlist!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Remove!",
+      });
+
+      if (confirmed.isConfirmed) {
         const response = await axios.put(
           `${BASE_URL}/user/wishlist`,
           { productVariant },
@@ -50,6 +62,10 @@ function Wishlist() {
   };
 
   console.log("wishLists : ", wishList);
+  const handleClickImage = (id) => {
+    console.log("ID click image : ", id);
+    navigate(`/product/${id}`);
+  };
 
   return (
     <div className={`${isDashboardCartPath ? "my-0" : "my-28"}`}>
@@ -74,8 +90,8 @@ function Wishlist() {
             <tr key={item?.productVariant?._id}>
               <td className="flex items-center gap-x-3 py-3 px-6 whitespace-nowrap">
                 {/* <p>{item._id}</p> */}
-                {console.log("item : ", item)}
-                <img src={`${BASE_URL}/uploads/${item?.productVariant?.images[0]}`} className="w-10 h-10 " />
+                {/* {console.log("item : ", item)} */}
+                <img onClick={() => handleClickImage(item.productVariant.productId)} src={`${BASE_URL}/uploads/${item?.productVariant?.images[0]}`} className="w-10 h-10 cursor-pointer object-contain" />
                 <div>
                   <span className="block text-gray-700 text-sm font-medium">{item?.name}</span>
                   <span className="block text-gray-700 text-xs">{item?.email}</span>

@@ -26,7 +26,7 @@ function OrderDetails() {
           Authorization: `${localStorage.getItem("token")}`,
         },
       });
-      console.log("result1 : ", result.data.order);
+      // console.log("result1 : ", result.data.order);
       setOrder(result.data.order);
     };
     fetchData();
@@ -50,7 +50,7 @@ function OrderDetails() {
           },
         });
 
-        console.log("result2 : ", result.data.variants);
+        // console.log("result2 : ", result.data.variants);
         setItems(result.data.variants);
         setDataRetrieved(true);
       } catch (error) {
@@ -79,7 +79,7 @@ function OrderDetails() {
     }
   }, [dataRetrieved]);
 
-  console.log("joinedArray : ", joinedArray);
+  // console.log("joinedArray : ", joinedArray);
 
   const handleStatus = async (orderId, orderStatus) => {
     try {

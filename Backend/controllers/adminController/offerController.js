@@ -3,14 +3,33 @@ const Offer = require('../../models/Offer');
 // Create a new offer
 const createOffer = async (req, res) => {
   try {
-    const newOffer = new Offer(req.body);
+    // Destructure relevant fields from req.body
+    const { discountType, discountValue, validFrom, validUntil, isActive, description, offerType, selectedCategories, selectedProducts } = req.body;
+
+    // Create a new Offer instance
+    const newOffer = new Offer({
+      discountType,
+      discountValue,
+      validFrom,
+      validUntil,
+      isActive,
+      description,
+      offerType,
+      // Populate productId and categoryId arrays based on offerType
+      productId: offerType === 'Product' ? selectedProducts : [],
+      categoryId: offerType === 'Category' ? selectedCategories : [],
+    });
+
+    // Save the newOffer to the database
     const savedOffer = await newOffer.save();
+
     res.status(201).json({ message: 'Offer created successfully', offer: savedOffer });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: 'Internal Server Error' });
+    res.status(500).json({ message: 'I nternal Server Error' });
   }
 };
+
 
 // Get all offers
 const getAllOffers = async (req, res) => {
@@ -59,6 +78,29 @@ const updateOfferById = async (req, res) => {
   }
 };
 
+const updateOfferStatus= async (req, res) => {
+  const { Id } = req.params;
+
+  try {
+    const offer = await Offer.findById(Id);
+
+    if (!offer) {
+      return res.status(404).json({ error: 'Offer not found' });
+    }
+
+    // Toggle the isActive status
+    const updatedOffer = await Offer.findByIdAndUpdate(
+      Id,
+      { $set: { isActive: !offer.isActive } },
+      { new: true }
+    );
+
+    return res.json(updatedOffer);
+  } catch (error) {
+    console.error('Error toggling isActive status:', error.message);
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 // Delete offer by ID
 const deleteOfferById = async (req, res) => {
   try {
@@ -82,4 +124,5 @@ module.exports = {
   getOfferById,
   updateOfferById,
   deleteOfferById,
+  updateOfferStatus
 };

@@ -23,7 +23,7 @@ function AdminSignIn() {
         const { token } = res.data;
         login(token);
         console.log(res);
-        alert("Login Success");
+        // alert("Login Success");
         window.location.href = "/dashboard";
       })
       .catch((error) => {

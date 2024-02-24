@@ -1,29 +1,49 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import AdminSignIn from "./components/AdminSignin";
-import ViewProducts from "./components/ViewProducts";
-import AddProduct from "./components/AddProduct";
-import CategoryList from "./components/CategoryList";
-import EditCategory from "./components/EditCategory";
-import AddCategory from "./components/AddCategory";
-import UsersList from "./components/UsersList";
-import UserDetails from "./components/UserDetails";
 import Sidebar from "./components/common/Sidebar";
 import Headerbar from "./components/common/Headerbar";
+import { useAuth } from "./context/AuthContext.jsx";
+
+// Import your components
+import Dashboard from "./components/Dashboard";
+import DatePick from "./components/DatePick";
+import SalesReport from "./components/SalesReport";
+import ViewProducts from "./components/ViewProducts";
+import AddProduct from "./components/AddProduct";
 import EditProduct from "./components/EditProduct";
+import CategoryList from "./components/CategoryList";
+import AddCategory from "./components/AddCategory";
 import ViewOffers from "./components/ViewOffers.jsx";
-import AddOffer from "./components/AddOffer.jsx";
+import CreateOffer from "./components/CreateOffer.jsx";
 import ViewCoupons from "./components/ViewCoupons.jsx";
 import AddCoupon from "./components/AddCoupon.jsx";
+import UsersList from "./components/UsersList";
+import UserDetails from "./components/UserDetails";
 import OrdersList from "./components/OrdersList";
-import Dashboard from "./components/Dashboard";
-import SalesReport from "./components/SalesReport";
-import DatePick from "./components/DatePick";
-import CreateOffer from "./components/CreateOffer.jsx";
-import { useAuth } from "./context/AuthContext.jsx";
-import SalesChart from "./components/SalesChart.jsx";
 
 function App() {
   const { token } = useAuth();
+
+  // Define an array of route configurations
+  const routes = [
+    { path: "/", element: <Dashboard /> },
+    { path: "/dashboard", element: <Dashboard /> },
+    { path: "/date", element: <DatePick /> },
+    { path: "/dashboard/sales-report", element: <SalesReport /> },
+    { path: "/products/view-all", element: <ViewProducts /> },
+    { path: "/products/add", element: <AddProduct /> },
+    { path: "/products/edit/:productId", element: <EditProduct /> },
+    { path: "/category/view-all", element: <CategoryList /> },
+    { path: "/category/add", element: <AddCategory /> },
+    { path: "/offers", element: <ViewOffers /> },
+    { path: "/offers/add", element: <CreateOffer /> },
+    { path: "/coupons", element: <ViewCoupons /> },
+    { path: "/coupons/add", element: <AddCoupon /> },
+    { path: "/users/view-all", element: <UsersList /> },
+    { path: "/users/view", element: <UserDetails /> },
+    { path: "/orders/view-all", element: <OrdersList /> },
+  ];
+
   return (
     <>
       {!token ? (
@@ -35,22 +55,10 @@ function App() {
             <div className="col-span-12 mb-10 ml-[250px]">
               <Headerbar />
               <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/date" element={<DatePick />} />
-                <Route path="/dashboard/sales-report" element={<SalesReport />} />
-                <Route path="/products/view-all" element={<ViewProducts />} />
-                <Route path="/products/add" element={<AddProduct />} />
-                <Route path="/products/edit/:productId" element={<EditProduct />} />
-                <Route path="/category/view-all" element={<CategoryList />} />
-                <Route path="/category/add" element={<AddCategory />} />
-                <Route path="/offers" element={<ViewOffers />} />
-                <Route path="/offers/add" element={<CreateOffer />} />
-                <Route path="/coupons" element={<ViewCoupons />} />
-                <Route path="/coupons/add" element={<AddCoupon />} />
-                <Route path="/users/view-all" element={<UsersList />} />
-                <Route path="/users/view" element={<UserDetails />} />
-                <Route path="/orders/view-all" element={<OrdersList />} />
+                {/* Dynamically generate routes based on the array */}
+                {routes.map((route, index) => (
+                  <Route key={index} path={route.path} element={route.element} />
+                ))}
               </Routes>
             </div>
           </div>

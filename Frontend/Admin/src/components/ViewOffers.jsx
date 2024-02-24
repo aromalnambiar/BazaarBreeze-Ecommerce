@@ -5,6 +5,7 @@ import { BASE_URL } from "../../config";
 function ViewOffers() {
   // http://localhost:3000/admin/offer
   const [offers, setOffers] = useState([]);
+  const [toggle, setToggle] = useState(false);
   useEffect(() => {
     const fetchDetails = async () => {
       try {
@@ -20,7 +21,22 @@ function ViewOffers() {
       }
     };
     fetchDetails();
-  }, []);
+  }, [toggle]);
+
+  const handleActiveStatus = async (id) => {
+    try {
+      // console.log(`${localStorage.getItem("adminToken")}`);
+      const result = await axios.put(`${BASE_URL}/admin/offer/${id}/status`, {
+        headers: {
+          Authorization: `${localStorage.getItem("adminToken")}`,
+        },
+      });
+      console.log("result : ", result);
+      setToggle((prev) => !prev);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <section className="flex flex-col justify-center antialiased bg-gray-100 text-gray-600  p-4">
@@ -89,7 +105,9 @@ function ViewOffers() {
                         <div className="text-sm text-center">{item.validUntil.slice(0, 10)}</div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-sm text-center">{item.isActive.toString()}</div>
+                        <div onClick={() => handleActiveStatus(item._id)} className="text-sm text-center">
+                          <button className={`px-3 py-1 rounded-full ${item.isActive ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}>{item.isActive ? "Active" : "Inactive"}</button>
+                        </div>
                       </td>
                     </tr>
                   ))}

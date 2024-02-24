@@ -43,6 +43,9 @@ function SalesReport() {
         },
         {
           responseType: "blob",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("adminToken")}`, // Assuming it's a Bearer token
+          },
         }
       );
 
@@ -70,6 +73,11 @@ function SalesReport() {
         },
         {
           responseType: "blob",
+        },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
         }
       );
 

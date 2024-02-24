@@ -1,7 +1,9 @@
 // Import necessary libraries
 import React, { useState } from "react";
 import axios from "axios";
-
+import { BASE_URL } from "../../config";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router-dom";
 // Define the CouponForm component
 const AddCoupon = () => {
   // State to manage form input values
@@ -16,6 +18,7 @@ const AddCoupon = () => {
     description: "",
   });
 
+  const navigate = useNavigate();
   // Handle input changes
   const handleInputChange = (e) => {
     setFormData({
@@ -30,14 +33,35 @@ const AddCoupon = () => {
 
     try {
       // Send the user input values to the API using Axios
-      const response = await axios.post("YOUR_API_ENDPOINT", formData, {
+      const response = await axios.post(`${BASE_URL}/admin/coupon`, formData, {
         headers: {
           Authorization: `${localStorage.getItem("adminToken")}`,
         },
       });
       console.log("Coupon created successfully:", response.data);
+      const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.onmouseenter = Swal.stopTimer;
+          toast.onmouseleave = Swal.resumeTimer;
+        },
+      });
+      Toast.fire({
+        icon: "success",
+        title: "Coupon created successfully",
+      });
+      navigate("/coupons");
     } catch (error) {
       console.error("Error creating coupon:", error.message);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
     }
   };
 

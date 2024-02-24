@@ -5,6 +5,7 @@ import { FaPaypal } from "react-icons/fa";
 import { FaMoneyBill } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../config";
+import Swal from "sweetalert2";
 import axios from "axios";
 
 function Checkout(props) {
@@ -127,7 +128,8 @@ function Checkout(props) {
 
   const handlePlaceOrder = async () => {
     console.log("Props : ", props);
-    if (!selectedPayment) {
+    // console.log("selecte payment : ", Object.keys(selectedPayment).length === 0);
+    if (Object.keys(selectedPayment).length === 0) {
       // alert("Please select a payment method.");
       Swal.fire({
         icon: "error",
@@ -260,7 +262,7 @@ function Checkout(props) {
           <div className="border p-2 text-sm">
             {props.cartItems.map((item) => {
               return (
-                <div className="flex items-center gap-4 ">
+                <div className="flex items-center gap-4 mb-2">
                   <img className="w-12 h-12 object-contain" src={`${BASE_URL}/uploads/${item.productVariantId.images[0]}`} alt="" />
                   <div>
                     <p>{item.productVariantId.variantName || "variant Name"}</p>

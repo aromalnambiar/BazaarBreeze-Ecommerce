@@ -15,22 +15,26 @@ import Filter from "./pages/Filter";
 
 function App() {
   const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
-
+  const routes = [
+    { path: "/shop/*", element: <Shop /> },
+    { path: "/user/*", element: <User /> },
+    { path: "/cart/*", element: <Cart /> },
+    { path: "/wishlist/*", element: <Wishlist /> },
+    { path: "/product/:id", element: <Product /> },
+    { path: "/dashboard/*", element: <Dashboard /> },
+    { path: "/filter/*", element: <Filter /> },
+    { path: "/Offers/*", element: <Filter /> },
+    { path: "/*", element: <Home /> },
+  ];
   return (
     <>
       <BrowserRouter>
         <Layout>
           <MaxWidth>
             <Routes>
-              <Route path="/shop/*" element={<Shop />} />
-              <Route path="/user/*" element={isAuthenticated ? <Navigate to="/dashboard" /> : <User />} />
-              <Route path="/cart/*" element={<Cart />} />
-              <Route path="/wishlist/*" element={<Wishlist />} />
-              <Route path="/product/:id" element={<Product />} />
-              <Route path="/dashboard/*" element={isAuthenticated ? <Dashboard /> : <Navigate to="/user/signin" />} />
-              <Route path="/filter/*" element={<Filter />} />
-              <Route path="/Offers/*" element={<Filter />} />
-              <Route path="/*" element={<Home />} />
+              {routes.map(({ path, element }) => (
+                <Route key={path} path={path} element={element} />
+              ))}
             </Routes>
           </MaxWidth>
         </Layout>
