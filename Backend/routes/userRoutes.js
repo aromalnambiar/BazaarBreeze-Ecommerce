@@ -13,6 +13,7 @@ const coupon=require('../controllers/userController/couponController.js');
 const wallet=require('../controllers/userController/walletController.js');
 const offer=require('../controllers/userController/offerController.js');
 const invoice=require('../controllers/userController/invoiceController.js');
+const banner=require('../controllers/userController/bannerController.js');
 
 const {authenticateJWT} = require('../middlewares/authMiddleware.js');
 const checkUserBlockStatus = require('../middlewares/checkUserBlockStatus.js');
@@ -70,7 +71,7 @@ router.put('/wishlist',authenticateJWT,checkUserBlockStatus,wishlist.removeFromW
 router.get('/orders',authenticateJWT,order.showOrders);
 router.get('/orders/:orderId',authenticateJWT,order.showOrder);
 router.post('/order/add',authenticateJWT,order.addOrder);
-router.patch('/order/status',authenticateJWT,order.changeOrderStatus);
+router.patch('/order/status',order.changeOrderStatus);
 
 //payment
 router.post('/orders/razorpay',payment.placeOrder);
@@ -94,5 +95,8 @@ router.get('/offers', offer.getAllOffers);
 // invoice
 router.get('/generateinvoice',invoice.generateInvoice);
 
+// banner
+router.get('/banner',banner.viewBanners)
+// router.get('/banners',banner.viewBanners)
 
 module.exports=router;

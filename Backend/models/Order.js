@@ -7,7 +7,7 @@ const OrderSchema=new mongoose.Schema({
             { 
                 product: {
                     type: mongoose.Schema.Types.ObjectId,
-                    ref: 'Product', 
+                    ref: 'ProductVariant', 
                     required: true,
                 },
                 quantity: {
@@ -17,25 +17,26 @@ const OrderSchema=new mongoose.Schema({
                 price:{
                     type:Number,
                     required:true,
-                }
+                },
+                orderStatus:{
+                    type:String,
+                    default: 'Pending',
+                    enum:['Pending','Processing','Shipped','Delivered','Cancelled','Returned'] 
+                },
+                paymentStatus: {
+                    type: String,
+                    enum: ['Pending', 'Processing', 'Completed', 'Failed', 'Refunded'],
+                    default: 'Pending'
+                  },
+                offers:[{
+                    type:mongoose.Types.ObjectId
+                }]
             }
         ], 
         required: true 
     },
     deliveryDate:{type:Date,default:null},
-    offers:{ 
-        type: [
-            { 
-                type: mongoose.Schema.Types.ObjectId 
-            }
-        ] 
-    },
     payment:{type:mongoose.Types.ObjectId },
-    paymentStatus:{
-        type:String,
-        enum:['Pending','Processing','Completed','Failed','Refunded'],
-        default:'Pending'
-    },
     paymentMethod: {
         type: String,
         required: true,
@@ -54,13 +55,9 @@ const OrderSchema=new mongoose.Schema({
         type: Date,
         default: Date.now,
       },
-    coupons:{ type: String , default: '',},
+    coupons:{ type: mongoose.Schema.Types.ObjectId },
     totalAmount: { type: Number, required: true },
-    orderStatus:{
-        type:String,
-        default: 'Pending',
-        enum:['Pending','Processing','Shipped','Delivered','Cancelled','Returned'] 
-    }
+   
 })
 
 const orderModel=mongoose.model("Order",OrderSchema);

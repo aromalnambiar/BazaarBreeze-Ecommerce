@@ -11,22 +11,6 @@ function ChooseAddress({ grandTotal, cartItems, couponId }) {
   const navigate = useNavigate("");
   const [isDeliver, setIsDeliver] = useState(false);
   console.log("cartItems chooseAddress : ", cartItems);
-  // const addresses = [
-  //   {
-  //     id: 1,
-  //     name: "Sugunan",
-  //     phone: "738293829",
-  //     address: "kinfra kakkanchery, kakkanchery, MALAPPURAM, Kerala - 673634",
-  //   },
-  //   {
-  //     id: 2,
-  //     name: "Sugunan",
-  //     phone: "738293829",
-  //     address: "kinfra kakkanchery, kakkanchery, MALAPPURAM, Kerala - 673634",
-  //   },
-
-  //   // Add more addresses as needed
-  // ];
   const userId = localStorage.getItem("userId");
   useEffect(() => {
     axios

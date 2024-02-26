@@ -13,7 +13,7 @@ function ShoppingCart() {
   const [quantity, setQuantity] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
   const [grandTotal, setGrandTotal] = useState(0);
-  const [couponCode, setCouponCode] = useState("");
+  const [couponCode, setCouponCode] = useState(null);
   const [couponStatus, setCouponStatus] = useState("");
   const [appliedCoupon, setAppliedCoupon] = useState(false);
   const [couponId, setCouponId] = useState("");

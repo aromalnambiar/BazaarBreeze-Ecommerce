@@ -11,6 +11,7 @@ const coupon=require('../controllers/adminController/couponController.js');
 const offer=require('../controllers/adminController/offerController.js');
 const sales=require('../controllers/adminController/salesController.js');
 const sample=require('../controllers/adminController/sample.js');
+const banner=require('../controllers/adminController/bannerController.js');
 
 
 
@@ -88,6 +89,12 @@ router.get('/overallSalesCountAndAmount',sales.getOverallSalesCountAndAmount);
 router.post('/salesCSV',sample.exportCSV);
 router.post('/salesExcel',sample.exportExcel);
 router.get('/salesPDF',sample.exportPDF);
+
+//banners
+router.get('/banner',banner.viewBanners)
+router.get('/banner/:bannerId',banner.getBanner)
+router.post('/banner',upload.single('image'),banner.addBanner)
+router.put('/banner/:bannerId' ,banner.editBanner)
 
 // router.get('/orders');
 // router.put('/orders/:order-id');

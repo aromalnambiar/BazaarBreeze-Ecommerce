@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import photo from "../../assets/images/Laptop.png";
 // import Steps from "../order/Steps";
 import Steps from "../order/Stepper";
@@ -26,11 +26,12 @@ function OrderDetails() {
           Authorization: `${localStorage.getItem("token")}`,
         },
       });
-      // console.log("result1 : ", result.data.order);
+      console.log("result1 : ", result.data.order);
       setOrder(result.data.order);
     };
     fetchData();
   }, [isToggle]);
+
   //product fetching
   useEffect(() => {
     const fetchData = async () => {
@@ -50,7 +51,7 @@ function OrderDetails() {
           },
         });
 
-        // console.log("result2 : ", result.data.variants);
+        console.log("result2 : ", result.data.variants);
         setItems(result.data.variants);
         setDataRetrieved(true);
       } catch (error) {
@@ -62,26 +63,26 @@ function OrderDetails() {
 
   useEffect(() => {
     if (dataRetrieved) {
-      setJoinedArray(() =>
-        order.orderedItems.map((obj1) => {
+      setJoinedArray(() => {
+        return order.orderedItems.map((obj1) => {
           const matchingObj2 = items.find((obj2) => obj1.product === obj2._id);
 
           if (matchingObj2) {
             return {
               ...obj1,
-              ...matchingObj2,
+              productDetails: { ...matchingObj2 },
             };
           } else {
             return obj1;
           }
-        })
-      );
+        });
+      });
     }
   }, [dataRetrieved]);
 
-  // console.log("joinedArray : ", joinedArray);
+  console.log("joinedArray : ", joinedArray);
 
-  const handleStatus = async (orderId, orderStatus) => {
+  const handleStatus = async (orderedItemId, orderStatus) => {
     try {
       console.log("handleStatus");
       const confirmed = await Swal.fire({
@@ -97,15 +98,19 @@ function OrderDetails() {
         const result = await axios.patch(
           `${BASE_URL}/user/order/status`,
           {
-            orderId,
+            orderId: order?._id,
+            orderedItemId,
             orderStatus,
           },
           {
+            method: "PATCH", // Explicitly specify the HTTP method
             headers: {
+              "Content-Type": "application/json",
               Authorization: `${localStorage.getItem("token")}`,
             },
           }
         );
+
         setIsToggle((prev) => !prev);
 
         const Toast = Swal.mixin({
@@ -126,7 +131,7 @@ function OrderDetails() {
         console.log("status result : ", result);
       }
     } catch (error) {
-      console.log(error);
+      console.log("Error : ", error);
     }
   };
 
@@ -169,61 +174,72 @@ function OrderDetails() {
 
   return (
     <>
-      <h3 className="text-center mb-10 font-bold text-gray-600">Order Timeline</h3>
-      <Steps status={order?.orderStatus} />
-      {/* {console.log("order status : ", order.orderStatus)} */}
-      {order.orderStatus !== "Cancelled" &&
-        (order.orderStatus === "Delivered" ? (
-          <div onClick={() => handleStatus(order._id, "Returned")} className="text-sm text-center text-[#FA8232] font-bold mb-16 cursor-pointer">
-            RETURN PRODUCT
-          </div>
-        ) : (
-          <div onClick={() => handleStatus(order._id, "Cancelled")} className="text-sm text-center text-[#FA8232] font-bold mb-16 cursor-pointer">
-            CANCEL PRODUCT
-          </div>
-        ))}
       {/* <Timeline /> */}
-      <h3 className="text-center my-10 font-bold text-gray-600">Product</h3>
-      <table className="w-full mt-10 table-auto border text-sm text-left shadow-lg">
-        <thead className="bg-[#F2F4F5] text-gray-600 font-medium border-b">
-          <tr className="uppercase">
-            <th className="py-3 px-6">Products</th>
-            <th className="py-3 px-6">Price</th>
-            <th className="py-3 px-6">Quantity</th>
-            <th className="py-3 px-6">Sub total</th>
-          </tr>
-        </thead>
-        <tbody className="text-gray-600 divide-y">
-          {dataRetrieved &&
-            joinedArray.map((item, idx) => (
-              <tr key={item?._id}>
-                <td className="flex items-center gap-x-3 py-3 px-6 whitespace-nowrap">
-                  {/* <p>{item._id}</p> */}
-                  <img src={`${BASE_URL}/uploads/${item.images[0]}`} className="w-10 h-10 " />
-                  <div>
-                    <span className="block text-gray-700 text-sm font-medium">{item.variantName}</span>
-                    <span className="block text-gray-700 text-xs">{item.email}</span>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap">₹{item.price}</td>
-                <td className="px-6 py-4 whitespace-nowrap">x {item.quantity}</td>
+      <h3 className="text-center my-10 font-bold text-gray-600">Products</h3>
 
-                <td className="px-6 py-4 whitespace-nowrap">₹{item.price * item.quantity}</td>
-              </tr>
-            ))}
-        </tbody>
-      </table>
-      {/* address */}
-      <div className="flex  flex-wrap justify-between gap-8">
-        <div className="border max-w-xs h-max flex text-sm flex-col gap-4 p-10 my-8 shadow-lg">
-          <h3 className="text-lg font-semibold text-gray-800">Shipping address</h3>
-          <p>FullName : {order.shippingAddress?.fullName}</p>
-          <p>Address : {order.shippingAddress?.address}</p>
-          <p>Phone1 : {order.shippingAddress?.phone1}</p>
-          <p>Phone2 : {order.shippingAddress?.phone2}</p>
-        </div>
-        <div onClick={handleDownloadInvoice} className="mt-10">
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Download Invoice</button>
+      <div className="p-3">
+        <div className="overflow-x-auto">
+          <table className="table-auto w-full">
+            <tbody className="text-sm divide-y divide-gray-100">
+              {dataRetrieved &&
+                joinedArray.map((item, idx) => (
+                  <React.Fragment key={item._id}>
+                    <tr className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+                      <th className="p-2 whitespace-nowrap">
+                        <div className="font-semibold text-left">Products</div>
+                      </th>
+                      <th className="p-2 whitespace-nowrap">
+                        <div className="font-semibold text-left">Price</div>
+                      </th>
+                      <th className="p-2 whitespace-nowrap">
+                        <div className="font-semibold text-left">Quantity</div>
+                      </th>
+                      <th className="p-2 whitespace-nowrap">
+                        <div className="font-semibold text-center">Sub Total</div>
+                      </th>
+                    </tr>
+                    <tr>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="font-medium text-gray-800">
+                            <img src={`${BASE_URL}/uploads/${item.productDetails.images[0]}`} className="w-10 h-10 object-contain" />
+                          </div>
+                        </div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-left">{item.price}</div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-left font-medium text-green-500">{item.quantity}</div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-xs text-center">₹{item.price * item.quantity}</div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-sm text-center">{item?.offerType}</div>
+                      </td>
+                    </tr>
+                    {/* {console.log("item : ", item)} */}
+                    <tr className="border-none">
+                      <td>
+                        <Steps status={item?.orderStatus} />
+                        {item.orderStatus !== "Cancelled" &&
+                          (item.orderStatus === "Delivered" ? (
+                            <button onClick={() => handleStatus(item._id, "Returned")} className="text-sm bg-[#3498db] mb-4 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 hover:bg-[#2980b9] focus:outline-none focus:ring focus:border-blue-300">
+                              RETURN PRODUCT
+                            </button>
+                          ) : (
+                            <button onClick={() => handleStatus(item._id, "Cancelled")} className="text-sm bg-[#3498db] mb-4 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 hover:bg-[#2980b9] focus:outline-none focus:ring focus:border-blue-300">
+                              CANCEL PRODUCT
+                            </button>
+                          ))}
+                      </td>
+                    </tr>
+                  </React.Fragment>
+                ))}
+            </tbody>
+          </table>
+          <button onClick={handleDownloadInvoice}>Download</button>
         </div>
       </div>
     </>

@@ -84,6 +84,7 @@ function Checkout(props) {
         product: item.productVariantId._id,
         quantity: item.quantity,
         price: item.productVariantId.salePrice,
+        orderStatus:"Pending"
       };
     });
     console.log("orderedItems : ", orderedItems);
@@ -99,9 +100,8 @@ function Checkout(props) {
           paymentMethod: selectedPayment.name,
           shippingAddress: props.address,
           orderDate: new Date(),
-          coupons: props.couponId || "",
+          coupons: props.couponId ,
           totalAmount: props.grandTotal,
-          orderStatus: "Pending",
         },
         {
           headers: {

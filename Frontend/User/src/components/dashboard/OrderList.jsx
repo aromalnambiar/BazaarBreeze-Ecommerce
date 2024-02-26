@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -7,6 +7,7 @@ import { BASE_URL } from "../../../config";
 function OrderList() {
   const navigate = useNavigate("");
   const [tableItems, setTableItems] = useState([]);
+
   useEffect(() => {
     axios
       .get(`${BASE_URL}/user/orders`, {
@@ -25,46 +26,73 @@ function OrderList() {
 
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-8">
-      <div className=" shadow-sm border rounded-lg custom-scroll overflow-x-auto">
-        <table className="w-full table-auto text-sm text-left ">
+      <div className="shadow-sm border rounded-lg custom-scroll overflow-x-auto">
+        <table className="w-full table-auto text-sm text-left">
           <thead className="bg-gray-50 text-gray-600 font-medium border-b">
             <tr className="uppercase">
-              <th className="py-3 px-6">Order Id</th>
-              <th className="py-3 px-6">payment status</th>
-              <th className="py-3 px-6">order status</th>
+              <th className="py-3 px-6">No</th>
+              <th className="py-3 px-6">payment method</th>
               <th className="py-3 px-6">date</th>
               <th className="py-3 px-6">total</th>
               <th className="py-3 px-6">action</th>
             </tr>
           </thead>
-          <tbody className="text-gray-600 divide-y">
-            {tableItems.length == 0 ? (
+          <tbody className="text-gray-600 divide-y text-xs">
+            {tableItems.length === 0 ? (
               <tr>
-                <td colSpan={5} className="text-center p-16 font-bold text-lg">No orders made</td>
+                <td colSpan={6} className="text-center p-16 font-bold text-lg">
+                  No orders made
+                </td>
               </tr>
             ) : (
-              tableItems.map((item, idx) => (
-                <tr key={item._id}>
-                  <td className="flex items-center gap-x-3 py-3 px-6 whitespace-nowrap">
-                    <p>{item._id}</p>
-                    {/* <img src={item.avatar} className="w-10 h-10 rounded-full" />
-                    <div>
-                      <span className="block text-gray-700 text-sm font-medium">{item.name}</span>
-                      <span className="block text-gray-700 text-xs">{item.email}</span>
-                    </div> */}
-                  </td>
-                  <td className="px-6 py-4 whitespace-nowrap">{item.paymentStatus}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{item.orderStatus}</td>
-                  <td className="px-6 py-4 whitespace-nowrap">{item.orderDate ? new Date(item.orderDate).toLocaleDateString() : ""}</td>
-
-                  <td className="px-6 py-4 whitespace-nowrap">₹{item.totalAmount}</td>
-                  <td onClick={() => navigate(`/dashboard/order-details/${item._id}`)} className="px-6 py-4 whitespace-nowrap">
-                    <a href="" className="flex gap-3 items-center text-[#2DA5F3] font-semibold">
-                      View details
-                      <FaArrowRightLong />
-                    </a>
-                  </td>
-                </tr>
+              tableItems.map((order, idx) => (
+                <React.Fragment key={order._id}>
+                  <tr className="bg-[#f9fafb]">
+                    <td className="px-6 py-4 whitespace-nowrap">{idx + 1}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{order.paymentMethod}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">{order.orderDate ? new Date(order.orderDate).toLocaleDateString() : ""}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">₹{order.totalAmount}</td>
+                    <td onClick={() => navigate(`/dashboard/order-details/${order._id}`)} className="px-6 py-4 whitespace-nowrap cursor-pointer">
+                      <a href="" className="flex gap-3 items-center text-[#2DA5F3] font-semibold">
+                        View details
+                        <FaArrowRightLong />
+                      </a>
+                    </td>
+                  </tr>
+                  <tr key={`${order._id}-items`}>
+                    <td colSpan="6" className="text-xs">
+                      <table className="min-w-full divide-y divide-gray-200">
+                        <thead>
+                          <tr>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Product
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Quantity
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Order status
+                            </th>
+                            {/* Add more columns if needed */}
+                          </tr>
+                        </thead>
+                        <tbody className="border-none ">
+                          {order.orderedItems.map((item, itemIdx) => (
+                            <tr key={`${order._id}-item-${itemIdx}`}>
+                              {console.log("item : ", item)}
+                              <td className="px-6 py-4 whitespace-nowrap">
+                                <img src={`${BASE_URL}/uploads/${item.product.images[0]}`} className="w-12 h-12 object-contain" alt="" srcSet="" />
+                              </td>
+                              <td className="px-6 py-4 whitespace-nowrap">{item.quantity}</td>
+                              <td className="px-6 py-4 whitespace-nowrap">{item.orderStatus}</td>
+                              {/* Add more cells for additional item details */}
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </td>
+                  </tr>
+                </React.Fragment>
               ))
             )}
           </tbody>

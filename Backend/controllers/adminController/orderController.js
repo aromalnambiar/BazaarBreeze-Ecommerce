@@ -25,8 +25,6 @@ const viewOrders = async (req, res) => {
   }
 };
 
-
-
 const changeOrderStatus = async (req, res) => {
     try {
       const { orderId, orderStatus } = req.body;

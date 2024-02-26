@@ -29,8 +29,8 @@ function SignUp() {
 
     const passwordValue = password.current.value;
 
-    if (!passwordValue) {
-      alert("Password must be at least 6 characters long");
+    if (!passwordValue && passwordValue.length < 6) {
+      alert("Password must be at least 6 characters long and it must not be empty");
       return;
     }
 

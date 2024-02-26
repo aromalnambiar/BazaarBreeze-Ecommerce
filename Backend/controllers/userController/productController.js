@@ -126,7 +126,7 @@ const listProducts = async (req, res) => {
           },
         },
       ]);
-      console.log("variants : ",variants);
+      // console.log("variants : ",variants);
       if (variants.length > 0) {
         res.status(200).json({ message: 'success', variants });
       } else {

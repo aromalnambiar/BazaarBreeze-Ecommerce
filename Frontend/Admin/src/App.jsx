@@ -20,6 +20,9 @@ import AddCoupon from "./components/AddCoupon.jsx";
 import UsersList from "./components/UsersList";
 import UserDetails from "./components/UserDetails";
 import OrdersList from "./components/OrdersList";
+import ViewBanners from "./components/ViewBanners.jsx";
+// import AddBanner from "./components/CreateBanner.jsx";
+import CreateBanner from "./components/CreateBanner.jsx";
 
 function App() {
   const { token } = useAuth();
@@ -41,7 +44,8 @@ function App() {
     { path: "/coupons/add", element: <AddCoupon /> },
     { path: "/users/view-all", element: <UsersList /> },
     { path: "/users/view", element: <UserDetails /> },
-    { path: "/orders/view-all", element: <OrdersList /> },
+    { path: "/banners", element: <ViewBanners /> },
+    { path: "/banners/add", element: <CreateBanner /> },
   ];
 
   return (

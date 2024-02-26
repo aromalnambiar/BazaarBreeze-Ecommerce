@@ -13,7 +13,6 @@ const CouponSchema = new mongoose.Schema({
   isActive: { type: Boolean, default: true },
   couponName: { type: String, required: true },
   description: { type: String, required: true },
-  validProducts: [{ type: mongoose.Types.ObjectId}],
   createdDate: { type: Date, default: Date.now },
   modifiedDate: { type: Date, default: Date.now },
   usageLimit: { type: Number, default: null }, 

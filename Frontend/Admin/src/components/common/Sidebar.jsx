@@ -59,6 +59,13 @@ const Sidebar = () => {
         { to: "/coupons/add", text: "Add coupon" },
       ],
     },
+    {
+      label: "Banners",
+      links: [
+        { to: "/banners", text: "View all banners" },
+        { to: "/banners/add", text: "Add banner" },
+      ],
+    },
   ];
 
   return (
