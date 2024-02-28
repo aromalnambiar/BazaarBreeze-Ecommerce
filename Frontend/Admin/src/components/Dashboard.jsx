@@ -5,6 +5,7 @@ import axios from "axios";
 import SalesChart from "./SalesChart";
 import BestSellingProducts from "./BestSellingProducts";
 import BestSellingCategories from "./BestSellingCategories";
+import EcommerceDashboard from "./EcommerceDashboard";
 
 function Dashboard() {
   const [totalSalesCount, setTotalSalesCount] = useState();
@@ -18,7 +19,7 @@ function Dashboard() {
         },
       })
       .then((res) => {
-        console.log("response : ", res.data);
+        // console.log("response : ", res.data);
         setTotalOrderAmount(res.data.totalOrderAmount);
         setTotalSalesCount(res.data.totalSalesCount);
       })
@@ -34,7 +35,7 @@ function Dashboard() {
         },
       })
       .then((res) => {
-        console.log("response : ", res.data);
+        // console.log("response : ", res.data);
         setTotalMonthRevenue(res.data.monthlySales);
       })
       .catch((err) => {
@@ -62,7 +63,8 @@ function Dashboard() {
           <h2 className="text-2xl text-gray-500">₹ 1412</h2>
         </div> */}
       </div>
-      <SalesChart />
+      {/* <SalesChart /> */}
+      <EcommerceDashboard />
       <BestSellingProducts />
       <BestSellingCategories />
     </>

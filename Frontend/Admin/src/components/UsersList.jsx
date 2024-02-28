@@ -79,9 +79,8 @@ function UsersList() {
         <thead>
           <tr className="text-[#566a7f] border-t ">
             <th className="py-2 text-start pl-8 font-medium border-b">USER NAME</th>
-            <th className="py-2 text-start pl-8 font-medium border-b">USER ID</th>
-            <th className="py-2 text-start pl-4 font-medium border-b">STATE</th>
-            <th className="py-2 text-start pl-4 font-medium border-b">ORDER</th>
+            <th className="py-2 text-start pl-8 font-medium border-b">GENDER</th>
+            <th className="py-2 text-start pl-4 font-medium border-b">AGE</th>
             <th className="py-2 text-start pl-4 font-medium border-b">STATUS</th>
             {/* <th className="py-2 text-start pl-4 font-medium border-b">TOTAL SPENT</th> */}
           </tr>
@@ -90,18 +89,15 @@ function UsersList() {
           {users.map((item) => (
             <tr key={item._id} className="text-[#697a8d]">
               {console.log("item : ", item)}
-              <td onClick={() => navigate("/users/view")} className="py-2 px-4 border-b flex items-center cursor-pointer gap-4 ">
-                <div className="w-[2.375rem] h-[2.375rem] rounded-full ms-4 overflow-hidden border">
-                  {item?.image ? <img src={`${BASE_URL}/uploads/${item.image}`} /> : <FaCircleUser className="w-full h-full" />} 
-                </div>
+              <td onClick={() => navigate("/users/view", { state: { userId: item._id } })} className="py-2 px-4 border-b flex items-center cursor-pointer gap-4 ">
+                <div className="w-[2.375rem] h-[2.375rem] rounded-full ms-4 overflow-hidden border">{item?.image ? <img src={`${BASE_URL}/uploads/${item.image}`} /> : <FaCircleUser className="w-full h-full" />}</div>
                 <div className="flex flex-col">
                   <p className="text-[#696cff]">{item.username}</p>
                   <small className="text-[#a1acb8]">{item.email}</small>
                 </div>
               </td>
-              <td className="py-2 px-4 border-b">{item._id}</td>
-              <td className="py-2 px-4 border-b">{item.state || "Kerala"}</td>
-              <td className="py-2 px-4 border-b">{item.order || "0"}</td>
+              <td className="py-2 px-4 border-b">{item.gender || "not specified"}</td>
+              <td className="py-2 px-4 border-b">{item.age || "not specified"}</td>
               <td onClick={() => handleBlock(item)} className="py-2 px-4 border-b">
                 {item.isBlocked ? <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md ">Blocked</button> : <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md ">active</button>}
               </td>

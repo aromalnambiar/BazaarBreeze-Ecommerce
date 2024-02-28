@@ -1,18 +1,23 @@
 import { useState } from "react";
-import { FaRegCreditCard } from "react-icons/fa";
 import { SiRazorpay } from "react-icons/si";
-import { FaPaypal } from "react-icons/fa";
 import { FaMoneyBill } from "react-icons/fa";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { BASE_URL } from "../../../config";
 import Swal from "sweetalert2";
 import axios from "axios";
 
-function Checkout(props) {
+function Checkout() {
   const navigate = useNavigate("");
+  const location = useLocation();
+  const data = location?.state;
+  console.log("data : ", data);
   const [selectedPayment, setSelectedPayment] = useState({});
-  const [address, setAddress] = useState(props?.address);
-  const [total, setTotal] = useState(props?.grandTotal);
+  const [address, setAddress] = useState(data?.selectedAddress);
+  const [total, setTotal] = useState(data?.grandTotal);
+  const grandTotal = data?.grandTotal;
+  const couponId = data?.couponId;
+  const cartItems = data?.cartItems;
+  // const data = location.state?.data;
 
   const paymentOptions = [
     { id: 1, name: "Cash On Delivery", icon: <FaMoneyBill /> },
@@ -64,7 +69,7 @@ function Checkout(props) {
       console.log(error);
     }
   };
-  console.log("Cart Items : checkout : ", props.cartItems);
+  // console.log("Cart Items : checkout : ", props.cartItems);
   const clearTheCart = async () => {
     try {
       const result = await axios.delete(`${BASE_URL}/user/cart/clear`, {
@@ -78,16 +83,20 @@ function Checkout(props) {
     }
   };
 
-  const placeOrder = (status = "Pending") => {
-    const orderedItems = props.cartItems.map((item) => {
+  const placeOrder = (status) => {
+    if (cartItems?.length == 0) {
+      return alert("cartItems are empty or something went wrong");
+    }
+    const orderedItems = cartItems.map((item) => {
       return {
         product: item.productVariantId._id,
         quantity: item.quantity,
         price: item.productVariantId.salePrice,
-        orderStatus:"Pending"
+        orderStatus: "Pending",
       };
     });
     console.log("orderedItems : ", orderedItems);
+    console.log("status of payment : ", status);
 
     axios
       .post(
@@ -98,10 +107,10 @@ function Checkout(props) {
           deliveryDate: new Date(),
           offers: [],
           paymentMethod: selectedPayment.name,
-          shippingAddress: props.address,
+          shippingAddress: address,
           orderDate: new Date(),
-          coupons: props.couponId ,
-          totalAmount: props.grandTotal,
+          coupons: couponId,
+          totalAmount: grandTotal,
         },
         {
           headers: {
@@ -127,7 +136,6 @@ function Checkout(props) {
   };
 
   const handlePlaceOrder = async () => {
-    console.log("Props : ", props);
     // console.log("selecte payment : ", Object.keys(selectedPayment).length === 0);
     if (Object.keys(selectedPayment).length === 0) {
       // alert("Please select a payment method.");
@@ -169,7 +177,7 @@ function Checkout(props) {
         confirmButtonText: "Yes!",
       });
       if (confirmed.isConfirmed) {
-        placeOrder();
+        placeOrder("pending");
       }
     }
   };
@@ -185,7 +193,7 @@ function Checkout(props) {
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                   Full Name
                 </label>
-                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder={address.fullName} disabled />
+                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder={address?.fullName} disabled />
               </div>
             </div>
             <div className="flex flex-wrap -mx-3 mb-2">
@@ -193,7 +201,7 @@ function Checkout(props) {
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                   Address
                 </label>
-                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder={address.address} disabled />
+                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder={address?.address} disabled />
               </div>
             </div>
 
@@ -202,39 +210,34 @@ function Checkout(props) {
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-city">
                   Street
                 </label>
-                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" placeholder={address.street} disabled />
+                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" placeholder={address?.street} disabled />
               </div>
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-state">
                   State
                 </label>
                 <div className="relative">
-                  <input className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" placeholder={address.state} disabled />
+                  <input className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" placeholder={address?.state} disabled />
                 </div>
               </div>
               <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-zip">
                   Pin Code
                 </label>
-                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" placeholder={address.pincode} disabled />
+                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="text" placeholder={address?.pincode} disabled />
               </div>
-              {/* <div className="w-full mt-6 px-3 mb-6 md:mb-0">
-                <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
-                  Email
-                </label>
-                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder="Jane" />
-              </div> */}
+
               <div className="w-full md:w-2/4 mt-2 px-3 mb-6 md:mb-0">
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                   Phone1
                 </label>
-                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder={address.phone1} disabled />
+                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder={address?.phone1} disabled />
               </div>
               <div className="w-full md:w-2/4 mt-2 px-3 mb-6 md:mb-0">
                 <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                   Phone2
                 </label>
-                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder={address.phone2} disabled />
+                <input className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" placeholder={address?.phone2} disabled />
               </div>
             </div>
           </form>
@@ -242,9 +245,6 @@ function Checkout(props) {
             <h3 className="text-lg font-semibold mb-4 mt-8">Payment options</h3>
             <div className="flex justify-between">
               {paymentOptions.map((payment) => {
-                {
-                  console.log("Payment : ", payment);
-                }
                 return (
                   <label key={payment.id} className={`flex-1 border p-4 cursor-pointer ${selectedPayment.name === payment.name ? "bg-[#fa8232] text-white" : ""}`}>
                     <input type="radio" id={`payment_${payment.id}`} name="payment" value={payment.id} checked={selectedPayment.name === payment.name} onChange={() => handlePaymentChange(payment)} className="sr-only" />
@@ -260,9 +260,12 @@ function Checkout(props) {
         </div>
         <div className=" col-span-3">
           <div className="border p-2 text-sm">
-            {props.cartItems.map((item) => {
+            {cartItems.map((item) => {
+              {
+                console.log("cartItems : ", cartItems);
+              }
               return (
-                <div className="flex items-center gap-4 mb-2">
+                <div key={item?._id} className="flex items-center gap-4 mb-2">
                   <img className="w-12 h-12 object-contain" src={`${BASE_URL}/uploads/${item.productVariantId.images[0]}`} alt="" />
                   <div>
                     <p>{item.productVariantId.variantName || "variant Name"}</p>
@@ -278,7 +281,7 @@ function Checkout(props) {
           <div className="flex flex-col gap-4 text-sm py-4 border">
             <div className="flex justify-between px-2">
               <p>Total</p>
-              <p>${props.grandTotal}</p>
+              <p>${grandTotal}</p>
             </div>
             <div className="flex border-b justify-between py-4 px-2">
               <p>Delivery Charges</p>

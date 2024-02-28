@@ -47,17 +47,19 @@ router.get('/categories/:categoryId',authenticateJWT,isAdmin, category.viewCateg
 router.delete('/categories/:categoryId',authenticateJWT,isAdmin, category.deleteCategory);
 
 // Orders
-router.get('/orders',authenticateJWT,isAdmin, order.viewOrders);
-router.patch('/orders/status',authenticateJWT,isAdmin, order.changeOrderStatus);
+router.get('/orders', order.viewOrders);
+router.patch('/orders/status', order.changeOrderStatus);
 router.get('/orders/bestselling-products', order.getBestSellingProducts);
 router.get('/orders/bestselling-categories', order.getBestSellingCategories);
 router.get('/orders/bestselling-brands', order.getBestSellingBrands);
 router.get('/orders/monthlysales', order.getMonthlySales);
-router.get('/orders/monthlysalesarray', order.getMonthlySalesArray);
+// router.get('/orders/monthlysalesarray', order.getMonthlySalesArray);
+router.get('/orders/yearlysales', order.getYearlySales);
 
 // Users
 router.get('/users',authenticateJWT,isAdmin, user.viewUsers);
 router.put('/users/:userId',authenticateJWT,isAdmin, user.blockUser);
+router.get('/users/:userId', user.viewUser);
 // router.delete('/users/:user-id');
 // router.put('/users/:user-id/disable');
 // router.get('/users/search');

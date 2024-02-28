@@ -11,6 +11,7 @@ function OrdersList() {
   const [orders, setOrders] = useState([]);
   const [isToggle, setIsToggle] = useState(false);
   const [selectedOrderStatus, setSelectedOrderStatus] = useState({});
+  const [openDropdownOrderId, setOpenDropdownOrderId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,6 +85,10 @@ function OrdersList() {
     }
   };
 
+  const toggleDropdown = (orderId) => {
+    setOpenDropdownOrderId((prevId) => (prevId === orderId ? null : orderId));
+  };
+
   return (
     <div className=" border border-gray-300 overflow-hidden shadow-md rounded-2xl mb-20">
       <div className="bg-white p-6 flex justify-between py-8">
@@ -91,33 +96,77 @@ function OrdersList() {
       </div>
       <table className="min-w-full bg-white ">
         <thead>
-          <tr className="text-[#566a7f] border-t text-sm">
+          <tr className="text-[#566a7f] border-t text-sm bg-[#e3e3e3]">
             <th className="py-2 text-start pl-4 font-medium border-b">USER NAME</th>
             <th className="py-2 text-start pl-4 font-medium border-b">ORDER DATE</th>
-            <th className="py-2 text-start pl-4 font-medium border-b">PAYMENT STATUS</th>
             <th className="py-2 text-start pl-4 font-medium border-b">PAYMENT METHOD</th>
-            <th className="py-2 text-start pl-4 font-medium border-b">ORDER STATUS</th>
             <th className="py-2 text-start pl-4 font-medium border-b">TOTAL AMOUNT</th>
           </tr>
         </thead>
         <tbody>
           {orders.map((item) => (
-            <tr key={item?.orderId} className="text-[#697a8d] text-sm">
-              <td className="py-2 px-4 border-b">{item?.username}</td>
-              <td className="py-2 px-4 border-b">{item?.orderDate ? new Date(item?.orderDate).toLocaleDateString() : ""}</td>
-              <td className="py-2 px-4 border-b">{item?.paymentStatus}</td>
-              <td className="py-2 px-4 border-b">{item.paymentMethod}</td>
-              <td className="py-2 px-4 border-b">
+            <React.Fragment key={item?.orderId}>
+              <tr className="text-[#697a8d] text-sm border bg-[#f8f8f8]" onClick={() => toggleDropdown(item?.orderId)} style={{ cursor: "pointer" }}>
+                {/* {console.log("item : ", item)} */}
+                <td className="py-2 px-4 border-b">{item?.username}</td>
+                <td className="py-2 px-4 border-b">{item?.orderDate ? new Date(item?.orderDate).toLocaleDateString() : ""}</td>
+                <td className="py-2 px-4 border-b">{item.paymentMethod}</td>
+                {/* <td className="py-2 px-4 border-b">
                 <select value={selectedOrderStatus[item?.orderId] || item.orderStatus} onChange={(e) => handleChange(item?.orderId, e.target.value)} className="p-2">
-                  <option value="Pending">Pending</option>
+                <option value="Pending">Pending</option>
                   <option value="Processing">Processing</option>
                   <option value="Shipped">Shipped</option>
                   <option value="Delivered">Delivered</option>
                   <option value="Cancelled">Cancelled</option>
                 </select>
-              </td>
-              <td className="py-2 px-4 border-b">{item?.totalAmount || "0"}</td>
-            </tr>
+              </td> */}
+                <td className="py-2 px-4 border-b">{item?.totalAmount || "0"}</td>
+              </tr>
+              {openDropdownOrderId === item?.orderId && (
+                <tr key={`${item?._id}-items`}>
+                  <td colSpan="6" className="text-xs">
+                    <table className="min-w-full divide-y divide-gray-200">
+                      <thead>
+                        <tr>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Product
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Quantity
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Order status
+                          </th>
+                          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                            Payment status
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody className="border-none ">
+                        {item?.orderedItems.map((item2, itemIdx) => (
+                          <tr key={`${item2?._id}-item-${itemIdx}`}>
+                            {console.log("item : ", item)}
+
+                            <td className="px-6 py-4 whitespace-nowrap">{itemIdx + 1}</td>
+                            <td className="px-6 py-4 whitespace-nowrap">{item2.quantity}</td>
+                            <td className="py-2 px-4 border-b">
+                              <select value={selectedOrderStatus[item2?._id] || item2.orderStatus} onChange={(e) => handleChange(item?.orderId, e.target.value)} className="p-2">
+                                <option value="Pending">Pending</option>
+                                <option value="Processing">Processing</option>
+                                <option value="Shipped">Shipped</option>
+                                <option value="Delivered">Delivered</option>
+                                <option value="Cancelled">Cancelled</option>
+                              </select>
+                            </td>
+                            <td className="px-6 py-4 whitespace-nowrap">{item2?.paymentStatus}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </td>
+                </tr>
+              )}
+            </React.Fragment>
           ))}
         </tbody>
       </table>

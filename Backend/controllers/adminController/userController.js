@@ -1,4 +1,7 @@
 const Users=require('../../models/User.js');
+const Wallet=require('../../models/Wallet.js');
+const Wishlist=require('../../models/Wishlist.js');
+const Cart=require('../../models/Cart.js');
 
 const viewUsers=async(req,res)=>{
     try {
@@ -10,6 +13,29 @@ const viewUsers=async(req,res)=>{
         res.status(500).json({ message: 'Internal Server Error' });
     }
 }
+const viewUser=async (req, res) => {
+  try {
+    const {userId} = req.params; 
+
+    const userDetails = await Users.findById(userId, { password: 0 });
+
+    const walletDetails = await Wallet.findOne({ user: userId });
+
+    const wishlistItemsCount = await Wishlist.findOne({ userId }).select('items').countDocuments();
+
+    const cartItemsCount = await Cart.findOne({ user: userId }).select('product').countDocuments();
+
+    res.status(200).json({
+      userDetails,
+      walletDetails,
+      wishlistItemsCount,
+      cartItemsCount,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
 
 const blockUser=async(req,res)=>{
     try {
@@ -31,5 +57,6 @@ const blockUser=async(req,res)=>{
 
 module.exports={
     viewUsers,
-    blockUser
+    blockUser,
+    viewUser
     }

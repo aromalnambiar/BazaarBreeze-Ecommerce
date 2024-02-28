@@ -58,7 +58,7 @@ const path = require('path');
 //                 "quantity": "4",
 //                 "description": "Test2",
 //                 "tax": 21,
-//                 "price": 10.45
+//                 "price": 10.45,
 //             }] ,
 //             "bottomNotice": "Kindly pay your invoice within 15 days.",
 //         }

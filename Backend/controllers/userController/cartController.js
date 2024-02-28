@@ -80,25 +80,36 @@ const ProductVariant=require('../../models/ProductVariant');
           res.status(500).json({ message: 'Internal Server Error' });
         }
       };
-  const showCart= async(req,res)=>{
-    try {
-      console.log("hello");
-      console.log("user : ",req.user);
-      const {userId}=req.user;
-      console.log("userId : ",userId);
-      // const cart=await Cart.findOne({user:userId});
-      // const cart = await Cart.findOne({ user: userId })
-      const cart = await Cart.findOne({ user: userId }).populate({
-        path: 'product.productVariantId',
-        model: 'ProductVariant',
-        select: 'variantName salePrice images',
-      });
-      // console.log("cart : ",cart);
-      res.status(200).json({message:"success",cart});
-    } catch (error) {
-      res.status(500).json({message:"internal server issue"});
-    }
-  }
+      const showCart = async (req, res) => {
+        try {
+          console.log("hello");
+          console.log("user:", req.user);
+      
+          const { userId } = req.user;
+          console.log("userId:", userId);
+      
+          const cart = await Cart.findOne({ user: userId }).populate({
+            path: 'product.productVariantId',
+            model: 'ProductVariant',
+            select: 'variantName salePrice images',
+          });
+      
+          if (!cart) {
+            return res.status(404).json({ message: "Cart not found" });
+          }
+      
+          // Check if the cart is empty
+          if (!cart.products || cart.products.length === 0) {
+            return res.status(200).json({ message: "Cart is empty", cart });
+          }
+      
+          res.status(200).json({ message: "Success", cart });
+        } catch (error) {
+          console.error("Error:", error);
+          res.status(500).json({ message: "Internal server issue" });
+        }
+      };
+      
   const clearCart = async (req, res) => {
     try {
         console.log("clear cart : ");

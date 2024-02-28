@@ -12,8 +12,7 @@ function BestSellingProducts() {
             Authorization: `${localStorage.getItem("adminToken")}`,
           },
         });
-        console.log("result : ", result.data);
-        setProducts(result.data);
+        setProducts(result.data.bestSellingProducts);
       } catch (error) {
         console.log("Error : ", error);
       }
@@ -57,27 +56,27 @@ function BestSellingProducts() {
 
                 <tbody className="text-sm divide-y divide-gray-100">
                   {products.map((item, idx) => (
-                    <tr key={item.productVariant._id}>
+                    <tr key={item.product._id}>
                       <td className="p-2 whitespace-nowrap">
                         <div className="flex items-center">
                           <div className="font-medium text-gray-800">{idx + 1}</div>
                         </div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-left">{item.productVariant.variantName}</div>
+                        <div className="text-left">{item?.product?.variantName}</div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium text-green-500">{item.productVariant.salePrice}</div>
+                        <div className="text-left font-medium text-green-500">{item?.product?.salePrice}</div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-xs text-center">{item.productVariant.regularPrice}</div>
+                        <div className="text-xs text-center">{item?.product?.regularPrice}</div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-sm text-center">{item.productVariant.stock}</div>
+                        <div className="text-sm text-center">{item?.product?.stock}</div>
                       </td>
 
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-sm text-center">{item.quantity}</div>
+                        <div className="text-sm text-center">{item?.quantity}</div>
                       </td>
                     </tr>
                   ))}

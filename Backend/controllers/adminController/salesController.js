@@ -224,7 +224,7 @@ const generateSalesReport = async (req, res) => {
       const result = await Order.aggregate([
         {
           $match: {
-            orderStatus: { $in: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Returned', 'Cancelled'] },
+            'orderedItems.orderStatus': { $in: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Returned', 'Cancelled'] },
           },
         },
         {
@@ -234,8 +234,8 @@ const generateSalesReport = async (req, res) => {
             totalOrderAmount: { $sum: '$totalAmount' },
             monthlySales: {
               $push: {
-                month: { $month: '$createdAt' },
-                year: { $year: '$createdAt' },
+                month: { $month: '$orderDate' },
+                year: { $year: '$orderDate' },
                 amount: '$totalAmount',
               },
             },
@@ -303,6 +303,93 @@ const generateSalesReport = async (req, res) => {
   
     return yearlyRevenue;
   };
+  
+  
+  
+  // const getOverallSalesCountAndAmount = async (req, res) => {
+  //   try {
+  //     const result = await Order.aggregate([
+  //       {
+  //         $match: {
+  //           orderStatus: { $in: ['Pending', 'Processing', 'Shipped', 'Delivered', 'Returned', 'Cancelled'] },
+  //         },
+  //       },
+  //       {
+  //         $group: {
+  //           _id: null,
+  //           totalSalesCount: { $sum: 1 },
+  //           totalOrderAmount: { $sum: '$totalAmount' },
+  //           monthlySales: {
+  //             $push: {
+  //               month: { $month: '$createdAt' },
+  //               year: { $year: '$createdAt' },
+  //               amount: '$totalAmount',
+  //             },
+  //           },
+  //         },
+  //       },
+  //     ]);
+  
+  //     if (result.length > 0) {
+  //       const { totalSalesCount, totalOrderAmount, monthlySales } = result[0];
+  
+  //       // Calculate monthly revenue
+  //       const monthlyRevenue = calculateMonthlyRevenue(monthlySales);
+  
+  //       // Calculate yearly revenue
+  //       const yearlyRevenue = calculateYearlyRevenue(monthlySales);
+  
+  //       res.status(200).json({
+  //         totalSalesCount,
+  //         totalOrderAmount,
+  //         monthlyRevenue,
+  //         yearlyRevenue,
+  //       });
+  //     } else {
+  //       res.status(200).json({
+  //         totalSalesCount: 0,
+  //         totalOrderAmount: 0,
+  //         monthlyRevenue: [],
+  //         yearlyRevenue: [],
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error(error);
+  //     res.status(500).json({ message: 'Internal Server Error' });
+  //   }
+  // };
+  
+  // const calculateMonthlyRevenue = (monthlySales) => {
+  //   const monthlyRevenueMap = {};
+  
+  //   monthlySales.forEach((sale) => {
+  //     const key = `${sale.year}-${sale.month}`;
+  //     monthlyRevenueMap[key] = (monthlyRevenueMap[key] || 0) + sale.amount;
+  //   });
+  
+  //   const monthlyRevenue = Object.entries(monthlyRevenueMap).map(([key, amount]) => {
+  //     const [year, month] = key.split('-');
+  //     return { year: parseInt(year), month: parseInt(month), amount };
+  //   });
+  
+  //   return monthlyRevenue;
+  // };
+  
+  // const calculateYearlyRevenue = (monthlySales) => {
+  //   const yearlyRevenueMap = {};
+  
+  //   monthlySales.forEach((sale) => {
+  //     const key = `${sale.year}`;
+  //     yearlyRevenueMap[key] = (yearlyRevenueMap[key] || 0) + sale.amount;
+  //   });
+  
+  //   const yearlyRevenue = Object.entries(yearlyRevenueMap).map(([key, amount]) => ({
+  //     year: parseInt(key),
+  //     amount,
+  //   }));
+  
+  //   return yearlyRevenue;
+  // };
   
 //   getOverallDiscount =  async (req, res) => {
 //     try {

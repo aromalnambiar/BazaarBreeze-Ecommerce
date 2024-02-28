@@ -13,7 +13,7 @@ function BestSellingCategories() {
             Authorization: `${localStorage.getItem("adminToken")}`,
           },
         });
-        console.log("result : ", result.data);
+        // console.log("result : ", result.data);
         setProducts(result.data);
       } catch (error) {
         console.log("Error : ", error);
@@ -30,7 +30,7 @@ function BestSellingCategories() {
             Authorization: `${localStorage.getItem("adminToken")}`,
           },
         });
-        console.log("result : ", result.data);
+        // console.log("result : ", result.data);
         setBrands(result.data);
       } catch (error) {
         console.log("Error : ", error);
@@ -68,7 +68,7 @@ function BestSellingCategories() {
                   <tbody className="text-sm divide-y divide-gray-100">
                     {products.map((item, idx) => (
                       <tr key={idx}>
-                        {console.log("item : ", item)}
+                        {/* {console.log("item : ", item)} */}
                         <td className="p-2 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="font-medium text-gray-800">{idx + 1}</div>
@@ -116,7 +116,7 @@ function BestSellingCategories() {
                   <tbody className="text-sm divide-y divide-gray-100">
                     {brands.map((item, idx) => (
                       <tr key={idx}>
-                        {console.log("item : ", item)}
+                        {/* {console.log("item : ", item)} */}
                         <td className="p-2 whitespace-nowrap">
                           <div className="flex items-center">
                             <div className="font-medium text-gray-800">{idx + 1}</div>

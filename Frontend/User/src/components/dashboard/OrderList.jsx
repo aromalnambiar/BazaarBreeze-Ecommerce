@@ -73,6 +73,9 @@ function OrderList() {
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                               Order status
                             </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                              Payment status
+                            </th>
                             {/* Add more columns if needed */}
                           </tr>
                         </thead>
@@ -85,6 +88,7 @@ function OrderList() {
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">{item.quantity}</td>
                               <td className="px-6 py-4 whitespace-nowrap">{item.orderStatus}</td>
+                              <td className="px-6 py-4 whitespace-nowrap">{item.paymentStatus}</td>
                               {/* Add more cells for additional item details */}
                             </tr>
                           ))}

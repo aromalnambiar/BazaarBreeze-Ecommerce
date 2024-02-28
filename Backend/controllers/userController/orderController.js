@@ -51,13 +51,12 @@ const showOrders = async (req, res) => {
             coupons,
             totalAmount,
             paymentMethod,
-            orderStatus // Include orderStatus in the request body
         } = req.body;
 
         const { userId } = req.user;
 
-        // console.log("Inside addOrder2");
-        // console.log("Body : ", req.body);
+        console.log("Inside addOrder2");
+        console.log("Body : ", req.body);
 
         // Ensure coupons field is valid ObjectId or null
         const validatedCoupons = coupons ? mongoose.Types.ObjectId(coupons) : null;
@@ -65,9 +64,9 @@ const showOrders = async (req, res) => {
         const newOrder = new Order({
             orderedItems: orderedItems.map(item => ({
                 ...item,
-                orderStatus: orderStatus || 'Pending', // Set default orderStatus if not provided
+                orderStatus:  'Pending', // Set default orderStatus if not provided
+                paymentStatus: paymentStatus || 'Pending',
             })),
-            paymentStatus: paymentStatus || 'Pending',
             deliveryDate,
             offers,
             payment,

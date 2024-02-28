@@ -223,23 +223,28 @@ function OrderDetails() {
                     <tr className="border-none">
                       <td>
                         <Steps status={item?.orderStatus} />
-                        {item.orderStatus !== "Cancelled" &&
-                          (item.orderStatus === "Delivered" ? (
-                            <button onClick={() => handleStatus(item._id, "Returned")} className="text-sm bg-[#3498db] mb-4 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 hover:bg-[#2980b9] focus:outline-none focus:ring focus:border-blue-300">
-                              RETURN PRODUCT
-                            </button>
-                          ) : (
-                            <button onClick={() => handleStatus(item._id, "Cancelled")} className="text-sm bg-[#3498db] mb-4 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 hover:bg-[#2980b9] focus:outline-none focus:ring focus:border-blue-300">
-                              CANCEL PRODUCT
-                            </button>
-                          ))}
+                        {item.orderStatus !== "Cancelled" && item.orderStatus !== "Returned" && (
+                          <>
+                            {item.orderStatus === "Delivered" ? (
+                              <button onClick={() => handleStatus(item._id, "Returned")} className="text-sm bg-[#3498db] mb-4 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 hover:bg-[#2980b9] focus:outline-none focus:ring focus:border-blue-300">
+                                RETURN PRODUCT
+                              </button>
+                            ) : (
+                              <button onClick={() => handleStatus(item._id, "Cancelled")} className="text-sm bg-[#3498db] mb-4 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 hover:bg-[#2980b9] focus:outline-none focus:ring focus:border-blue-300">
+                                CANCEL PRODUCT
+                              </button>
+                            )}
+                          </>
+                        )}
                       </td>
                     </tr>
                   </React.Fragment>
                 ))}
             </tbody>
           </table>
-          <button onClick={handleDownloadInvoice}>Download</button>
+          <button onClick={handleDownloadInvoice} className="ml-4  p-2 rounded-md">
+            Download Invoice
+          </button>
         </div>
       </div>
     </>

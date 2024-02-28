@@ -23,6 +23,7 @@ import OrdersList from "./components/OrdersList";
 import ViewBanners from "./components/ViewBanners.jsx";
 // import AddBanner from "./components/CreateBanner.jsx";
 import CreateBanner from "./components/CreateBanner.jsx";
+import OrderList from "./components/OrdersList.jsx";
 
 function App() {
   const { token } = useAuth();
@@ -43,6 +44,8 @@ function App() {
     { path: "/coupons", element: <ViewCoupons /> },
     { path: "/coupons/add", element: <AddCoupon /> },
     { path: "/users/view-all", element: <UsersList /> },
+    { path: "/users/view", element: <UserDetails /> },
+    { path: "/orders/view-all", element: <OrderList /> },
     { path: "/users/view", element: <UserDetails /> },
     { path: "/banners", element: <ViewBanners /> },
     { path: "/banners/add", element: <CreateBanner /> },

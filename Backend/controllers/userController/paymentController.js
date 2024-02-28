@@ -22,7 +22,8 @@ const placeOrder = async (req, res) => {
 			}
 			console.log("order details : ",order);
 			res.status(200).json({ data: order });
-		});
+		});		
+		
 	} catch (error) {
 		res.status(500).json({ message: "Internal Server Error!" });
 		console.log(error);
