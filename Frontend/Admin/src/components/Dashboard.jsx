@@ -28,8 +28,9 @@ function Dashboard() {
       });
   }, []);
   useEffect(() => {
+    const currentMonthNumber = new Date().getMonth() + 1;
     axios
-      .get(`${BASE_URL}/admin/orders/monthlysales?month=2`, {
+      .get(`${BASE_URL}/admin/orders/monthlysales?month=${currentMonthNumber}`, {
         headers: {
           Authorization: `${localStorage.getItem("adminToken")}`,
         },
