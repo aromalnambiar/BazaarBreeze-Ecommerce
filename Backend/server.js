@@ -4,6 +4,7 @@ const cors = require('cors');
 require('dotenv').config();
 const path = require('path');
 
+console.log("MongoDB Connection String:", process.env.DB_URL);
 const mongooseConnection = require('./config/database');
 const userRoutes = require('./routes/userRoutes.js');
 const adminRoutes = require('./routes/adminRoutes.js');
