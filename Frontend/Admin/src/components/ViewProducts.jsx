@@ -65,7 +65,7 @@ function ViewProducts() {
         <div className="bg-white p-6 flex justify-between py-8">
           <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search products..." />
           <div>
-            <Link to={"/products/add"}>
+            <Link to={"/adminpanel/products/add"}>
               <button className="bg-[#696cff] text-white px-8 py-2 rounded-md shadow-lg">Add Product</button>
             </Link>
           </div>
@@ -94,7 +94,7 @@ function ViewProducts() {
                 <td className="py-2 px-4 border-b">{item.brand || "0"}</td>
                 <td className="py-2 px-4 border-b">{item.totalEarnings || "0"}</td>
                 <td className="py-2 px-4 border-b">
-                  <Link to={{ pathname: `/products/edit/${item._id}` }}>
+                  <Link to={{ pathname: `/adminpanel/products/edit/${item._id}` }}>
                     <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md">Edit</button>
                   </Link>
                   <button onClick={() => handleDelete(item._id)} className="bg-[#fedad4] py-2 px-6 text-red-600 rounded-md ">

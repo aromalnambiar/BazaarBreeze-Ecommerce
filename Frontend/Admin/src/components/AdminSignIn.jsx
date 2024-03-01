@@ -5,11 +5,10 @@ import axios from "axios";
 import { BASE_URL } from "../../config";
 
 function AdminSignIn() {
-  // const navigate = useNavigate();
   const email = useRef();
   const password = useRef();
   const [error, setError] = useState(null);
-  const { token, login } = useAuth();
+  const { login } = useAuth();
 
   const handleSignin = (e) => {
     e.preventDefault();
@@ -22,9 +21,9 @@ function AdminSignIn() {
       .then((res) => {
         const { token } = res.data;
         login(token);
-        console.log(res);
+        // console.log(res);
         // alert("Login Success");
-        window.location.href = "/dashboard";
+        window.location.href = "/adminpanel/dashboard";
       })
       .catch((error) => {
         console.log(error);

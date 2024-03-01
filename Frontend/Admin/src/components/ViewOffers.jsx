@@ -3,9 +3,9 @@ import axios from "axios";
 import { BASE_URL } from "../../config";
 
 function ViewOffers() {
-  // http://localhost:3000/admin/offer
   const [offers, setOffers] = useState([]);
   const [toggle, setToggle] = useState(false);
+
   useEffect(() => {
     const fetchDetails = async () => {
       try {
@@ -25,7 +25,6 @@ function ViewOffers() {
 
   const handleActiveStatus = async (id) => {
     try {
-      // console.log(`${localStorage.getItem("adminToken")}`);
       const result = await axios.put(`${BASE_URL}/admin/offer/${id}/status`, {
         headers: {
           Authorization: `${localStorage.getItem("adminToken")}`,

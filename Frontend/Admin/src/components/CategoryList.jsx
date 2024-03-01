@@ -96,7 +96,7 @@ function CategoryList() {
               <button onClick={handleView} className="border-[#afb0e1]  px-8 py-2 mr-4 rounded-md shadow-lg">
                 {isListed ? "View unlisted" : "View listed"}
               </button>
-              <Link to={"/category/add"}>
+              <Link to={"/adminpanel/category/add"}>
                 <button className="bg-[#696cff] text-white px-8 py-2 rounded-md shadow-lg">Add Category</button>
               </Link>
             </div>

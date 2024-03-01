@@ -24,7 +24,7 @@ function Home() {
             <ShopWithCategories />
             <FeaturedProducts />
             <ComputerAccessories />
-            <QuickBuyProducts />
+            {/* <QuickBuyProducts /> */}
           </>
         );
       case "home":
@@ -35,7 +35,7 @@ function Home() {
             <ShopWithCategories />
             <FeaturedProducts />
             <ComputerAccessories />
-            <QuickBuyProducts />
+            {/* <QuickBuyProducts /> */}
           </>
         );
       default:

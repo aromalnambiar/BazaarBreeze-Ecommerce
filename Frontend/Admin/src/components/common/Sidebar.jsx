@@ -19,51 +19,51 @@ const Sidebar = () => {
     {
       label: "Dashboard",
       links: [
-        { to: "/dashboard", text: "View Dashboard" },
-        { to: "/dashboard/sales-report", text: "Sales report" },
+        { to: "/adminpanel/dashboard", text: "View Dashboard" },
+        { to: "/adminpanel/dashboard/sales-report", text: "Sales report" },
       ],
     },
     {
       label: "Products",
       links: [
-        { to: "/products/view-all", text: "View all products" },
-        { to: "/products/add", text: "Add product" },
+        { to: "/adminpanel/products/view-all", text: "View all products" },
+        { to: "/adminpanel/products/add", text: "Add product" },
       ],
     },
-    { label: "Order", links: [{ to: "/orders/view-all", text: "View all orders" }, { text: "Submenu 6" }] },
+    { label: "Order", links: [{ to: "/adminpanel/orders/view-all", text: "View all orders" }, { text: "Submenu 6" }] },
     {
       label: "Users",
       links: [
-        { to: "/users/view-all", text: "All users" },
-        { to: "/users/view", text: "User details" },
+        { to: "/adminpanel/users/view-all", text: "All users" },
+        { to: "/adminpanel/users/view", text: "User details" },
       ],
     },
     {
       label: "Categories",
       links: [
-        { to: "/category/view-all", text: "View all categories" },
-        { to: "/category/add", text: "Add category" },
+        { to: "/adminpanel/category/view-all", text: "View all categories" },
+        { to: "/adminpanel/category/add", text: "Add category" },
       ],
     },
     {
       label: "Offers",
       links: [
-        { to: "/offers", text: "View all offers" },
-        { to: "/offers/add", text: "Add offer" },
+        { to: "/adminpanel/offers", text: "View all offers" },
+        { to: "/adminpanel/offers/add", text: "Add offer" },
       ],
     },
     {
       label: "Coupons",
       links: [
-        { to: "/coupons", text: "View all coupons" },
-        { to: "/coupons/add", text: "Add coupon" },
+        { to: "/adminpanel/coupons", text: "View all coupons" },
+        { to: "/adminpanel/coupons/add", text: "Add coupon" },
       ],
     },
     {
       label: "Banners",
       links: [
-        { to: "/banners", text: "View all banners" },
-        { to: "/banners/add", text: "Add banner" },
+        { to: "/adminpanel/banners", text: "View all banners" },
+        { to: "/adminpanel/banners/add", text: "Add banner" },
       ],
     },
   ];
