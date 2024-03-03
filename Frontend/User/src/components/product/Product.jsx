@@ -154,7 +154,7 @@ function Product() {
           </div>
 
           <div className="mt-6 w-max   max-w-[24rem] mx-auto whitespace-nowrap overflow-x-scroll no-scrollbar ">
-            <div className="flex gap-4 ">{galleryImages.length > 1 && galleryImages.map((image, index) => <img key={index} className="cursor-pointer shadow-sm w-16 h-16 border rounded-lg" src={`${BASE_URL}/uploads/${image}`} alt={`Gallery Image ${index + 1}`} onClick={() => handleGalleryImageClick(image)} />)}</div>
+            <div className="flex gap-4 ">{galleryImages.length > 1 && galleryImages.map((image, index) => <img key={index} className="cursor-pointer shadow-sm object-contain w-16 h-16 border rounded-lg" src={`${BASE_URL}/uploads/${image}`} alt={`Gallery Image ${index + 1}`} onClick={() => handleGalleryImageClick(image)} />)}</div>
           </div>
         </div>
         <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6">

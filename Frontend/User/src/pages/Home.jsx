@@ -23,7 +23,7 @@ function Home() {
             <BestDeals />
             <ShopWithCategories />
             <FeaturedProducts />
-            <ComputerAccessories />
+            {/* <ComputerAccessories /> */}
             {/* <QuickBuyProducts /> */}
           </>
         );
@@ -34,7 +34,7 @@ function Home() {
             <BestDeals />
             <ShopWithCategories />
             <FeaturedProducts />
-            <ComputerAccessories />
+            {/* <ComputerAccessories /> */}
             {/* <QuickBuyProducts /> */}
           </>
         );

@@ -39,13 +39,13 @@ router.post('/resend-otp',auth.resendOTP);
 
 // products
 router.get('/products',product.listProducts);
+router.get('/products/filter',product.filterProducts);
 router.get('/products/:categoryName',product.listProductsByCategory);
 router.get('/products/variants',product.productVariants)
 router.get('/products/variants/:id',authenticateJWT,product.getProductVariantDetails)
 router.get('/products/:productid/product',authenticateJWT,product.productDetails);
 router.get('/products/:categoryId/product',authenticateJWT,product.productDetails);
 router.get('/products/search',product.searchProducts);
-router.get('/products/filter',product.filterProducts);
 
 // user
 router.get('/',authenticateJWT,checkUserBlockStatus,user.showUser);

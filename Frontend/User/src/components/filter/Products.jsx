@@ -12,15 +12,18 @@ function Products({ query }) {
   // console.log("location : ", location.state.key);
 
   useEffect(() => {
-    const result = axios
-      .get(`${BASE_URL}/user/products/filter?${query}`)
-      .then((res) => {
-        // console.log(res.data);
-        setproducts(res.data);
-      })
-      .catch((res) => {
-        console.log(res);
-      });
+    const fetchData = async () => {
+      try {
+        const result = await axios.get(`${BASE_URL}/user/products/filter?${query}`);
+        setproducts(result.data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    if (query) {
+      fetchData();
+    }
+
     // window.scrollTo(0, 0);
   }, [query]);
 
@@ -37,7 +40,7 @@ function Products({ query }) {
           return (
             <div key={item?._id} onClick={() => handleClick(item)} className="flex w-44 h-64 my-2 relative cursor-pointer flex-col p-2 border">
               <div className="w-44 h-44  overflow-hidden">
-                <img className="w-40 rounded-sm" src={`${BASE_URL}/uploads/${item?.variants[0]?.images[0]}` || product} alt="" />
+                <img className="w-40 rounded-sm h-full object-contain" src={`${BASE_URL}/uploads/${item?.variants[0]?.images[0]}` || product} alt="" />
               </div>
               <div className="absolute bottom-2">
                 <p className="text-sm w-44 overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">{item?.description}</p>

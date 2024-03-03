@@ -162,7 +162,7 @@ function ShoppingCart() {
   return (
     <>
       <div className={`grid grid-cols-12 gap-4  ${isDashboardCartPath ? "my-0" : "my-14"}  min-h-[80vh]`}>
-        <div className="col-span-8  ">
+        <div className="col-span-12 md:col-span-8  ">
           <div className="container mx-auto  border">
             <div className="flex shadow-md ">
               <div className="w-full bg-white px-10 py-10">
@@ -220,7 +220,7 @@ function ShoppingCart() {
             </div>
           </div>
         </div>
-        <div className="border  col-span-4 ">
+        <div className="border col-span-12  md:col-span-4 ">
           <div className="w-full h-full px-8 py-10 bg-[#f6f6f6]">
             <h1 className="font-semibold text-2xl border-b pb-8">Order Summary</h1>
             <div className="flex justify-between mt-10 mb-5">

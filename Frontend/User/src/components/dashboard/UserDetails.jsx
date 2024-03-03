@@ -11,7 +11,7 @@ import EditAddress from "./EditAddress";
 function AccountInfo({ user, handleEditAccount }) {
   // console.log("user : ", user);
   return (
-    <div className="border min-h-[40vh] relative pb-20 overflow-hidden rounded-md col-span-4">
+    <div className="border min-h-[40vh] relative pb-20 overflow-hidden rounded-md col-span-12 sm:col-span-6 lg:col-span-4">
       <div className="text-sm font-semibold border-b">
         <p className="px-4 py-4">ACCOUNT INFO</p>
       </div>
@@ -47,7 +47,7 @@ function AccountInfo({ user, handleEditAccount }) {
 
 function ShippingAddress({ item, handleEditAddress }) {
   return (
-    <div key={item._id} className="border min-h-[40vh] relative pb-20  rounded-md col-span-4">
+    <div key={item._id} className="border min-h-[40vh] relative pb-20  rounded-md col-span-12 sm:col-span-6 lg:col-span-4">
       <div className="text-sm font-semibold border-b">
         <p className="px-4 py-4">SHIPPING ADDRESS</p>
       </div>

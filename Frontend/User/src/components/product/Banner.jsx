@@ -32,7 +32,7 @@ function Banner() {
   };
 
   return (
-    <Slider {...settings} className="w-full h-[350px] my-10 md:px-4">
+    <Slider {...settings} className="w-[94%] mx-auto  sm:w-full h-[350px] my-10 md:px-4">
       {banners.map((item, index) => (
         <div key={index} className="relative h-[350px] rounded-lg over">
           <img src={`${BASE_URL}/uploads/${item.imageUrl}`} alt="Banner" className="w-full h-full object-cover absolute inset-0" />

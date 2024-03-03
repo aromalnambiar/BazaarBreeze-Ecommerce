@@ -10,7 +10,7 @@ const AddImages = ({ images, onImageUpload, onRemoveImage, editproduct }) => {
         {/* {console.log("image add image : ", images)} */}
         {images.map((image, index) => (
           <div key={index} className="mb-4 flex items-center">
-            <img src={` ${image}`} alt={`Image ${index + 1}`} className="w-16 h-16 object-cover mr-4" />
+            <img src={` ${image}`} alt={`Image ${index + 1}`} className="w-16 h-16 object-contain mr-4" />
             <button onClick={() => onRemoveImage(index)} className="bg-red-500 text-white py-2 px-4 rounded-md hover:bg-red-600">
               Remove
             </button>
