@@ -5,6 +5,9 @@ import { BASE_URL } from "../../../config";
 import { useNavigate, useParams } from "react-router-dom";
 import Specification from "./Specification";
 import Modal from "../common/Modal";
+import InnerImageZoom from "react-inner-image-zoom";
+import "react-inner-image-zoom/lib/InnerImageZoom/styles.css";
+import "./styles.css";
 
 function Product() {
   const { id: productId } = useParams();
@@ -144,14 +147,16 @@ function Product() {
     <>
       <div className="grid grid-cols-12 mt-8 text-sm max-w-[940px]  gap-8">
         <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6 h-max border p-4 rounded-md ">
-          <div className="border  rounded-lg  max-w-[350px] h-[310px] p-10 mx-auto">
-            <img className="mx-auto hover:scale-125 object-contain w-full h-full" src={`${BASE_URL}/uploads/${image}` || photo} alt="" />
+          <div className="border rounded-lg max-w-[350px] h-[310px] p-10 mx-auto">
+            <div style={{ height: "210px", overflow: "hidden" }}>
+              <InnerImageZoom src={`${BASE_URL}/uploads/${image}` || photo} alt="Product Image" zoomSrc={`${BASE_URL}/uploads/${image}` || photo} zoomScale={1.5} zoomType="hover" width={350} height={210} enlargeable={true} />
+            </div>
           </div>
+
           <div className="mt-6 w-max   max-w-[24rem] mx-auto whitespace-nowrap overflow-x-scroll no-scrollbar ">
             <div className="flex gap-4 ">{galleryImages.length > 1 && galleryImages.map((image, index) => <img key={index} className="cursor-pointer shadow-sm w-16 h-16 border rounded-lg" src={`${BASE_URL}/uploads/${image}`} alt={`Gallery Image ${index + 1}`} onClick={() => handleGalleryImageClick(image)} />)}</div>
           </div>
         </div>
-        {/* {console.log("item : : ", item)} */}
         <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6">
           <h3 className="font-semibold mb-4">{description || "2020 Apple MacBook Pro with Apple M1 Chip (13-inch, 8GB RAM, 256GB SSD Storage) - Space Gray"}</h3>
           <div>
