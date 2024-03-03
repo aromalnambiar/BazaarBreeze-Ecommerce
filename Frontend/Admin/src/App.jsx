@@ -1,10 +1,9 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useAuth } from "./context/AuthContext.jsx";
 import AdminSignIn from "./components/AdminSignin";
 import Sidebar from "./components/common/Sidebar";
 import Headerbar from "./components/common/Headerbar";
-import { useAuth } from "./context/AuthContext.jsx";
 
-// Import your components
 import Dashboard from "./components/Dashboard";
 import DatePick from "./components/DatePick";
 import SalesReport from "./components/SalesReport";
@@ -19,16 +18,13 @@ import ViewCoupons from "./components/ViewCoupons.jsx";
 import AddCoupon from "./components/AddCoupon.jsx";
 import UsersList from "./components/UsersList";
 import UserDetails from "./components/UserDetails";
-import OrdersList from "./components/OrdersList";
 import ViewBanners from "./components/ViewBanners.jsx";
-// import AddBanner from "./components/CreateBanner.jsx";
 import CreateBanner from "./components/CreateBanner.jsx";
 import OrderList from "./components/OrdersList.jsx";
 
 function App() {
   const { token } = useAuth();
 
-  // Define an array of route configurations
   const routes = [
     { path: "/adminpanel", element: <Dashboard /> },
     { path: "/adminpanel/dashboard", element: <Dashboard /> },
@@ -62,7 +58,6 @@ function App() {
             <div className="col-span-12 mb-10 ml-[250px]">
               <Headerbar />
               <Routes>
-                {/* Dynamically generate routes based on the array */}
                 {routes.map((route, index) => (
                   <Route key={index} path={route.path} element={route.element} />
                 ))}
