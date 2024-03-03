@@ -39,6 +39,7 @@ router.post('/resend-otp',auth.resendOTP);
 
 // products
 router.get('/products',product.listProducts);
+router.get('/products/:categoryName',product.listProductsByCategory);
 router.get('/products/variants',product.productVariants)
 router.get('/products/variants/:id',authenticateJWT,product.getProductVariantDetails)
 router.get('/products/:productid/product',authenticateJWT,product.productDetails);

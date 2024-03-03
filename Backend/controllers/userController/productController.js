@@ -6,11 +6,130 @@ const Wishlist =require('../../models/Wishlist');
 const Category=require('../../models/Category');
 
 
+// const listProducts = async (req, res) => {
+//   try {
+//     const { categoryName, page = 1, pageSize = 15 } = req.params;
+//     const skip = (page - 1) * pageSize;
+
+//     if (!categoryName) {
+//       return res.status(400).json({ error: 'Category name is required' });
+//     }
+
+//     const products = await Products.aggregate([
+//       {
+//         $match: {
+//           category: mongoose.Types.ObjectId(categoryName),
+//         },
+//       },
+//       {
+//         $lookup: {
+//           from: 'productvariants',
+//           localField: '_id',
+//           foreignField: 'productId',
+//           as: 'variants',
+//         },
+//       },
+//       {
+//         $addFields: {
+//           firstVariant: { $arrayElemAt: ['$variants', 0] },
+//         },
+//       },
+//       {
+//         $project: {
+//           productId: '$_id',
+//           productVariantId: '$firstVariant._id',
+//           description: 1,
+//           salePrice: '$firstVariant.salePrice',
+//           // Include more fields as needed
+//           firstImage: { $arrayElemAt: ['$firstVariant.images', 0] },
+//         },
+//       },
+//       {
+//         $skip: skip,
+//       },
+//       {
+//         $limit: parseInt(pageSize),
+//       },
+//     ]);
+
+//     res.status(200).json({ message: 'success', products });
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ error: 'Internal Server Error' });
+//     }
+//   };
 const listProducts = async (req, res) => {
+  try {
+    const { page = 1, pageSize = 15 } = req.params;
+
+    const skip = (page - 1) * parseInt(pageSize);
+
+    const products = await Products.aggregate([
+      {
+        $sample: { size: parseInt(pageSize) },
+      },
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'variants',
+        },
+      },
+      {
+        $addFields: {
+          firstVariant: { $arrayElemAt: ['$variants', 0] },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          brand: 1,
+          description: 1,
+          salePrice: '$firstVariant.salePrice',
+          productId: '$_id',
+          productVariantId: '$firstVariant._id',
+          image: { $arrayElemAt: ['$firstVariant.images', 0] },
+        },
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: parseInt(pageSize),
+      },
+    ]);
+
+    res.status(200).json({ message: 'success', products });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+  const listProductsByCategory = async (req, res) => {
     try {
-      // console.log("List products : ");
-      // const products=[];
+      const { categoryName, page = 1, pageSize = 15 } = req.params;
+      const skip = (page - 1) * pageSize;
+  
+      if (!categoryName) {
+        return res.status(400).json({ error: 'Category name is required' });
+      }
+  
+      // Fetch category by name to get its _id
+      const category = await Category.findOne({ name: categoryName });
+  
+      if (!category) {
+        return res.status(404).json({ error: 'Category not found' });
+      }
+  
       const products = await Products.aggregate([
+        {
+          $match: {
+            category: category._id,
+          },
+        },
         {
           $lookup: {
             from: 'productvariants',
@@ -26,18 +145,33 @@ const listProducts = async (req, res) => {
         },
         {
           $project: {
-            variants: 0, 
+            _id: 0,
+            name: 1,
+            brand: 1, // Include brand field
+            description: 1,
+            salePrice: '$firstVariant.salePrice',
+            productId: '$_id',
+            productVariantId: '$firstVariant._id',
+            image: { $arrayElemAt: ['$firstVariant.images', 0] },
           },
+        },
+        {
+          $skip: skip,
+        },
+        {
+          $limit: parseInt(pageSize),
         },
       ]);
   
-      // console.log(products);
       res.status(200).json({ message: 'success', products });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   };
+  
+  
+  
   
   const productDetails = async (req, res) => {
     try {
@@ -293,5 +427,6 @@ const listProducts = async (req, res) => {
     listCategoryProducts,
     searchProducts,
     filterProducts,
-    getProductVariantDetails
+    getProductVariantDetails,
+    listProductsByCategory
   }

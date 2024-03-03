@@ -1,72 +1,62 @@
-import product from "../../assets/images/Image.png";
+import { useEffect, useState } from "react";
+import product from "../../assets/images/Laptop.png";
+import axios from "axios";
+import { BASE_URL } from "../../../config";
+import { useNavigate } from "react-router-dom";
+import { IoIosHeartEmpty } from "react-icons/io";
+import Skeleton from "react-loading-skeleton"; // Import the Skeleton component
 
 function FeaturedProducts() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true); // State to track if data is being fetched
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await axios.get(`${BASE_URL}/user/products/SmartPhone`);
+        // console.log("response featured Products : ", res.data);
+        setProducts(res.data.products);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false); // Set loading to false regardless of success or failure
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleClick = (item) => {
+    navigate(`/product/${item.productVariantId}`);
+  };
+
   return (
-    <div className="my-10 text-xs md:text-base mx-auto">
-      <div className="flex justify-between my-10">
-        <h2 className="font-bold text-lg text-[#191C1F]">Featured Products</h2>
-        <ul className="flex gap-3">
-          <li className="font-semibold cursor-pointer">All Product</li>
-          <li className="text-[#5F6C72] cursor-pointer">Smart Phone</li>
-          <li className="text-[#5F6C72] cursor-pointer">Laptop</li>
-          <li className="text-[#5F6C72] cursor-pointer">Headphone</li>
-          <li className="text-[#5F6C72] cursor-pointer">TV</li>
-          <li className="text-[#FA8232] font-semibold cursor-pointer">Browser All Product</li>
-        </ul>
+    <div className="mx-auto text-xs md:text-base break-all">
+      <div className="flex my-4 justify-between mx-20 md:mx-0">
+        <h4 className="font-bold">Smart Phone</h4>
+        <p className="text-[#2DA5F3] font-medium cursor-pointer">Browse All product</p>
       </div>
-      <div>
-        <div className="flex flex-wrap justify-center gap-3">
-          <div className="flex w-48 flex-col  p-2 border ">
-            <img className="w-52 " src={product} alt="" />
-            <p className="text-sm">Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
-            <p>$2,300</p>
-          </div>
-          <div className="flex w-48 flex-col p-2 border ">
-            <img className="w-52 " src={product} alt="" />
-            <p className="text-sm">Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
-            <p>$2,300</p>
-          </div>
-          <div className="flex w-48 flex-col p-2 border ">
-            <img className="w-52 " src={product} alt="" />
-            <p className="text-sm">Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
-            <p>$2,300</p>
-          </div>
-          <div className="flex w-48 flex-col p-2 border ">
-            <img className="w-52 " src={product} alt="" />
-            <p className="text-sm">Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
-            <p>$2,300</p>
-          </div>
-          <div className="flex w-48 flex-col p-2 border ">
-            <img className="w-52 " src={product} alt="" />
-            <p className="text-sm">Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
-            <p>$2,300</p>
-          </div>
-          <div className="flex w-48 flex-col p-2 border ">
-            <img className="w-52 " src={product} alt="" />
-            <p className="text-sm">Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
-            <p>$2,300</p>
-          </div>
-          <div className="flex w-48 flex-col p-2 border ">
-            <img className="w-52 " src={product} alt="" />
-            <p className="text-sm">Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
-            <p>$2,300</p>
-          </div>
-          <div className="flex w-48 flex-col p-2 border ">
-            <img className="w-52 " src={product} alt="" />
-            <p className="text-sm">Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
-            <p>$2,300</p>
-          </div>
-          <div className="flex w-48 flex-col p-2 border ">
-            <img className="w-52 " src={product} alt="" />
-            <p className="text-sm">Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
-            <p>$2,300</p>
-          </div>
-          <div className="flex w-48 flex-col p-2 border ">
-            <img className="w-52 " src={product} alt="" />
-            <p className="text-sm">Bose Sport Earbuds - Wireless Earphones - Bluetooth In Ear...</p>
-            <p>$2,300</p>
-          </div>
-        </div>
+      <div className="flex flex-wrap justify-center gap-3 ">
+        {loading // Render skeleton UI while data is being fetched
+          ? Array.from({ length: 10 }).map((_, index) => (
+              <div key={index} className="w-48 h-64 rounded-lg bg-slate-50 p-2 shadow-lg border">
+                <Skeleton height={176} />
+              </div>
+            ))
+          : // Render actual product list when data is available
+            products.map((item) => (
+              <div key={item.productVariantId} onClick={() => handleClick(item)} className="flex w-48 h-64 rounded-lg relative cursor-pointer flex-col p-2 shadow-lg border">
+                {/* {console.log("product : ", item)} */}
+                <div className="w-52 h-44 overflow-hidden">
+                  <img className="w-44 h-44 object-contain rounded-sm" src={`${BASE_URL}/uploads/${item?.image}` || product} alt="" />
+                </div>
+                <div className="absolute bottom-2">
+                  <p className="text-base font-semibold text-gray-500 w-[140px] overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">{item.description}</p>
+                  <p className="text-xs text-[#2DA5F3]">₹ {item?.salePrice}</p>
+                </div>
+              </div>
+            ))}
       </div>
     </div>
   );
