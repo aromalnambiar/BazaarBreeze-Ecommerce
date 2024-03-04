@@ -261,9 +261,6 @@ function Checkout() {
         <div className=" col-span-3">
           <div className="border p-2 text-sm">
             {cartItems.map((item) => {
-              {
-                console.log("cartItems : ", cartItems);
-              }
               return (
                 <div key={item?._id} className="flex items-center gap-4 mb-2">
                   <img className="w-12 h-12 object-contain" src={`${BASE_URL}/uploads/${item.productVariantId.images[0]}`} alt="" />
