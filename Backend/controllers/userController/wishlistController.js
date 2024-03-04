@@ -103,7 +103,7 @@ const getAllWishlistItems = async (req, res) => {
   try {
     // Check if the user has any items in the cart
     const cartItems = await Cart.findOne({ user: userId }, { product: 1 });
-    console.log("cartItems : ",cartItems);
+    // console.log("cartItems : ",cartItems);
     // Fetch wishlist items
     const wishlist = await Wishlist.findOne({ userId }).populate('items.productVariant');
     
@@ -113,7 +113,7 @@ const getAllWishlistItems = async (req, res) => {
     }
 
     const wishlistItems = wishlist.items.map(item => {
-    console.log("WishlistItem : ",item.productVariant.productId);
+    // console.log("WishlistItem : ",item.productVariant.productId);
 
       const isInCart = cartItems?.product.some(cartItem =>{
         // console.log("cartItem : ",cartItem);
@@ -121,7 +121,7 @@ const getAllWishlistItems = async (req, res) => {
        return cartItem.productVariantId.equals(item.productVariant)
       }
       );
-      console.log("isincart : ",isInCart);
+      // console.log("isincart : ",isInCart);
 
       return {
         productVariant: item.productVariant,

@@ -38,9 +38,9 @@ router.post('/reset-password',auth.resetPassword);
 router.post('/resend-otp',auth.resendOTP);
 
 // products
-router.get('/products',product.listProducts);
+router.get('/products',authenticateJWT,product.listProducts);
 router.get('/products/filter',product.filterProducts);
-router.get('/products/:categoryName',product.listProductsByCategory);
+router.get('/products/:categoryName',authenticateJWT,product.listProductsByCategory);
 router.get('/products/variants',product.productVariants)
 router.get('/products/variants/:id',authenticateJWT,product.getProductVariantDetails)
 router.get('/products/:productid/product',authenticateJWT,product.productDetails);

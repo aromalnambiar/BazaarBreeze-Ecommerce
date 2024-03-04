@@ -61,8 +61,19 @@ const Category=require('../../models/Category');
 const listProducts = async (req, res) => {
   try {
     const { page = 1, pageSize = 15 } = req.params;
+    const { userId } = req.user; 
 
     const skip = (page - 1) * parseInt(pageSize);
+
+    const wishlistItems = await Wishlist.findOne({ userId })
+      .select('items.productVariant')
+      .lean();
+
+    const wishlistProductVariantIds = wishlistItems
+      ? wishlistItems.items.map(item =>new mongoose.Types.ObjectId(item.productVariant))
+      : [];
+
+    // console.log("wishlistProductVariantIds : ", wishlistProductVariantIds);
 
     const products = await Products.aggregate([
       {
@@ -91,6 +102,82 @@ const listProducts = async (req, res) => {
           productId: '$_id',
           productVariantId: '$firstVariant._id',
           image: { $arrayElemAt: ['$firstVariant.images', 0] },
+          isWishlist: { $in: ['$firstVariant._id', wishlistProductVariantIds] },
+        },
+      },
+      {
+        $skip: skip,
+      },
+      {
+        $limit: parseInt(pageSize),
+      },
+    ]);
+
+    // console.log("products : ", products);
+
+    res.status(200).json({ message: 'success', products });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+const listProductsByCategory = async (req, res) => {
+  try {
+    const { categoryName, page = 1, pageSize = 15 } = req.params;
+    const skip = (page - 1) * pageSize;
+
+    if (!categoryName) {
+      return res.status(400).json({ error: 'Category name is required' });
+    }
+
+    // Fetch category by name to get its _id
+    const category = await Category.findOne({ name: categoryName });
+
+    if (!category) {
+      return res.status(404).json({ error: 'Category not found' });
+    }
+
+    const { userId } = req.user; 
+
+    const wishlistItems = await Wishlist.findOne({ userId })
+      .select('items.productVariant')
+      .lean();
+
+    const wishlistProductVariantIds = wishlistItems
+      ? wishlistItems.items.map(item => new mongoose.Types.ObjectId(item.productVariant))
+      : [];
+
+    const products = await Products.aggregate([
+      {
+        $match: {
+          category: category._id,
+        },
+      },
+      {
+        $lookup: {
+          from: 'productvariants',
+          localField: '_id',
+          foreignField: 'productId',
+          as: 'variants',
+        },
+      },
+      {
+        $addFields: {
+          firstVariant: { $arrayElemAt: ['$variants', 0] },
+        },
+      },
+      {
+        $project: {
+          _id: 0,
+          name: 1,
+          brand: 1,
+          description: 1,
+          salePrice: '$firstVariant.salePrice',
+          productId: '$_id',
+          productVariantId: '$firstVariant._id',
+          image: { $arrayElemAt: ['$firstVariant.images', 0] },
+          isWishlist: { $in: ['$firstVariant._id', wishlistProductVariantIds] },
         },
       },
       {
@@ -108,67 +195,6 @@ const listProducts = async (req, res) => {
   }
 };
 
-  const listProductsByCategory = async (req, res) => {
-    try {
-      const { categoryName, page = 1, pageSize = 15 } = req.params;
-      const skip = (page - 1) * pageSize;
-  
-      if (!categoryName) {
-        return res.status(400).json({ error: 'Category name is required' });
-      }
-  
-      // Fetch category by name to get its _id
-      const category = await Category.findOne({ name: categoryName });
-  
-      if (!category) {
-        return res.status(404).json({ error: 'Category not found' });
-      }
-  
-      const products = await Products.aggregate([
-        {
-          $match: {
-            category: category._id,
-          },
-        },
-        {
-          $lookup: {
-            from: 'productvariants',
-            localField: '_id',
-            foreignField: 'productId',
-            as: 'variants',
-          },
-        },
-        {
-          $addFields: {
-            firstVariant: { $arrayElemAt: ['$variants', 0] },
-          },
-        },
-        {
-          $project: {
-            _id: 0,
-            name: 1,
-            brand: 1, // Include brand field
-            description: 1,
-            salePrice: '$firstVariant.salePrice',
-            productId: '$_id',
-            productVariantId: '$firstVariant._id',
-            image: { $arrayElemAt: ['$firstVariant.images', 0] },
-          },
-        },
-        {
-          $skip: skip,
-        },
-        {
-          $limit: parseInt(pageSize),
-        },
-      ]);
-  
-      res.status(200).json({ message: 'success', products });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
-  };
   
   
   

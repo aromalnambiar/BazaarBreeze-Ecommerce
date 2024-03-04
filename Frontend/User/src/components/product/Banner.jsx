@@ -13,7 +13,7 @@ function Banner() {
       try {
         const result = await axios.get(`${BASE_URL}/user/banner`);
         setBanners(result.data);
-        console.log("result : ", result.data);
+        // console.log("result : ", result.data);
       } catch (error) {
         console.log(error);
       }
@@ -28,7 +28,7 @@ function Banner() {
     slidesToShow: 1,
     slidesToScroll: 1,
     autoplay: true,
-    autoplaySpeed: 2000, // Set the autoplay interval in milliseconds (5 seconds in this example)
+    autoplaySpeed: 2000,
   };
 
   return (
