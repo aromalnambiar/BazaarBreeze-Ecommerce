@@ -21,9 +21,7 @@ function Checkout() {
 
   const paymentOptions = [
     { id: 1, name: "Cash On Delivery", icon: <FaMoneyBill /> },
-    // { id: 2, name: "PayPal", icon: <FaPaypal /> },
     { id: 3, name: "RazorPay", icon: <SiRazorpay /> },
-    // { id: 4, name: "Credit Card", icon: <FaRegCreditCard /> },
   ];
 
   const handlePaymentChange = (payment) => {
@@ -37,7 +35,7 @@ function Checkout() {
       key: import.meta.env.VITE_KEY_ID,
       amount: data.amount,
       currency: data.currency,
-      name: "Teachtreasures",
+      name: "Techtreasures",
       description: "Test Transaction",
       order_id: data.id,
       handler: async (response) => {
@@ -46,7 +44,9 @@ function Checkout() {
           const { data } = await axios.post(verifyUrl, response);
           console.log("razorPay init : ", data);
           placeOrder("Completed");
+          navigate("/shop/checkoutsuccess");
         } catch (error) {
+          console.log("payment failed initpayment");
           console.log(error);
         }
       },
@@ -55,6 +55,19 @@ function Checkout() {
       },
     };
     const rzp1 = new window.Razorpay(options);
+    // If you want to retreive the chosen payment method.
+    rzp1.on("payment.submit", (response) => {
+      console.log("Payment success !!!");
+      paymentMethod.current = response.method;
+    });
+
+    // To get payment id in case of failed transaction.
+    rzp1.on("payment.failed", (response) => {
+      console.log("Payment failed !!!");
+      placeOrder("Failed");
+      navigate("/dashboard/orders");
+      paymentId.current = response.error.metadata.payment_id;
+    });
     rzp1.open();
   };
 
@@ -64,11 +77,33 @@ function Checkout() {
       const orderUrl = `${BASE_URL}/user/orders/razorpay`;
       const { data } = await axios.post(orderUrl, { amount: total });
       console.log(" razorPay : ", data);
+
+      // Check the payment response and set paymentStatus accordingly
+      // const paymentStatus = data.paymentStatus;
+
+      // If payment fails, show a message and navigate to the order details page
+      // if (paymentStatus === "Failed") {
+      //   Swal.fire({
+      //     icon: "error",
+      //     title: "Payment Failed",
+      //     text: "Your payment could not be processed. Please try again or choose a different payment method.",
+      //   });
+      //   placeOrder(paymentStatus, data.data);
+      //   navigate("/dashboard/orders"); // Navigate to the order details page
+      //   return;
+      // }
+
+      // Create the order in the backend with the appropriate paymentStatus
+      // placeOrder(paymentStatus, data.data);
+      // If payment method is RazorPay and successful, initiate the payment
+      // if (selectedPayment.name === "RazorPay" && data.success) {
       initPayment(data.data);
+      // }
     } catch (error) {
       console.log(error);
     }
   };
+
   // console.log("Cart Items : checkout : ", props.cartItems);
   const clearTheCart = async () => {
     try {
@@ -77,7 +112,7 @@ function Checkout() {
           Authorization: `${localStorage.getItem("token")}`,
         },
       });
-      console.log("Clear the cart : ", result);
+      // console.log("Clear the cart : ", result);
     } catch (error) {
       console.log(error);
     }
@@ -122,7 +157,7 @@ function Checkout() {
         // console.log("response : ", res);
         // console.log("Order placed successfully:", res.data.message);
         clearTheCart();
-        navigate("/shop/checkoutsuccess");
+        // navigate("/shop/checkoutsuccess");
       })
       .catch((err) => {
         console.error("Error placing order:", err);
@@ -178,6 +213,7 @@ function Checkout() {
       });
       if (confirmed.isConfirmed) {
         placeOrder("pending");
+        navigate("/shop/checkoutsuccess");
       }
     }
   };

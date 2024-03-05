@@ -162,7 +162,7 @@ try {
 
 const loginUser=async(req,res)=>{
 try {
-    console.log("loginUser");
+    // console.log("loginUser");
     // console.log("req.body : ",req.body);
     const {email,password}=req.body;
     const user=await User.findOne({email});

@@ -100,7 +100,7 @@ function FeaturedProducts() {
               </div>
             ))
           : products.map((item) => (
-              <div key={item.productVariantId}  className="flex w-[138px] sm:w-48 h-56 sm:h-64 rounded-lg relative  flex-col p-2 shadow-lg border">
+              <div key={item.productVariantId} className="flex w-[138px] sm:w-48 h-56 sm:h-64 rounded-lg relative  flex-col p-2 shadow-lg border">
                 <div onClick={() => handleClick(item)} className="w-full cursor-pointer h-44 overflow-hidden">
                   <img className="w-30 sm:w-44 h-36 mx-auto sm:h-44 object-contain rounded-sm" src={`${BASE_URL}/uploads/${item?.image}`} alt="" />
                 </div>

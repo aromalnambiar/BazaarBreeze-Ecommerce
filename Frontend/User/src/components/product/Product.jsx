@@ -89,7 +89,7 @@ function Product() {
         }
       );
 
-      console.log(response.data);
+      // console.log(response.data);
       setIsWishlistFound((prev) => !prev);
     } catch (error) {
       console.error("Error adding item to wishlist:", error);
@@ -127,7 +127,7 @@ function Product() {
       });
       // console.log("handleClick Tab : ", response.data);
 
-      console.log("RESPONSE : ", response.data);
+      // console.log("RESPONSE : ", response.data);
       // setTabs(response.data.productDetails);
       setItem(response.data.productVariant);
       setIsWishlistFound(response.data.isWishlistFound);
@@ -161,9 +161,9 @@ function Product() {
           <h3 className="font-semibold mb-4">{description || "2020 Apple MacBook Pro with Apple M1 Chip (13-inch, 8GB RAM, 256GB SSD Storage) - Space Gray"}</h3>
           <div>
             <div className="flex justify-between text-[#5F6C72]">
-              <p>
+              {/* <p>
                 Sku: <span className="font-semibold">A264671</span>
-              </p>
+              </p> */}
               <p>
                 Availability: <span className="text-green-500">In Stock</span>
               </p>
@@ -205,7 +205,7 @@ function Product() {
               <div>1TB SSD Storage</div>
             </div>
           </div>
-          {console.log("ITEM : ", item)}
+          {/* {console.log("ITEM : ", item)} */}
           <div className="flex items-center  h-10 my-6 mt-[60px] gap-4 text-xs font-bold justify-start">
             {dataRetrieved && isCartFound ? (
               <button onClick={() => navigate("/cart")} className="bg-[#FA8232] text-white  px-16 h-full rounded ">

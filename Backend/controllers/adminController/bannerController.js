@@ -2,8 +2,8 @@ const Banner=require('../../models/Banner');
 
 const addBanner = async (req, res) => {
     try {
-        console.log("Req body : ",req.body);
-        console.log("Req file : ",req.file);
+        // console.log("Req body : ",req.body);
+        // console.log("Req file : ",req.file);
         const { title, description, imageUrl, link, startDate, endDate, isActive } = req.body;
 
         const newBanner = new Banner({

@@ -30,7 +30,7 @@ const addCategory=async(req,res)=>{
 
 const editCategory=async(req,res)=>{
     try {
-        console.log("body : ",res.body);
+        // console.log("body : ",res.body);
         const {name,description,isListed}=req.body;
         console.log(req.params);
         const { categoryId } = req.params;

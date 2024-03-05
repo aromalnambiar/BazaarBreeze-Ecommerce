@@ -385,14 +385,14 @@ const listProductsByCategory = async (req, res) => {
   const filterProducts = async (req, res) => {
     try {
       const { category, maxPrice, brand } = req.query;
-      console.log("filter products");
-      console.log("query : ", req.query);
+      // console.log("filter products");
+      // console.log("query : ", req.query);
   
       let filter = {};
   
       if (category) {
         const categoryId = await Category.findOne({ name: category }).select('_id');
-        console.log("category Id : ", categoryId);
+        // console.log("category Id : ", categoryId);
         if (categoryId) {
           filter.category = categoryId._id;
         }
@@ -406,7 +406,7 @@ const listProductsByCategory = async (req, res) => {
         filter['brand'] = brand;
       }
   
-      console.log("filter : ", filter);
+      // console.log("filter : ", filter);
   
       const result = await Products.aggregate([
         {

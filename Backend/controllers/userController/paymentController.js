@@ -17,12 +17,17 @@ const placeOrder = async (req, res) => {
 
 		instance.orders.create(options, (error, order) => {
 			if (error) {
-				console.log(error);
-				return res.status(500).json({ message: "Something Went Wrong!" });
+			   console.log(error);
+			   return res.status(500).json({ message: "Something Went Wrong!" });
 			}
-			console.log("order details : ",order);
-			res.status(200).json({ data: order });
-		});		
+		 
+			// Check the payment response and set paymentStatus accordingly
+			// const paymentStatus = req.body.success ? "Completed" : "Failed";
+		 
+			// Return the order details with the appropriate paymentStatus
+			res.status(200).json({ data: { ...order } });
+		 });
+		 
 		
 	} catch (error) {
 		res.status(500).json({ message: "Internal Server Error!" });

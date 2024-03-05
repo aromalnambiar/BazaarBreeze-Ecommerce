@@ -40,8 +40,8 @@ router.post('/resend-otp',auth.resendOTP);
 // products
 router.get('/products',authenticateJWT,product.listProducts);
 router.get('/products/filter',product.filterProducts);
-router.get('/products/:categoryName',authenticateJWT,product.listProductsByCategory);
 router.get('/products/variants',product.productVariants)
+router.get('/products/:categoryName',authenticateJWT,product.listProductsByCategory);
 router.get('/products/variants/:id',authenticateJWT,product.getProductVariantDetails)
 router.get('/products/:productid/product',authenticateJWT,product.productDetails);
 router.get('/products/:categoryId/product',authenticateJWT,product.productDetails);
@@ -73,6 +73,7 @@ router.get('/orders',authenticateJWT,order.showOrders);
 router.get('/orders/:orderId',authenticateJWT,order.showOrder);
 router.post('/order/add',authenticateJWT,order.addOrder);
 router.patch('/order/status',order.changeOrderStatus);
+router.patch('/order/paymentstatus',order.changePaymentStatus);
 
 //payment
 router.post('/orders/razorpay',payment.placeOrder);

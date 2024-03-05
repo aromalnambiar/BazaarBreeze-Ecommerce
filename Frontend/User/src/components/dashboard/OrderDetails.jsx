@@ -15,6 +15,7 @@ function OrderDetails() {
   const [dataRetrieved, setDataRetrieved] = useState(false);
   const [joinedArray, setJoinedArray] = useState([]);
   const [isToggle, setIsToggle] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState("");
 
   const { orderId } = useParams();
   // console.log("Params : ", orderId);
@@ -26,8 +27,9 @@ function OrderDetails() {
           Authorization: `${localStorage.getItem("token")}`,
         },
       });
-      console.log("result1 : ", result.data.order);
-      setOrder(result.data.order);
+      console.log("result1 : ", result?.data?.order);
+      setOrder(result?.data?.order);
+      setPaymentStatus(result?.data?.order?.orderedItems[0].paymentStatus);
     };
     fetchData();
   }, [isToggle]);
@@ -51,7 +53,7 @@ function OrderDetails() {
           },
         });
 
-        console.log("result2 : ", result.data.variants);
+        // console.log("result2 : ", result.data.variants);
         setItems(result.data.variants);
         setDataRetrieved(true);
       } catch (error) {
@@ -80,7 +82,7 @@ function OrderDetails() {
     }
   }, [dataRetrieved]);
 
-  console.log("joinedArray : ", joinedArray);
+  // console.log("joinedArray : ", joinedArray);
 
   const handleStatus = async (orderedItemId, orderStatus) => {
     try {
@@ -172,9 +174,82 @@ function OrderDetails() {
     }
   };
 
+  const changePaymentStatus = async () => {
+    try {
+      const response = await axios.patch(
+        `${BASE_URL}/user/order/paymentstatus`,
+        {
+          orderId: order?._id,
+          paymentStatus: "Completed",
+        },
+        {
+          headers: {
+            Authorization: `${localStorage.getItem("token")}`,
+          },
+        }
+      );
+      console.log("Payment Status : Success");
+      setIsToggle((prev) => !prev);
+    } catch (error) {
+      console.error("Error updating payment status:", error);
+    }
+  };
+
+  const initPayment = (data) => {
+    const options = {
+      key: import.meta.env.VITE_KEY_ID,
+      amount: data.amount,
+      currency: data.currency,
+      name: "Teachtreasures",
+      description: "Test Transaction",
+      order_id: data.id,
+      handler: async (response) => {
+        try {
+          const verifyUrl = `${BASE_URL}/user/orders/razorpay/verify`;
+          const { data } = await axios.post(verifyUrl, response);
+          console.log("razorPay init : ", data);
+          changePaymentStatus();
+        } catch (error) {
+          console.log(error);
+        }
+      },
+      theme: {
+        color: "#3399cc",
+      },
+    };
+    const rzp1 = new window.Razorpay(options);
+    rzp1.open();
+  };
+
+  const handlePayment = async () => {
+    try {
+      console.log("HandlePayment");
+      const orderUrl = `${BASE_URL}/user/orders/razorpay`;
+      const { data } = await axios.post(orderUrl, { amount: order?.totalAmount });
+      console.log(" razorPay : ", data);
+      initPayment(data.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handlePayAgain = async () => {
+    const confirmed = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to continue payment !",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, Pay Now!",
+    });
+    if (confirmed.isConfirmed) {
+      handlePayment();
+    }
+  };
+
   return (
     <>
-      {/* <Timeline /> */}
       <h3 className="text-center my-10 font-bold text-gray-600">Products</h3>
 
       <div className="p-3">
@@ -230,9 +305,13 @@ function OrderDetails() {
                                 RETURN PRODUCT
                               </button>
                             ) : (
-                              <button onClick={() => handleStatus(item._id, "Cancelled")} className="text-sm bg-[#3498db] mb-4 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 hover:bg-[#2980b9] focus:outline-none focus:ring focus:border-blue-300">
-                                CANCEL PRODUCT
-                              </button>
+                              <>
+                                {paymentStatus !== "Failed" && (
+                                  <button onClick={() => handleStatus(item._id, "Cancelled")} className="text-sm bg-[#3498db] mb-4 text-white font-bold py-2 px-4 rounded-full transition-all duration-300 hover:bg-[#2980b9] focus:outline-none focus:ring focus:border-blue-300">
+                                    CANCEL PRODUCT
+                                  </button>
+                                )}
+                              </>
                             )}
                           </>
                         )}
@@ -242,9 +321,19 @@ function OrderDetails() {
                 ))}
             </tbody>
           </table>
-          <button onClick={handleDownloadInvoice} className="ml-4  p-2 rounded-md">
-            Download Invoice
-          </button>
+          {paymentStatus !== "Failed" && (
+            <button onClick={handleDownloadInvoice} className="ml-4 p-2 rounded-md">
+              Download Invoice
+            </button>
+          )}
+          {paymentStatus === "Failed" && (
+            <>
+              <h3 className="text-red-500 text-center mb-4">Payment Failed</h3>
+              <button onClick={handlePayAgain} className="mx-auto block mb-10 p-2 rounded-md bg-[#3498db] text-white font-bold transition-all duration-300 hover:bg-[#2980b9] focus:outline-none focus:ring focus:border-blue-300">
+                Pay again
+              </button>
+            </>
+          )}
         </div>
       </div>
     </>

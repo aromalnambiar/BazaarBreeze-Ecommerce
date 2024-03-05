@@ -4,7 +4,7 @@ const StyledStepper = ({ status}) => {
   const statusArray = ["Pending", "Processing", "Shipped", "Delivered", "Cancelled", "Returned"];
   const currentStep = statusArray.indexOf(status);
   const numberOfSteps = statusArray.length;
-
+  console.log("stepper status : ",status)
   const activeColor = (index) => (currentStep >= index ? "bg-blue-500" : "bg-gray-300");
   const isFinalStep = (index) => index === numberOfSteps - 1;
 

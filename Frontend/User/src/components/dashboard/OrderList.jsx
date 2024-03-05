@@ -16,7 +16,7 @@ function OrderList() {
         },
       })
       .then((res) => {
-        console.log("result of orders : ", res.data.orders);
+        // console.log("result of orders : ", res.data.orders);
         setTableItems(res.data.orders);
       })
       .catch((err) => {
@@ -82,7 +82,7 @@ function OrderList() {
                         <tbody className="border-none ">
                           {order.orderedItems.map((item, itemIdx) => (
                             <tr key={`${order._id}-item-${itemIdx}`}>
-                              {console.log("item : ", item)}
+                              {/* {console.log("item : ", item)} */}
                               <td className="px-6 py-4 whitespace-nowrap">
                                 <img src={`${BASE_URL}/uploads/${item.product.images[0]}`} className="w-12 h-12 object-contain" alt="" srcSet="" />
                               </td>
