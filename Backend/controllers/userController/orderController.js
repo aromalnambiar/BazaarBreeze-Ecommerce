@@ -7,11 +7,13 @@ const showOrders = async (req, res) => {
   try {
     const { userId } = req.user;
 
-    const orders = await Order.find({ userId }).populate({
-      path: 'orderedItems.product',
-      model: 'ProductVariant',
-      select: 'images', 
-    });
+    const orders = await Order.find({ userId })
+      .populate({
+        path: 'orderedItems.product',
+        model: 'ProductVariant',
+        select: 'images', 
+      })
+      .sort({ orderDate: 'desc' }); 
 
     if (!orders || orders.length === 0) {
       return res.status(400).json({ message: "No orders found" });
@@ -26,12 +28,14 @@ const showOrders = async (req, res) => {
         },
       })),
     }));
+    
     res.status(200).json({ message: "Success", orders: formattedOrders });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server error" });
   }
 };
+
 
 const addOrder  = async (req, res) => {
     try {

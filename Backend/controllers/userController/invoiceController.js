@@ -3,6 +3,84 @@ const { productDetails } = require('./productController');
 const PDFDocument = require('pdfkit');
 const path = require('path');
 
+const OrderModel = require('../../models/Order'); // Adjust the path based on your project structure
+
+const generateInvoice = async (req, res) => {
+    try {
+        const orderId = '65de06fc9fa154988f77b4d1'; // Assuming you have the orderId in the request params
+        const order = await OrderModel.findById(orderId).populate('userId').populate('orderedItems.product');
+
+        if (!order) {
+            return res.status(404).send('Order not found');
+        }
+
+        const customerName = order.userId.username;
+        const customerAddress = order.shippingAddress.address;
+
+        // Extract product information with variantName
+        const items = order.orderedItems.map(item => ({
+            name: item.product.variantName || item.product.name, // Use variantName if available, else use name
+            quantity: item.quantity,
+            price: item.price,
+            totalPrice:item.price*item.quantity
+        }));
+
+        const total = order.totalAmount;
+
+        // Create PDF document
+        const doc = new PDFDocument();
+
+        // Set response headers
+        res.setHeader('Content-Type', 'application/pdf');
+        res.setHeader('Content-Disposition', `inline; filename=invoice_${orderId}.pdf`);
+
+        // Pipe the PDF to the response
+        doc.pipe(res);
+
+        // Customize the appearance of the PDF
+        doc.font('Helvetica-Bold').fontSize(18).text('Invoice', { align: 'center' });
+        doc.moveDown();
+        doc.fontSize(14).text(`Customer: ${customerName}`);
+        doc.text(`Address: ${customerAddress}`);
+        doc.moveDown();
+
+        // Table header
+        doc.font('Helvetica-Bold');
+        doc.text('Description', 100, doc.y);
+        doc.text('Quantity', 300, doc.y);
+        doc.text('Price', 400, doc.y);
+        doc.text('Total price', 400, doc.y);
+        doc.moveDown();
+
+        // Table rows
+        doc.font('Helvetica');
+        items.forEach((item) => {
+            doc.text(item.name, 100, doc.y, { width: 150 });
+            doc.text(item.quantity.toString(), 300, doc.y, { width: 100 });
+            doc.text(`$${item.price.toFixed(2)}`, 400, doc.y, { width: 100 });
+            doc.moveDown();
+        });
+
+        // Line separator
+        doc.moveDown();
+        doc.moveTo(100, doc.y).lineTo(500, doc.y).stroke();
+
+        // Total
+        doc.moveDown();
+        doc.fontSize(14).text(`Total: $${total.toFixed(2)}`, { align: 'right' });
+
+        // Thank you message
+        doc.moveDown(2);
+        doc.fontSize(12).text('Thank you for your business!', { align: 'center' });
+
+        // Finalize the PDF and send to the client
+        doc.end();
+    } catch (err) {
+        console.log(err);
+        res.status(500).send('Internal Server Error');
+    }
+};
+
 
 // const generateInvoice=async (req, res) => {
 //     try{
@@ -88,72 +166,72 @@ const path = require('path');
 //     }
 // };
 
-const generateInvoice = async (req, res) => {
-    try {
-        const invoiceData = {
-            customer: {
-                name: 'John Doe',
-                address: '123 Main St, Cityville, USA',
-            },
-            items: [
-                { description: 'Item 1', quantity: 2, price: 20 },
-                { description: 'Item 2', quantity: 1, price: 30 },
-            ],
-            total: 70,
-        };
+// const generateInvoice = async (req, res) => {
+//     try {
+//         const invoiceData = {
+//             customer: {
+//                 name: 'John Doe',
+//                 address: '123 Main St, Cityville, USA',
+//             },
+//             items: [
+//                 { description: 'Item 1', quantity: 2, price: 20 },
+//                 { description: 'Item 2', quantity: 1, price: 30 },
+//             ],
+//             total: 70,
+//         };
 
-        // Create PDF document
-        const doc = new PDFDocument();
+//         // Create PDF document
+//         const doc = new PDFDocument();
 
-        // Set response headers
-        res.setHeader('Content-Type', 'application/pdf');
-        res.setHeader('Content-Disposition', 'inline; filename=invoice.pdf');
+//         // Set response headers
+//         res.setHeader('Content-Type', 'application/pdf');
+//         res.setHeader('Content-Disposition', 'inline; filename=invoice.pdf');
 
-        // Pipe the PDF to the response
-        doc.pipe(res);
+//         // Pipe the PDF to the response
+//         doc.pipe(res);
 
-        // Customize the appearance of the PDF
-        doc.font('Helvetica-Bold').fontSize(18).text('Invoice', { align: 'center' });
-        doc.moveDown();
-        doc.fontSize(14).text(`Customer: ${invoiceData.customer.name}`);
-        doc.text(`Address: ${invoiceData.customer.address}`);
-        doc.moveDown();
+//         // Customize the appearance of the PDF
+//         doc.font('Helvetica-Bold').fontSize(18).text('Invoice', { align: 'center' });
+//         doc.moveDown();
+//         doc.fontSize(14).text(`Customer: ${invoiceData.customer.name}`);
+//         doc.text(`Address: ${invoiceData.customer.address}`);
+//         doc.moveDown();
 
-        // Table header
-        doc.font('Helvetica-Bold');
-        doc.text('Description', 100, doc.y);
-        doc.text('Quantity', 300, doc.y);
-        doc.text('Price', 400, doc.y);
-        doc.moveDown();
+//         // Table header
+//         doc.font('Helvetica-Bold');
+//         doc.text('Description', 100, doc.y);
+//         doc.text('Quantity', 300, doc.y);
+//         doc.text('Price', 400, doc.y);
+//         doc.moveDown();
 
-        // Table rows
-        doc.font('Helvetica');
-        invoiceData.items.forEach((item) => {
-            doc.text(item.description, 100, doc.y, { width: 150 });
-            doc.text(item.quantity.toString(), 300, doc.y, { width: 100 });
-            doc.text(`$${item.price.toFixed(2)}`, 400, doc.y, { width: 100 });
-            doc.moveDown();
-        });
+//         // Table rows
+//         doc.font('Helvetica');
+//         invoiceData.items.forEach((item) => {
+//             doc.text(item.description, 100, doc.y, { width: 150 });
+//             doc.text(item.quantity.toString(), 300, doc.y, { width: 100 });
+//             doc.text(`$${item.price.toFixed(2)}`, 400, doc.y, { width: 100 });
+//             doc.moveDown();
+//         });
 
-        // Line separator
-        doc.moveDown();
-        doc.moveTo(100, doc.y).lineTo(500, doc.y).stroke();
+//         // Line separator
+//         doc.moveDown();
+//         doc.moveTo(100, doc.y).lineTo(500, doc.y).stroke();
 
-        // Total
-        doc.moveDown();
-        doc.fontSize(14).text(`Total: $${invoiceData.total.toFixed(2)}`, { align: 'right' });
+//         // Total
+//         doc.moveDown();
+//         doc.fontSize(14).text(`Total: $${invoiceData.total.toFixed(2)}`, { align: 'right' });
 
-        // Thank you message
-        doc.moveDown(2);
-        doc.fontSize(12).text('Thank you for your business!', { align: 'center' });
+//         // Thank you message
+//         doc.moveDown(2);
+//         doc.fontSize(12).text('Thank you for your business!', { align: 'center' });
 
-        // Finalize the PDF and send to the client
-        doc.end();
-    } catch (err) {
-        console.log(err);
-        res.status(500).send('Internal Server Error');
-    }
-};
+//         // Finalize the PDF and send to the client
+//         doc.end();
+//     } catch (err) {
+//         console.log(err);
+//         res.status(500).send('Internal Server Error');
+//     }
+// };
 
 
 module.exports={
