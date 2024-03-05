@@ -68,45 +68,64 @@ function UsersList() {
     }
   };
   return (
-    <div className=" border border-gray-300 overflow-hidden shadow-md rounded-2xl mb-20">
-      <div className="bg-white p-6 flex justify-between py-8">
-        <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search user..." />
-        {/* <div>
-          <button className="bg-[#696cff] text-white px-8 py-2 rounded-md shadow-lg">Add Customer</button>
-        </div> */}
+    <section className="flex flex-col justify-center antialiased bg-gray-100 text-gray-600  p-4">
+      <div className="h-full">
+        <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+          <div className="bg-white p-6 flex items-center justify-between py-8">
+            <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search products..." />
+            <h2 className="font-semibold text-gray-800 text-center mr-8">Users</h2>
+          </div>
+
+          <div className="p-3">
+            <div className="overflow-x-auto">
+              <table className="table-auto w-full">
+                <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+                  <tr>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-left">USER NAME</div>
+                    </th>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-left">GENDER</div>
+                    </th>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-left">AGE</div>
+                    </th>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-center">STATUS</div>
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody className="text-sm divide-y divide-gray-100">
+                  {users.map((item, idx) => (
+                    <tr key={item?._id}>
+                      <td className="py-2 px-4 border-b flex items-center  gap-4 ">
+                        <div onClick={() => navigate("/adminpanel/users/view", { state: { userId: item?._id } })} className="w-[2.375rem] cursor-pointer h-[2.375rem] rounded-full ms-4 overflow-hidden border">
+                          {item?.image ? <img src={`${BASE_URL}/uploads/${item.image}`} /> : <FaCircleUser className="w-full h-full" />}
+                        </div>
+                        <div className="flex flex-col">
+                          <p className="text-[#696cff]">{item.username}</p>
+                          <small className="text-[#a1acb8]">{item.email}</small>
+                        </div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-left font-medium">{item.gender || "not specified"}</div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-left font-medium ">{item.age || "not specified"}</div>
+                      </td>
+                      <td onClick={() => handleBlock(item)} className="p-2 whitespace-nowrap">
+                        {item.isBlocked ? <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md ">Blocked</button> : <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md ">active</button>}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
       </div>
-      <table className="min-w-full bg-white ">
-        <thead>
-          <tr className="text-[#566a7f] border-t ">
-            <th className="py-2 text-start pl-8 font-medium border-b">USER NAME</th>
-            <th className="py-2 text-start pl-8 font-medium border-b">GENDER</th>
-            <th className="py-2 text-start pl-4 font-medium border-b">AGE</th>
-            <th className="py-2 text-start pl-4 font-medium border-b">STATUS</th>
-            {/* <th className="py-2 text-start pl-4 font-medium border-b">TOTAL SPENT</th> */}
-          </tr>
-        </thead>
-        <tbody>
-          {users.map((item) => (
-            <tr key={item._id} className="text-[#697a8d]">
-              {console.log("item : ", item)}
-              <td onClick={() => navigate("/users/view", { state: { userId: item._id } })} className="py-2 px-4 border-b flex items-center cursor-pointer gap-4 ">
-                <div className="w-[2.375rem] h-[2.375rem] rounded-full ms-4 overflow-hidden border">{item?.image ? <img src={`${BASE_URL}/uploads/${item.image}`} /> : <FaCircleUser className="w-full h-full" />}</div>
-                <div className="flex flex-col">
-                  <p className="text-[#696cff]">{item.username}</p>
-                  <small className="text-[#a1acb8]">{item.email}</small>
-                </div>
-              </td>
-              <td className="py-2 px-4 border-b">{item.gender || "not specified"}</td>
-              <td className="py-2 px-4 border-b">{item.age || "not specified"}</td>
-              <td onClick={() => handleBlock(item)} className="py-2 px-4 border-b">
-                {item.isBlocked ? <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md ">Blocked</button> : <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md ">active</button>}
-              </td>
-              {/* <td className="py-2 px-4 border-b">{item.totalSpent || "0"}</td> */}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    </section>
   );
 }
 

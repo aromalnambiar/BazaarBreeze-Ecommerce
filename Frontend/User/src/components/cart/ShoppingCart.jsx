@@ -1,8 +1,5 @@
 import { useEffect, useState } from "react";
-import photo from "../../assets/images/Image2.png";
-// import Checkout from "../shop/Checkout";
 import Modal from "../common/Modal";
-import ChooseAddress from "./ChooseAddress";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../../config";

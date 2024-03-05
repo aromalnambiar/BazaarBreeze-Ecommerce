@@ -44,7 +44,6 @@ router.get('/categories',authenticateJWT,isAdmin, category.viewCategories);
 router.post('/categories',authenticateJWT,isAdmin, upload.single('image'), category.addCategory);
 router.put('/categories/:categoryId',authenticateJWT,isAdmin, upload.single('image'), category.editCategory);
 router.get('/categories/:categoryId',authenticateJWT,isAdmin, category.viewCategory);
-router.delete('/categories/:categoryId',authenticateJWT,isAdmin, category.deleteCategory);
 
 // Orders
 router.get('/orders', order.viewOrders);

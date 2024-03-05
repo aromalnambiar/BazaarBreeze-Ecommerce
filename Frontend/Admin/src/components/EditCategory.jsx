@@ -21,11 +21,12 @@ function EditCategory({ categoryId, setIsEdit }) {
           },
         });
         const fetchedCategory = response.data.category;
+        console.log("fetchedCategory : ", fetchedCategory.isListed);
         name.current.value = fetchedCategory.name || "";
         description.current.value = fetchedCategory.description || "";
         setCurrentImage(fetchedCategory.image || null);
-        setIsListed(fetchedCategory.isListed || true); // Set the default value
-        console.log(response.data.message);
+        setIsListed(fetchedCategory.isListed); // Set the default value
+        // console.log(response.data.message);
       } catch (error) {
         console.log(error);
       }
@@ -54,7 +55,7 @@ function EditCategory({ categoryId, setIsEdit }) {
       }
 
       // Make a PUT request to update the category
-      const response = await axios.put(`${BASE_URL}/admin/products/category/${categoryId}`, formData, {
+      const response = await axios.put(`${BASE_URL}/admin/categories/${categoryId}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `${localStorage.getItem("adminToken")}`,
@@ -62,13 +63,14 @@ function EditCategory({ categoryId, setIsEdit }) {
       });
 
       console.log(response.data.message);
-      setCurrentImage(newImagePreview); // Update the current image with the new image preview
-      setNewImagePreview(null); // Reset the new image preview
+      setCurrentImage(newImagePreview);
+      setNewImagePreview(null);
       setIsEdit(false);
     } catch (error) {
       console.error(error);
     }
   };
+  console.log("isListed : ", isListed);
 
   return (
     <div className="max-w-[500px] mx-auto shadow-md bg-white rounded-lg border p-10 flex flex-col gap-4">

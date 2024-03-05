@@ -28,40 +28,37 @@ const addCategory=async(req,res)=>{
     }
 }
 
-const editCategory=async(req,res)=>{
+const editCategory = async (req, res) => {
     try {
-        // console.log("body : ",res.body);
-        const {name,description,isListed}=req.body;
-        console.log(req.params);
+        const { name, description, isListed } = req.body;
         const { categoryId } = req.params;
-        const categoryIdObjectId =new mongoose.Types.ObjectId(categoryId);
-        const newCategory=await Category.findByIdAndUpdate({_id:categoryIdObjectId},{
-            name,
-            description,
-            image:req.file.filename,
-            isListed:isListed||true,
-        })
-        console.log(newCategory);
-        res.status(201).json({message:"Updated successfully",category:newCategory});
-    } catch (error) {
-        console.log(error);
-        throw new Error;
-    }
-}
 
-const deleteCategory=async(req,res)=>{
-    try {
-        console.log("Delete category : ");
-        console.log(req.params);
-        const { categoryId } = req.params;
-        // console.log(req.body);
-        await Category.findByIdAndDelete(categoryId);
-        res.status(200).json({message:"Deleted successfully"});
+        const categoryIdObjectId = new mongoose.Types.ObjectId(categoryId);
+
+        const existingCategory = await Category.findById(categoryIdObjectId);
+
+        if (!existingCategory) {
+            return res.status(404).json({ message: 'Category not found' });
+        }
+
+        const image = req.file ? req.file.filename : existingCategory.image;
+
+        const updatedData = {
+            name: name || existingCategory.name,
+            description: description || existingCategory.description,
+            isListed: isListed || existingCategory.isListed,
+            image,
+        };
+
+        const newCategory = await Category.findByIdAndUpdate({ _id: categoryIdObjectId }, updatedData, { new: true });
+
+        res.status(201).json({ message: 'Updated successfully', category: newCategory });
     } catch (error) {
         console.log(error);
-        throw new Error;
+        res.status(500).json({ message: 'Internal Server Error' });
     }
-}
+};
+
 
 const viewCategories=async(req,res)=>{
     try {
@@ -89,7 +86,6 @@ const viewCategory=async(req,res)=>{
 module.exports={
     addCategory,
     editCategory,
-    deleteCategory,
     viewCategories,
     viewCategory
 }

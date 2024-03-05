@@ -61,51 +61,71 @@ function ViewProducts() {
 
   return (
     <>
-      <div className=" border border-gray-300 w-full max-w-6xl mx-auto  overflow-x-auto shadow-md rounded-2xl mb-20">
-        <div className="bg-white p-6 flex justify-between py-8">
-          <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search products..." />
-          <div>
-            <Link to={"/adminpanel/products/add"}>
-              <button className="bg-[#696cff] text-white px-8 py-2 rounded-md shadow-lg">Add Product</button>
-            </Link>
+      <section className="flex flex-col justify-center antialiased bg-gray-100 text-gray-600  p-4">
+        <div className="h-full">
+          <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+            <div className="bg-white p-6 flex items-center justify-between py-8">
+              <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search products..." />
+              <h2 className="font-semibold text-gray-800 text-center mt-4">Products</h2>
+              <div>
+                <Link to={"/adminpanel/products/add"}>
+                  <button className="bg-[#696cff] text-white px-8 py-2 rounded-md shadow-lg">Add Product</button>
+                </Link>
+              </div>
+            </div>
+
+            <div className="p-3">
+              <div className="overflow-x-auto">
+                <table className="table-auto w-full">
+                  <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+                    <tr>
+                      <th className="p-2 whitespace-nowrap">
+                        <div className="font-semibold text-left">PRODUCTS</div>
+                      </th>
+                      <th className="p-2 whitespace-nowrap">
+                        <div className="font-semibold text-left">BRAND</div>
+                      </th>
+                      <th className="p-2 whitespace-nowrap">
+                        <div className="font-semibold text-left">TOTAL EARNINGS</div>
+                      </th>
+                      <th className="p-2 whitespace-nowrap">
+                        <div className="font-semibold text-center">ACTION</div>
+                      </th>
+                    </tr>
+                  </thead>
+
+                  <tbody className="text-sm divide-y divide-gray-100">
+                    {products.map((item, idx) => (
+                      <tr key={item?._id}>
+                        <td className="p-2 whitespace-nowrap">
+                          <div className="flex flex-col">
+                            <p className="text-gray-800 max-w-[250px] truncate">{item?.name}</p>
+                            <small className="text-gray-800 max-w-[250px] truncate">{item?.description}</small>
+                          </div>
+                        </td>
+                        <td className="p-2 whitespace-nowrap">
+                          <div className="text-left">{item?.brand || "0"}</div>
+                        </td>
+                        <td className="p-2 whitespace-nowrap">
+                          <div className="text-left font-medium text-green-500">{item.totalEarnings || "0"}</div>
+                        </td>
+                        <td className="p-2 whitespace-nowrap">
+                          <Link to={{ pathname: `/adminpanel/products/edit/${item._id}` }}>
+                            <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md">Edit</button>
+                          </Link>
+                          <button onClick={() => handleDelete(item._id)} className="bg-[#fedad4] py-2 px-6 text-red-600 rounded-md ">
+                            Delete
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
         </div>
-        <table className="min-w-full bg-white table-auto w-full">
-          <thead>
-            <tr className="text-[#566a7f] border-t ">
-              <th className="py-2 text-start pl-8 font-medium border-b">PRODUCTS</th>
-              <th className="py-2 text-start pl-4 font-medium border-b">BRAND</th>
-              <th className="py-2 text-start pl-4 font-medium border-b">TOTAL EARNINGS</th>
-              <th className="py-2 text-start pl-4 font-medium border-b">ACTION</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((item) => (
-              <tr key={item._id} className="text-[#697a8d]">
-                <td className="py-2 px-4 pl-8 border-b flex items-center gap-4 ">
-                  {/* <div className="w-[2.375rem] h-[2.375rem] rounded-full ms-4 overflow-hidden border">
-                    <img src={photo} alt="" />
-                  </div> */}
-                  <div className="flex flex-col">
-                    <p className="text-[#696cff] max-w-[250px] truncate">{item.name}</p>
-                    <small className="text-[#a1acb8] max-w-[250px] truncate">{item.description}</small>
-                  </div>
-                </td>
-                <td className="py-2 px-4 border-b">{item.brand || "0"}</td>
-                <td className="py-2 px-4 border-b">{item.totalEarnings || "0"}</td>
-                <td className="py-2 px-4 border-b">
-                  <Link to={{ pathname: `/adminpanel/products/edit/${item._id}` }}>
-                    <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md">Edit</button>
-                  </Link>
-                  <button onClick={() => handleDelete(item._id)} className="bg-[#fedad4] py-2 px-6 text-red-600 rounded-md ">
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      </section>
     </>
   );
 }

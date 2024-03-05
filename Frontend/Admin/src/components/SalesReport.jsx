@@ -9,7 +9,6 @@ import PdfDownload from "./PdfDownload";
 function SalesReport() {
   const navigate = useNavigate();
   const [reports, setReports] = useState([]);
-  const [isToggle, setIsToggle] = useState(false);
   const [startDate, setStartDate] = useState(moment("2024-01-01T00:00:00"));
   const [endDate, setEndDate] = useState(moment());
 
@@ -102,49 +101,82 @@ function SalesReport() {
   console.log("Reports : ", reports);
 
   return (
-    <div className=" border border-gray-300 overflow-hidden shadow-md rounded-2xl mb-20">
-      <div className="bg-white p-6 flex justify-start gap-4 py-8">
-        <div className="border p-2 rounded-md">
-          <DatePicker selected={startDate.toDate()} onChange={(date) => setStartDate(moment(date))} />
-        </div>
-        <div className="border p-2 rounded-md">
-          <DatePicker selected={endDate.toDate()} onChange={(date) => setEndDate(moment(date))} />
-        </div>
-        {/* <button className="border bg-green-400 hover:bg-green-500 text-white px-4 rounded-md">PDF</button> */}
-        <div className="flex gap-4 items-center ml-auto">
-          <p>Download as : </p>
-          <PdfDownload jsonData={reports} fileName={"salesReport"} />
-          <button onClick={downloadExcel} className="text-sm hover:text-blue-500">
-            Excel
-          </button>
-          <button onClick={downloadCSV} className="text-sm hover:text-blue-500">
-            CSV
-          </button>
+    <section className="flex flex-col justify-center antialiased bg-gray-100 text-gray-600  p-4">
+      <div className="h-full">
+        <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+          <header className=" border-b border-gray-100">
+            <h2 className="font-semibold text-gray-800 text-center mt-4">Sales report</h2>
+            <div className="bg-white p-4 flex justify-start gap-4 py-8">
+              <div className="border p-2 rounded-md">
+                <DatePicker selected={startDate.toDate()} onChange={(date) => setStartDate(moment(date))} />
+              </div>
+              <div className="border p-2 rounded-md">
+                <DatePicker selected={endDate.toDate()} onChange={(date) => setEndDate(moment(date))} />
+              </div>
+              <div className="flex gap-4 items-center ml-auto">
+                <p>Download as : </p>
+                <PdfDownload jsonData={reports} fileName={"salesReport"} />
+                <button onClick={downloadExcel} className="text-sm hover:text-blue-500">
+                  Excel
+                </button>
+                <button onClick={downloadCSV} className="text-sm hover:text-blue-500">
+                  CSV
+                </button>
+              </div>
+            </div>
+          </header>
+          <div className="p-3">
+            <div className="overflow-x-auto">
+              <table className="table-auto w-full">
+                <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+                  <tr>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-left">NO</div>
+                    </th>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-left">DATE</div>
+                    </th>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-left">ORDERS</div>
+                    </th>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-center">REVENUE</div>
+                    </th>
+                    <th className="p-2 whitespace-nowrap">
+                      <div className="font-semibold text-center">CANCELLED_ORDERS</div>
+                    </th>
+                  </tr>
+                </thead>
+
+                <tbody className="text-sm divide-y divide-gray-100">
+                  {reports.map((item, idx) => (
+                    <tr key={item?._id}>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="flex items-center">
+                          <div className="font-medium text-gray-800">{idx + 1}</div>
+                        </div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-left">{item?._id}</div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-left font-medium text-green-500">{item?.numberOfOrders}</div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-xs text-center">₹ {item?.revenue}</div>
+                      </td>
+                      <td className="p-2 whitespace-nowrap">
+                        <div className="text-sm text-center">{item?.cancelledOrders}</div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
       </div>
-      <table className="min-w-full bg-white ">
-        <thead>
-          <tr className="text-[#566a7f] border-t text-sm">
-            <th className="py-2 text-start pl-4 font-medium border-b">NO</th>
-            <th className="py-2 text-start pl-4 font-medium border-b">DATE</th>
-            <th className="py-2 text-start pl-4 font-medium border-b">ORDERS</th>
-            <th className="py-2 text-start pl-4 font-medium border-b">REVENUE</th>
-            <th className="py-2 text-start pl-4 font-medium border-b">CANCELLED_ORDERS</th>
-          </tr>
-        </thead>
-        <tbody>
-          {reports.map((item, index) => (
-            <tr key={item?._id} className="text-[#697a8d] text-sm">
-              <td className="py-2 px-4 border-b ml-2">{index + 1}</td>
-              <td className="py-2 px-4 border-b">{item._id}</td>
-              <td className="py-2 px-4 border-b">{item?.numberOfOrders}</td>
-              <td className="py-2 px-4 border-b">₹ {item?.revenue}</td>
-              <td className="py-2 px-4 border-b">{item.cancelledOrders}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+    </section>
   );
 }
 

@@ -142,7 +142,7 @@ function Wishlist() {
                           <td>
                             <div>
                               {item.isInCart !== true && (
-                                <div onClick={() => handleAddToCart(item?.productVariant?._id)} className="flex items-center gap-4 text-sm mx-auto justify-center p-2 text-green-400 cursor-pointer border-2 border-green-200 max-w-44 min-w-32 rounded-md">
+                                <div onClick={() => handleAddToCart(item?.productVariant?._id)} className="flex items-center gap-4 text-sm mx-auto justify-center p-2 text-green-400 hover:text-green-700 cursor-pointer border-2 border-green-200 hover:border-green-700 max-w-44 min-w-32 rounded-md">
                                   <FaCartPlus />
                                   <p>Add to cart</p>
                                 </div>
