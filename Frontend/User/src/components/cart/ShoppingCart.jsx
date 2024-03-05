@@ -40,7 +40,7 @@ function ShoppingCart() {
         },
       })
       .then((res) => {
-        console.log("hello cart : ", res?.data?.cart?.product);
+        // console.log("hello cart : ", res?.data?.cart);
         setCartItems(res.data.cart.product);
         setQuantity(() => res.data.cart.product.map((item) => item.quantity));
         // console.log("data : ", res.data.cart.product);
@@ -49,8 +49,11 @@ function ShoppingCart() {
       .catch((res) => {
         console.log(res);
       });
-    window.scrollTo(0, 0);
   }, [isUpdated]);
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
 
   // console.log("cartItems : ", cartItems);
   // console.log("grandTotal : ", grandTotal);
@@ -159,6 +162,12 @@ function ShoppingCart() {
   };
   // console.log("couponCode : ", couponCode);
   console.log("couponeId : ", couponId);
+
+  const handleClickImage = (id) => {
+    console.log("id  : ", id);
+    navigate(`/product/${id}`);
+  };
+
   return (
     <>
       <div className={`grid grid-cols-12 gap-4  ${isDashboardCartPath ? "my-0" : "my-14"}  min-h-[80vh]`}>
@@ -180,11 +189,12 @@ function ShoppingCart() {
                   return (
                     <div key={item._id} className="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5">
                       <div className="flex w-2/5">
+                        {/* {console.log("item shpp : ", item)} */}
                         <div className="w-20">
-                          <img className="h-24" src={`${BASE_URL}/uploads/${item.productVariantId?.images[0]}`} alt="" />
+                          <img onClick={() => handleClickImage(item?.productVariantId?.productId)} className="h-24 object-contain" src={`${BASE_URL}/uploads/${item.productVariantId?.images[0]}`} alt="" />
                         </div>
                         <div className="flex flex-col justify-around ml-4 flex-grow">
-                          <span className="font-bold text-sm">Iphone 6S</span>
+                          <span className="font-bold text-sm">{item?.productVariantId?.variantName}</span>
                           {/* <span className="text-red-500 text-xs">Apple</span> */}
                           {/* {console.log("map : ",item.productVariantId)} */}
                           <a onClick={() => deleteFromCart(item.productVariantId._id)} className="font-semibold mb-2 cursor-pointer hover:text-red-500 text-gray-500 text-xs">

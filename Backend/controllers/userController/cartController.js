@@ -82,18 +82,18 @@ const ProductVariant=require('../../models/ProductVariant');
       };
       const showCart = async (req, res) => {
         try {
-          console.log("hello");
-          console.log("user:", req.user);
+          // console.log("hello");
+          // console.log("user:", req.user);
       
           const { userId } = req.user;
-          console.log("userId:", userId);
+          // console.log("userId:", userId);
       
           const cart = await Cart.findOne({ user: userId }).populate({
             path: 'product.productVariantId',
             model: 'ProductVariant',
-            select: 'variantName salePrice images',
+            select: 'variantName salePrice images _id productId',
           });
-      
+      console.log("cart : ",cart);
           if (!cart) {
             return res.status(404).json({ message: "Cart not found" });
           }

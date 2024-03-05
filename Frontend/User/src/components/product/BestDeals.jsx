@@ -95,7 +95,7 @@ function BestDeals() {
       </div>
       <div className="flex flex-wrap justify-center gap-3 ">
         {loading
-          ? Array.from({ length: 10 }).map((_, index) => (
+          ? Array.from({ length: 15 }).map((_, index) => (
               <div key={index} className="w-40 sm:w-48 h-64 rounded-lg bg-slate-50 p-2 shadow-lg border">
                 <Skeleton height={176} />
               </div>

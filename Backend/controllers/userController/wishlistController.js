@@ -117,11 +117,12 @@ const getAllWishlistItems = async (req, res) => {
 
       const isInCart = cartItems?.product.some(cartItem =>{
         // console.log("cartItem : ",cartItem);
+        // console.log("wishlist ProductVariant : ",item.productVariant._id);
         // console.log("first : ",item.productVariant.productId);
-       return cartItem.productVariantId.equals(item.productVariant)
+        // console.log("isincart : ",cartItem.productVariantId.equals(item.productVariant._id));
+       return cartItem.productVariantId.equals(item.productVariant._id)
       }
       );
-      // console.log("isincart : ",isInCart);
 
       return {
         productVariant: item.productVariant,
