@@ -3,6 +3,7 @@ import photo from "../assets/images/image2.png";
 import { Link } from "react-router-dom";
 import EditCategory from "./EditCategory";
 import axios from "axios";
+import ReactPaginate from "react-paginate";
 import { BASE_URL } from "../../config";
 import Swal from "sweetalert2";
 
@@ -12,22 +13,32 @@ function CategoryList() {
   const [categoryId, setCategoryId] = useState("");
   const [isListed, setIsListed] = useState(true);
   const [categoriesHolder, setCategoriesHolder] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [totalCategories, setTotalCategories] = useState(0);
+  const categoriesPerPage = 10; // Adjust as needed
+
   useEffect(() => {
-    const result = axios
-      .get(`${BASE_URL}/admin/categories`, {
-        headers: {
-          Authorization: `${localStorage.getItem("adminToken")}`,
-        },
-      })
-      .then((res) => {
-        // console.log(res.data.categories);
-        setCategories(res.data.categories);
-        setCategoriesHolder(res.data.categories);
-      })
-      .catch((res) => {
-        console.log(res);
-      });
-  }, [isEdit]);
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/admin/categories`, {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
+          params: {
+            page: pageNumber + 1, // Adjust page number for API (1-indexed)
+            limit: categoriesPerPage,
+          },
+        });
+
+        setCategories(response.data.categories);
+        setTotalCategories(response.data.totalCategories);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [pageNumber, isEdit]);
 
   const handleEdit = (categoryId) => {
     setCategoryId(categoryId);
@@ -42,6 +53,11 @@ function CategoryList() {
     }
     setIsListed((prev) => !prev);
   };
+  const handlePageClick = (data) => {
+    const selectedPage = data.selected;
+    setPageNumber(selectedPage);
+  };
+
   console.log("categories : ", categories);
   return (
     <>
@@ -50,7 +66,7 @@ function CategoryList() {
       ) : (
         <section className="flex flex-col justify-center antialiased bg-gray-100 text-gray-600  p-4">
           <div className="h-full">
-            <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+            <div className="w-full pb-8 max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
               <div className="bg-white p-6 flex items-center justify-between py-8">
                 <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search products..." />
                 <div>
@@ -118,6 +134,7 @@ function CategoryList() {
                   </table>
                 </div>
               </div>
+              <ReactPaginate pageCount={Math.ceil(totalCategories / categoriesPerPage)} pageRangeDisplayed={5} marginPagesDisplayed={2} onPageChange={handlePageClick} containerClassName="pagination" activeClassName="active" />
             </div>
           </div>
         </section>

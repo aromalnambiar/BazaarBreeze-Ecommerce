@@ -4,24 +4,37 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { BASE_URL } from "../../config";
 import Swal from "sweetalert2";
+import ReactPaginate from "react-paginate";
+import "./pagination.css";
 
 function ViewProducts() {
   const [products, setProducts] = useState([]);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [totalProducts, setTotalProducts] = useState();
+
   useEffect(() => {
-    const result = axios
-      .get(`${BASE_URL}/admin/products`, {
+    fetchProducts();
+  }, [pageNumber]);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await axios.get(`${BASE_URL}/admin/products`, {
         headers: {
           Authorization: `${localStorage.getItem("adminToken")}`,
         },
-      })
-      .then((res) => {
-        console.log(res.data.products);
-        setProducts(res.data.products);
-      })
-      .catch((res) => {
-        console.log(res);
+        params: {
+          page: pageNumber + 1, // Adjust page number for API (1-indexed)
+          limit: 10,
+        },
       });
-  }, []);
+      console.log("Products : ", response.data.products);
+      console.log("Products : ", response.data.totalProducts);
+      setTotalProducts(response.data.totalProducts);
+      setProducts(response.data.products);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const handleDelete = async (id) => {
     const confirmed = await Swal.fire({
@@ -59,14 +72,19 @@ function ViewProducts() {
     }
   };
 
+  const handlePageClick = (data) => {
+    const selectedPage = data.selected;
+    setPageNumber(selectedPage);
+  };
+
   return (
     <>
       <section className="flex flex-col justify-center antialiased bg-gray-100 text-gray-600  p-4">
         <div className="h-full">
-          <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+          <div className="w-full  max-w-6xl mx-auto bg-white shadow-lg rounded-sm border  border-gray-200">
             <div className="bg-white p-6 flex items-center justify-between py-8">
               <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search products..." />
-              <h2 className="font-semibold text-gray-800 text-center mt-4">Products</h2>
+              <h2 className="font-semibold text-gray-800 text-center ">Products</h2>
               <div>
                 <Link to={"/adminpanel/products/add"}>
                   <button className="bg-[#696cff] text-white px-8 py-2 rounded-md shadow-lg">Add Product</button>
@@ -74,8 +92,8 @@ function ViewProducts() {
               </div>
             </div>
 
-            <div className="p-3">
-              <div className="overflow-x-auto">
+            <div className="p-3 pb-8 ">
+              <div className="overflow-x-auto ">
                 <table className="table-auto w-full">
                   <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
                     <tr>
@@ -121,6 +139,7 @@ function ViewProducts() {
                     ))}
                   </tbody>
                 </table>
+                <ReactPaginate pageCount={totalProducts / 10} pageRangeDisplayed={5} marginPagesDisplayed={2} onPageChange={handlePageClick} containerClassName="pagination" activeClassName="active" />
               </div>
             </div>
           </div>

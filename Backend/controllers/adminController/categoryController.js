@@ -60,16 +60,24 @@ const editCategory = async (req, res) => {
 };
 
 
-const viewCategories=async(req,res)=>{
+const viewCategories = async (req, res) => {
     try {
-        // console.log("View categories");
-        const categories=await Category.find();
-        res.status(200).json({message:"success",categories});
+      const page = req.query.page || 1;
+      const limit = req.query.limit || 10;
+  
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+  
+      const totalCategories = await Category.countDocuments();
+      const categories = await Category.find().skip(startIndex).limit(limit);
+  
+      res.status(200).json({ message: "success", categories, totalCategories });
     } catch (error) {
-        console.log(error);
-        throw new Error;
+      console.log(error);
+      res.status(500).json({ message: 'Internal Server Error' });
     }
-}
+  };
+  
 
 const viewCategory=async(req,res)=>{
     try {

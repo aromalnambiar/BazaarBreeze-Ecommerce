@@ -4,6 +4,7 @@ import { FaCircleUser } from "react-icons/fa6";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../config";
+import ReactPaginate from "react-paginate";
 import Swal from "sweetalert2";
 
 function OrdersList() {
@@ -12,30 +13,38 @@ function OrdersList() {
   const [isToggle, setIsToggle] = useState(false);
   const [selectedOrderStatus, setSelectedOrderStatus] = useState({});
   const [openDropdownOrderId, setOpenDropdownOrderId] = useState(null);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [totalOrders, setTotalOrders] = useState(0);
+  const ordersPerPage = 10;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/admin/orders`, {
+        const response = await axios.get(`${BASE_URL}/admin/orders`, {
           headers: {
             Authorization: `${localStorage.getItem("adminToken")}`,
           },
+          params: {
+            page: pageNumber + 1,
+            limit: ordersPerPage,
+          },
         });
-        // console.log("res : ", res.data.orders);
-        const ordersWithStatus = res.data.orders.reduce((acc, order) => {
+
+        const ordersWithStatus = response.data.orders.reduce((acc, order) => {
           acc[order.orderId] = order.orderStatus;
           return acc;
         }, {});
-        // console.log("orders with status : ", ordersWithStatus);
+
         setSelectedOrderStatus(ordersWithStatus);
-        setOrders(res.data.orders);
+        setOrders(response.data.orders);
+        setTotalOrders(response.data.totalOrders);
       } catch (error) {
         console.error(error);
       }
     };
 
     fetchData();
-  }, []);
+  }, [pageNumber]);
 
   const handleOrderStatusChange = async (orderId, newOrderStatus) => {
     try {
@@ -85,6 +94,11 @@ function OrdersList() {
     }
   };
 
+  const handlePageClick = (data) => {
+    const selectedPage = data.selected;
+    setPageNumber(selectedPage);
+  };
+
   const toggleDropdown = (orderId) => {
     setOpenDropdownOrderId((prevId) => (prevId === orderId ? null : orderId));
   };
@@ -92,11 +106,10 @@ function OrdersList() {
   return (
     <section className="flex flex-col justify-center antialiased bg-gray-100 text-gray-600  p-4">
       <div className="h-full">
-        <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+        <div className="w-full pb-8 max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
           <div className="bg-white p-6 flex items-center justify-between py-8">
             <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search products..." />
-            <h2 className="font-semibold text-gray-800 text-center mt-4">Products</h2>
-            <div></div>
+            <h2 className="font-semibold text-gray-800 text-center mr-2">Orders</h2>
           </div>
 
           <div className="p-3">
@@ -178,6 +191,7 @@ function OrdersList() {
               </table>
             </div>
           </div>
+          <ReactPaginate pageCount={Math.ceil(totalOrders / ordersPerPage)} pageRangeDisplayed={5} marginPagesDisplayed={2} onPageChange={handlePageClick} containerClassName="pagination" activeClassName="active" />
         </div>
       </div>
     </section>

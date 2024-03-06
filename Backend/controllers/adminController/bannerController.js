@@ -53,14 +53,24 @@ const editBanner = async (req, res) => {
     }
 };
 
-const viewBanners=async(req,res)=>{
+const viewBanners = async (req, res) => {
     try {
-        const banners=await Banner.find();
-        res.status(200).json(banners);
+      const page = req.query.page || 1;
+      const limit = req.query.limit || 10;
+  
+      const startIndex = (page - 1) * limit;
+      const endIndex = page * limit;
+  
+      const totalBanners = await Banner.countDocuments();
+      const banners = await Banner.find().skip(startIndex).limit(limit);
+  
+      res.status(200).json({ banners, totalBanners });
     } catch (error) {
-        console.log("Error : ",error);
+      console.log("Error : ", error);
+      res.status(500).json({ error: 'Internal Server Error' });
     }
-}
+  };
+  
 
 const getBanner=async(req,res)=>{
     try {

@@ -34,13 +34,22 @@ const createOffer = async (req, res) => {
 // Get all offers
 const getAllOffers = async (req, res) => {
   try {
-    const offers = await Offer.find();
-    res.status(200).json({ message: 'Success', offers });
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const totalOffers = await Offer.countDocuments();
+    const offers = await Offer.find().skip(startIndex).limit(limit);
+
+    res.status(200).json({ message: 'Success', offers, totalOffers });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: 'Internal Server Error' });
   }
 };
+
 
 // Get offer by ID
 const getOfferById = async (req, res) => {

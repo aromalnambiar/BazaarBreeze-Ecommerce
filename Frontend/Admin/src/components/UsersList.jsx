@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaCircleUser } from "react-icons/fa6";
 import axios from "axios";
+import ReactPaginate from "react-paginate";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../config";
 import Swal from "sweetalert2";
@@ -9,6 +10,32 @@ function UsersList() {
   const navigate = useNavigate();
   const [users, setUsers] = useState([]);
   const [isToggle, setIsToggle] = useState(false);
+  const [pageNumber, setPageNumber] = useState(0);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const usersPerPage = 10;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(`${BASE_URL}/admin/users`, {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
+          params: {
+            page: pageNumber + 1, 
+            limit: usersPerPage,
+          },
+        });
+
+        setUsers(response.data.users);
+        setTotalUsers(response.data.totalUsers);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchData();
+  }, [pageNumber]);
 
   useEffect(() => {
     const result = axios
@@ -67,6 +94,10 @@ function UsersList() {
       }
     }
   };
+  const handlePageClick = (data) => {
+    const selectedPage = data.selected;
+    setPageNumber(selectedPage);
+  };
   return (
     <section className="flex flex-col justify-center antialiased bg-gray-100 text-gray-600  p-4">
       <div className="h-full">
@@ -76,7 +107,7 @@ function UsersList() {
             <h2 className="font-semibold text-gray-800 text-center mr-8">Users</h2>
           </div>
 
-          <div className="p-3">
+          <div className="p-3 pb-6">
             <div className="overflow-x-auto">
               <table className="table-auto w-full">
                 <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
@@ -99,9 +130,9 @@ function UsersList() {
                 <tbody className="text-sm divide-y divide-gray-100">
                   {users.map((item, idx) => (
                     <tr key={item?._id}>
-                      <td className="py-2 px-4 border-b flex items-center  gap-4 ">
-                        <div onClick={() => navigate("/adminpanel/users/view", { state: { userId: item?._id } })} className="w-[2.375rem] cursor-pointer h-[2.375rem] rounded-full ms-4 overflow-hidden border">
-                          {item?.image ? <img src={`${BASE_URL}/uploads/${item.image}`} /> : <FaCircleUser className="w-full h-full" />}
+                      <td className="py-2 px-4 flex items-center  gap-4 ">
+                        <div onClick={() => navigate("/adminpanel/users/view", { state: { userId: item?._id } })} className="w-[2.375rem] cursor-pointer  h-[2.375rem] rounded-full ms-4 overflow-hidden border">
+                          {item?.image ? <img src={`${BASE_URL}/uploads/${item.image}`} /> : <FaCircleUser className="w-full h-full text-gray-400" />}
                         </div>
                         <div className="flex flex-col">
                           <p className="text-[#696cff]">{item.username}</p>
@@ -109,19 +140,20 @@ function UsersList() {
                         </div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium">{item.gender || "not specified"}</div>
+                        <div className="text-left text-gray-400 font-medium">{item.gender || "not specified"}</div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="text-left font-medium ">{item.age || "not specified"}</div>
+                        <div className="text-left text-gray-400 font-medium ">{item.age || "not specified"}</div>
                       </td>
-                      <td onClick={() => handleBlock(item)} className="p-2 whitespace-nowrap">
-                        {item.isBlocked ? <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md ">Blocked</button> : <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md ">active</button>}
+                      <td onClick={() => handleBlock(item)} className="p-2 whitespace-nowrap flex justify-center">
+                        {item.isBlocked ? <button className="bg-[#d4f7fe] py-2 px-6  text-blue-800 rounded-md ">Blocked</button> : <button className="bg-[#d4f7fe] py-2 px-6  text-blue-800 rounded-md ">active</button>}
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             </div>
+            <ReactPaginate pageCount={Math.ceil(totalUsers / usersPerPage)} pageRangeDisplayed={5} marginPagesDisplayed={2} onPageChange={handlePageClick} containerClassName="pagination" activeClassName="active" />
           </div>
         </div>
       </div>

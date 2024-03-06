@@ -1,10 +1,14 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "../../config";
+import ReactPaginate from "react-paginate";
 
 function ViewOffers() {
   const [offers, setOffers] = useState([]);
   const [toggle, setToggle] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const offersPerPage = 10;
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -13,15 +17,21 @@ function ViewOffers() {
           headers: {
             Authorization: `${localStorage.getItem("adminToken")}`,
           },
+          params: {
+            page: pageNumber,
+            limit: offersPerPage,
+          },
         });
-        // console.log("result : ", result.data.offers);
+
         setOffers(result.data.offers);
+        setTotalPages(Math.ceil(result.data.totalOffers / offersPerPage));
       } catch (error) {
-        console.log("Error : ", error);
+        console.log("Error: ", error);
       }
     };
+
     fetchDetails();
-  }, [toggle]);
+  }, [pageNumber, toggle]);
 
   const handleActiveStatus = async (id) => {
     try {
@@ -37,11 +47,15 @@ function ViewOffers() {
     }
   };
 
+  const handlePageClick = (selectedPage) => {
+    setPageNumber(selectedPage.selected + 1);
+  };
+
   return (
     <section className="flex flex-col justify-center antialiased bg-gray-100 text-gray-600  p-4">
       <div className="h-full">
         {/* <!-- Table --> */}
-        <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+        <div className="w-full max-w-6xl pb-8 mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
           <header className="px-5 py-4 border-b border-gray-100">
             <h2 className="font-semibold text-gray-800">Customers</h2>
           </header>
@@ -114,6 +128,7 @@ function ViewOffers() {
               </table>
             </div>
           </div>
+          {totalPages > 1 && <ReactPaginate pageCount={totalPages} pageRangeDisplayed={5} marginPagesDisplayed={2} onPageChange={handlePageClick} containerClassName="pagination" activeClassName="active" />}
         </div>
       </div>
     </section>

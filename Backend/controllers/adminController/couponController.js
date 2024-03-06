@@ -36,14 +36,23 @@ const createCoupon = async (req, res) => {
 };
 
 const getAllCoupons = async (req, res) => {
-    try {
-      const coupons = await Coupon.find();
-      res.status(200).json({ message: 'Success', coupons });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
-    }
+  try {
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const totalCoupons = await Coupon.countDocuments();
+    const coupons = await Coupon.find().skip(startIndex).limit(limit);
+
+    res.status(200).json({ message: 'Success', coupons, totalCoupons });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
 };
+
 
 const getCouponById = async (req, res) => {
     try {

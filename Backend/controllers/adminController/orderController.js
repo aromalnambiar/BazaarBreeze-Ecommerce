@@ -5,24 +5,32 @@ const Category=require('../../models/Category.js');
 
 const viewOrders = async (req, res) => {
   try {
-      const orders = await Order.find().populate('userId');
-      console.log("orders : ",orders);
-      const simplifiedOrders = orders.map(order => ({
-          orderId: order._id,
-          userId: order.userId._id,
-          username: order.userId.username,
-          orderDate: order.orderDate,
-          paymentMethod: order.paymentMethod,
-          totalAmount: order.totalAmount,
-          orderedItems:order.orderedItems
-      }));
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
 
-      res.status(200).json({ message: "successful", orders: simplifiedOrders });
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const totalOrders = await Order.countDocuments();
+    const orders = await Order.find().populate('userId').skip(startIndex).limit(limit);
+
+    const simplifiedOrders = orders.map(order => ({
+      orderId: order._id,
+      userId: order.userId._id,
+      username: order.userId.username,
+      orderDate: order.orderDate,
+      paymentMethod: order.paymentMethod,
+      totalAmount: order.totalAmount,
+      orderedItems: order.orderedItems
+    }));
+
+    res.status(200).json({ message: "successful", orders: simplifiedOrders, totalOrders });
   } catch (error) {
-      console.log(error);
-      res.status(500).json("Internal server error");
+    console.log(error);
+    res.status(500).json("Internal server error");
   }
 };
+
 
 // const changeOrderStatus = async (req, res) => {
 //     try {

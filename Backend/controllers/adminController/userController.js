@@ -3,16 +3,24 @@ const Wallet=require('../../models/Wallet.js');
 const Wishlist=require('../../models/Wishlist.js');
 const Cart=require('../../models/Cart.js');
 
-const viewUsers=async(req,res)=>{
-    try {
-        const users=await Users.find();
-        // console.log(users);
-        res.status(200).json({message:"success",users});
-    } catch (error) {
-        console.log(error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
-}
+const viewUsers = async (req, res) => {
+  try {
+    const page = req.query.page || 1;
+    const limit = req.query.limit || 10;
+
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const totalUsers = await Users.countDocuments();
+    const users = await Users.find().skip(startIndex).limit(limit);
+
+    res.status(200).json({ message: "success", users, totalUsers });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+};
+
 const viewUser=async (req, res) => {
   try {
     const {userId} = req.params; 

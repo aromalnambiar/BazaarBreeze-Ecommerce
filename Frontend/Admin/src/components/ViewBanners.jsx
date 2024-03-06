@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
+import ReactPaginate from "react-paginate";
 import { BASE_URL } from "../../config";
 import axios from "axios";
 
 function ViewBanners() {
   const [banners, setBanners] = useState([]);
   const [toggle, setToggle] = useState(false);
+  const [pageNumber, setPageNumber] = useState(1); // Default to the first page
+  const [totalPages, setTotalPages] = useState(1); // Default to 1 page
+  const bannersPerPage = 10; // Adjust as needed
+
   useEffect(() => {
     const fetchDetails = async () => {
       try {
@@ -12,22 +17,32 @@ function ViewBanners() {
           headers: {
             Authorization: `${localStorage.getItem("adminToken")}`,
           },
+          params: {
+            page: pageNumber, // Send the current page number
+            limit: bannersPerPage,
+          },
         });
-        console.log("result : ", result.data);
-        setBanners(result.data);
+
+        setBanners(result.data.banners);
+        setTotalPages(Math.ceil(result.data.totalBanners / bannersPerPage));
       } catch (error) {
-        console.log("Error : ", error);
+        console.log("Error: ", error);
       }
     };
+
     fetchDetails();
-  }, [toggle]);
+  }, [pageNumber, toggle]);
+
+  const handlePageClick = (selectedPage) => {
+    setPageNumber(selectedPage.selected + 1); // Page is 0-indexed
+  };
 
   return (
     <>
       <section className="flex flex-col justify-center antialiased bg-gray-100 text-gray-600  p-4">
         <div className="h-full">
           {/* <!-- Table --> */}
-          <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+          <div className="w-full max-w-6xl pb-8 mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
             <header className="px-5 py-4 border-b border-gray-100">
               <h2 className="font-semibold text-gray-800">Banners</h2>
             </header>
@@ -102,6 +117,7 @@ function ViewBanners() {
                 </table>
               </div>
             </div>
+            {totalPages > 1 && <ReactPaginate pageCount={totalPages} pageRangeDisplayed={5} marginPagesDisplayed={2} onPageChange={handlePageClick} containerClassName="pagination" activeClassName="active" />}
           </div>
         </div>
       </section>

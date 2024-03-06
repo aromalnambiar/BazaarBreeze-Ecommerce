@@ -59,10 +59,7 @@ router.get('/orders/yearlysales', order.getYearlySales);
 router.get('/users',authenticateJWT,isAdmin, user.viewUsers);
 router.put('/users/:userId',authenticateJWT,isAdmin, user.blockUser);
 router.get('/users/:userId', user.viewUser);
-// router.delete('/users/:user-id');
-// router.put('/users/:user-id/disable');
-// router.get('/users/search');
-// router.get('/users/users/:user-id');
+
 
 // Coupons
 router.get('/coupon',authenticateJWT,isAdmin,coupon.getAllCoupons);
@@ -86,7 +83,6 @@ router.get('/salesReport',sales.getSalesReport);
 router.get('/salesCount',authenticateJWT,isAdmin,sales.getOverallSalesCount);
 router.get('/orderAmount',authenticateJWT,isAdmin,sales.getOverallOrderAmount);
 router.get('/overallSalesCountAndAmount',sales.getOverallSalesCountAndAmount);
-
 router.post('/salesCSV',sample.exportCSV);
 router.post('/salesExcel',sample.exportExcel);
 router.get('/salesPDF',sample.exportPDF);
@@ -97,13 +93,6 @@ router.get('/banner/:bannerId',banner.getBanner)
 router.post('/banner',upload.single('image'),banner.addBanner)
 router.put('/banner/:bannerId' ,banner.editBanner)
 
-// router.get('/orders');
-// router.put('/orders/:order-id');
-// router.delete('/orders/:order-id');
-// router.get('/orders/:order-id');
-// router.put('/orders/:order-id/status');
-// router.put('/orders/:order-id/return');
-// router.put('/orders/orders/return');
 
 
 
