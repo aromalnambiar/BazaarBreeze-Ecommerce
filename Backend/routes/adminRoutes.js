@@ -76,6 +76,7 @@ router.get('/offer/:offerId',authenticateJWT,isAdmin,offer.getOfferById);
 router.put('/offer/:offerId',authenticateJWT,isAdmin,offer.updateOfferById);
 router.put('/offer/:Id/status',offer.updateOfferStatus);
 router.delete('/offer/:offerId',authenticateJWT,isAdmin,offer.deleteOfferById);
+// router.get('/offer/:productId/highest',offer.getProductDetailsWithOffer);
 
 //sales
 router.get('/sales',authenticateJWT,isAdmin,sales.generateSalesReport);

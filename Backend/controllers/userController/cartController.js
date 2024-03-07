@@ -1,5 +1,7 @@
 const Cart =require('../../models/Cart');
 const ProductVariant=require('../../models/ProductVariant');
+const Product=require('../../models/Products');
+const Offer=require('../../models/Offer');
 
   const addToCart = async (req, res) => {
     try {
@@ -79,37 +81,223 @@ const ProductVariant=require('../../models/ProductVariant');
           console.error(error);
           res.status(500).json({ message: 'Internal Server Error' });
         }
-      };
-      const showCart = async (req, res) => {
-        try {
-          // console.log("hello");
-          // console.log("user:", req.user);
+  };
+  
+  // const showCart = async (req, res) => {
+  //   try {
+  //     const { userId } = req.user;
+  
+  //     // Fetch the user's cart with populated product details
+  //     const cart = await Cart.findOne({ user: userId }).populate({
+  //       path: 'product.productVariantId',
+  //       model: 'ProductVariant',
+  //       select: 'variantName salePrice images _id productId',
+  //     });
+  
+  //     if (!cart) {
+  //       return res.status(404).json({ message: "Cart not found" });
+  //     }
+  
+  //     // Check if the cart is empty
+  //     if (!cart.product || cart.product.length === 0) {
+  //       return res.status(200).json({ message: "Cart is empty", cart });
+  //     }
+  
+  //     // Fetch and populate offer details for each product in the cart
+  //     const populatedCart = await Promise.all(cart.product.map(async (cartItem) => {
+  //       const product = await ProductVariant.findById(cartItem.productVariantId);
+  
+  //       // Fetch the highest discount offer for the current product
+  //       const productOffers = await Offer.find({
+  //         $or: [
+  //           { productId: product.productId },
+  //           { categoryId: product.category },
+  //         ],
+  //         validUntil: { $gte: new Date() },
+  //         isActive: true,
+  //       });
+  
+  //       let highestDiscountOffer = null;
+  //       let highestDiscountValue = 0;
+  
+  //       productOffers.forEach((offer) => {
+  //         if (offer.discountType === 'Percentage') {
+  //           const discountValue = (product.regularPrice * offer.discountValue) / 100;
+  //           if (discountValue > highestDiscountValue) {
+  //             highestDiscountOffer = offer;
+  //             highestDiscountValue = discountValue;
+  //           }
+  //         } else if (offer.discountType === 'FixedAmount') {
+  //           if (offer.discountValue > highestDiscountValue) {
+  //             highestDiscountOffer = offer;
+  //             highestDiscountValue = offer.discountValue;
+  //           }
+  //         }
+  //       });
+  
+  //       // Add the offer details to the cart item
+  //       return {
+  //         product: {
+  //           ...product.toObject(),
+  //           offer: highestDiscountOffer,
+  //         },
+  //         quantity: cartItem.quantity,
+  //       };
+  //     }));
+  
+  //     res.status(200).json({ message: "Success", cart: populatedCart });
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     res.status(500).json({ message: "Internal server issue" });
+  //   }
+  // };
+  
+  // const showCart = async (req, res) => {
+  //   try {
+  //     const { userId } = req.user;
+  
+  //     // Fetch the user's cart with populated product details
+  //     const cart = await Cart.findOne({ user: userId }).populate({
+  //       path: 'product.productVariantId',
+  //       model: 'ProductVariant',
+  //       select: 'variantName salePrice images _id productId',
+  //     });
+
+  //     console.log("cart 1: ");
       
-          const { userId } = req.user;
-          // console.log("userId:", userId);
+  //     if (!cart) {
+  //       console.log("cart 2: ");
+  //       return res.status(404).json({ message: "Cart not found" });
+  //     }
       
-          const cart = await Cart.findOne({ user: userId }).populate({
-            path: 'product.productVariantId',
-            model: 'ProductVariant',
-            select: 'variantName salePrice images _id productId',
-          });
-      console.log("cart : ",cart);
-          if (!cart) {
-            return res.status(404).json({ message: "Cart not found" });
+  //     console.log("cart11 : ",cart);
+  //     if (!cart.product || cart.product.length === 0) {
+  //       console.log("cart 3: ");
+  //       return res.status(200).json({ message: "Cart is empty", cart });
+  //     }
+  
+  //     // Fetch and populate offer details for each product in the cart
+  //     const populatedCart = await Promise.all(cart.product.map(async (cartItem) => {
+  //       const product = await ProductVariant.findById(cartItem.productVariantId);
+  
+  //       // Fetch the highest discount offer for the current product
+  //       const productOffers = await Offer.find({
+  //         $or: [
+  //           { productId: product.productId },
+  //           { categoryId: product.category },
+  //         ],
+  //         validUntil: { $gte: new Date() },
+  //         isActive: true,
+  //       });
+  
+  //       let highestDiscountOffer = null;
+  //       let highestDiscountValue = 0;
+  
+  //       productOffers.forEach((offer) => {
+  //         if (offer.discountType === 'Percentage') {
+  //           const discountValue = (product.regularPrice * offer.discountValue) / 100;
+  //           if (discountValue > highestDiscountValue) {
+  //             highestDiscountOffer = offer;
+  //             highestDiscountValue = discountValue;
+  //           }
+  //         } else if (offer.discountType === 'FixedAmount') {
+  //           if (offer.discountValue > highestDiscountValue) {
+  //             highestDiscountOffer = offer;
+  //             highestDiscountValue = offer.discountValue;
+  //           }
+  //         }
+  //       });
+  
+  //       // Add the offer details to the cart item
+  //       return {
+  //         productVariantId: {
+  //           ...product.toObject(),
+  //           offer: highestDiscountOffer,
+  //         },
+  //         quantity: cartItem.quantity,
+  //       };
+  //     }));
+
+  //     console.log("populatedCart : ",{product:populatedCart});
+  
+  //     res.status(200).json({ message: "Success", cart: {product:populatedCart} });
+  //   } catch (error) {
+  //     console.error("Error:", error);
+  //     res.status(500).json({ message: "Internal server issue" });
+  //   }
+  // };
+  const showCart = async (req, res) => {
+    try {
+      const { userId } = req.user;
+  
+      // Fetch the user's cart with populated product details
+      const cart = await Cart.findOne({ user: userId }).populate({
+        path: 'product.productVariantId',
+        model: 'ProductVariant',
+        select: 'variantName salePrice images _id productId category regularPrice',
+      });
+  
+      if (!cart) {
+        return res.status(404).json({ message: "Cart not found" });
+      }
+  
+      if (!cart.product || cart.product.length === 0) {
+        return res.status(200).json({ message: "Cart is empty", cart });
+      }
+  
+      // Fetch and populate offer details for each product in the cart
+      const populatedCart = await Promise.all(cart.product.map(async (cartItem) => {
+        console.log("cartiItem ; ",cartItem);
+        const product = cartItem.productVariantId;
+  
+        // Fetch the highest discount offer for the current product
+        const productOffers = await Offer.find({
+          $or: [
+            { productId: product.productId },
+            { categoryId: product.category },
+          ],
+          validUntil: { $gte: new Date() },
+          isActive: true,
+        });
+  
+        let highestDiscountOffer = null;
+        let highestDiscountValue = 0;
+  
+        productOffers.forEach((offer) => {
+          if (offer.discountType === 'FixedAmount') {
+            if (offer.discountValue > highestDiscountValue) {
+              highestDiscountOffer = offer;
+              highestDiscountValue = offer.discountValue;
+            }
           }
-      
-          // Check if the cart is empty
-          if (!cart.products || cart.products.length === 0) {
-            return res.status(200).json({ message: "Cart is empty", cart });
-          }
-      
-          res.status(200).json({ message: "Success", cart });
-        } catch (error) {
-          console.error("Error:", error);
-          res.status(500).json({ message: "Internal server issue" });
-        }
-      };
-      
+          else if (offer.discountType === 'Percentage') {
+            const discountValue = (product.regularPrice * offer.discountValue) / 100;
+            if (discountValue > highestDiscountValue) {
+              highestDiscountOffer = offer;
+              highestDiscountValue = discountValue;
+            }
+          }  
+        });
+  
+        // Add the offer details to the cart item
+        return {
+          productVariantId: {
+            ...product.toObject(),
+            offer: highestDiscountOffer,
+          },
+          quantity: cartItem.quantity,
+        };
+      }));
+  
+      res.status(200).json({ message: "Success", cart: { product: populatedCart } });
+    } catch (error) {
+      console.error("Error:", error);
+      res.status(500).json({ message: "Internal server issue" });
+    }
+  };
+  
+  
+  
   const clearCart = async (req, res) => {
     try {
         console.log("clear cart : ");

@@ -1,4 +1,5 @@
 const Offer = require('../../models/Offer');
+const ProductModel = require('../../models/Products');
 
 // Create a new offer
 const createOffer = async (req, res) => {
@@ -127,11 +128,13 @@ const deleteOfferById = async (req, res) => {
   }
 };
 
+
+
 module.exports = {
   createOffer,
   getAllOffers,
   getOfferById,
   updateOfferById,
   deleteOfferById,
-  updateOfferStatus
+  updateOfferStatus,
 };

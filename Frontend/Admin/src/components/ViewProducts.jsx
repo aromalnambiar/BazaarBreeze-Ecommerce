@@ -23,7 +23,7 @@ function ViewProducts() {
           Authorization: `${localStorage.getItem("adminToken")}`,
         },
         params: {
-          page: pageNumber + 1, // Adjust page number for API (1-indexed)
+          page: pageNumber + 1,
           limit: 10,
         },
       });

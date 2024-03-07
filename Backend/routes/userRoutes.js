@@ -93,6 +93,7 @@ router.get('/categories', category.viewCategories);
 
 //offers
 router.get('/offers', offer.getAllOffers);
+router.get('/offers/:productId', offer.getProductDetailsWithOffer);
 
 // invoice
 router.get('/generateinvoice',invoice.generateInvoice);

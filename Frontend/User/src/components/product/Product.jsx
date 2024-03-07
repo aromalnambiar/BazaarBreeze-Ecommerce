@@ -25,6 +25,7 @@ function Product() {
   const [specification, setSpecification] = useState([]);
   const [image, setImage] = useState("");
   const navigate = useNavigate();
+  const [offer, setOffer] = useState(null);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -52,6 +53,20 @@ function Product() {
     fetchDetails();
     window.scrollTo(0, 0);
   }, [productId]);
+
+  useEffect(() => {
+    const fetchDetails = async () => {
+      const response = await axios.get(`${BASE_URL}/user/offers/${productId}`, {
+        headers: {
+          Authorization: `${localStorage.getItem("token")}`,
+        },
+      });
+      console.log("response offer : ", response?.data?.highestDiscountOffer);
+      setOffer(response?.data?.highestDiscountOffer);
+    };
+    fetchDetails();
+  }, [productId]);
+
   // console.log("specification: ", specification);
   // console.log("Item  : ", item);
   const handleAddToCart = async (id) => {
@@ -140,6 +155,29 @@ function Product() {
     }
     // Add any additional logic you want to perform when a tab is clicked
   };
+
+  // Calculate final product price based on the offer
+  const calculateFinalPrice = () => {
+    if (!offer) {
+      return item.productDetails?.salePrice || item?.salePrice;
+    }
+
+    const salePrice = item.productDetails?.salePrice || item?.salePrice;
+
+    // Check if the offer is a fixed price or percentage
+    if (offer.discountType === "FixedAmount") {
+      // Deduct the fixed price from the salePrice
+      return salePrice - offer.discountValue;
+    } else if (offer.discountType === "Percentage") {
+      // Deduct the percentage from the salePrice
+      const discount = (offer.discountValue / 100) * salePrice;
+      return salePrice - discount;
+    }
+
+    // Default to the original salePrice if the offer type is not recognized
+    return salePrice;
+  };
+
   // console.log("item : ", item);
   // console.log("wishlistFound : ", isWishlistFound);
   // console.log("galleryimages : ", galleryImages);
@@ -178,7 +216,19 @@ function Product() {
             </div>
           </div>
           {/* {console.log("item ::: ", item)} */}
-          <p className="text-[#2DA5F3] font-bold my-6">{item.productDetails?.salePrice || item?.salePrice}₹</p>
+          <p className={`text-[#2DA5F3] text-lg font-bold ${offer && "line-through"} my-6`}>Price : {item.productDetails?.salePrice || item?.salePrice}₹</p>
+          {offer && (
+            <>
+              
+              <div className="flex items-center gap-8 ">
+                <p className=" font-bold text-[#26ae4a] text-lg my-6">
+                  OfferPrice : <span className="text-green-500">{calculateFinalPrice()}₹</span>
+                </p>
+
+              </div>
+              <p className=" font-bold my-6 text-green-500">🎉 {offer.description}</p>
+            </>
+          )}
           {/* //tabs */}
           <div className="flex">
             {tabs.map((item, index) => (
@@ -216,7 +266,6 @@ function Product() {
                 ADD TO CART
               </button>
             )}
-            {/* <button className="outline outline-[#FA8232] text-[#FA8232] h-full  rounded  px-6">BUY NOW</button> */}
           </div>
           <div
             onClick={() => {
@@ -252,11 +301,7 @@ function Product() {
           </>
         ) : (
           <>
-            <div className="p-12 border">
-              {description}
-              {/* <p>The most powerful MacBook Pro ever is here. With the blazing-fast M1 Pro or M1 Max chip — the first Apple silicon designed for pros — you get groundbreaking performance and amazing battery life. Add to that a stunning Liquid Retina XDR display, the best camera and audio ever in a Mac notebook, and all the ports you need. The first notebook of its kind, this MacBook Pro is a beast. M1 Pro takes the exceptional performance of the M1 architecture to a whole new level for pro users.</p>
-              <p>Even the most ambitious projects are easily handled with up to 10 CPU cores, up to 16 GPU cores, a 16‑core Neural Engine, and dedicated encode and decode media engines that support H.264, HEVC, and ProRes codecs.</p> */}
-            </div>
+            <div className="p-12 border">{description}</div>
           </>
         )}
       </div>

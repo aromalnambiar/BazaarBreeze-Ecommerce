@@ -40,6 +40,7 @@ function ShoppingCart() {
         // console.log("hello cart : ", res?.data?.cart);
         setCartItems(res.data.cart.product);
         setQuantity(() => res.data.cart.product.map((item) => item.quantity));
+
         // console.log("data : ", res.data.cart.product);
         setGrandTotal(() => res.data.cart.product.reduce((acc, curr) => acc + curr.productVariantId.salePrice * curr.quantity, 0));
       })
@@ -52,7 +53,6 @@ function ShoppingCart() {
     window.scrollTo(0, 0);
   }, []);
 
-  // console.log("cartItems : ", cartItems);
   // console.log("grandTotal : ", grandTotal);
 
   const handleCheckout = () => {
@@ -157,6 +157,18 @@ function ShoppingCart() {
     setCouponCode("");
     setCouponStatus("");
   };
+  const calculateDeductedAmount = (salePriceAmt, offer) => {
+    // console.log("calculate : ", offer);
+    // console.log("salePriceAmnt : ", salePriceAmt);
+    if (offer) {
+      const deductedAmount = offer.discountType === "Percentage" ? (salePriceAmt * offer.discountValue) / 100 : offer.discountValue;
+      // console.log("dedcuted amnt : ", deductedAmount);
+      return parseInt(deductedAmount);
+    } else {
+      return 0;
+    }
+  };
+
   // console.log("couponCode : ", couponCode);
   console.log("couponeId : ", couponId);
 
@@ -169,64 +181,104 @@ function ShoppingCart() {
     <>
       <div className={`grid grid-cols-12 gap-4  ${isDashboardCartPath ? "my-0" : "my-14"}  min-h-[80vh]`}>
         <div className="col-span-12 md:col-span-8  ">
-          <div className="container mx-auto  border">
-            <div className="flex shadow-md ">
-              <div className="w-full bg-white px-10 py-10">
-                <div className="flex justify-between border-b pb-8">
+          <section className="flex flex-col justify-center antialiased  text-gray-600   rounded-md">
+            <div className="h-full">
+              <div className="w-full  max-w-6xl mx-auto bg-white shadow-lg rounded-sm border  border-gray-200">
+                <div className="flex justify-between border-b p-6 pb-8 ">
                   <h1 className="font-semibold text-2xl">Shopping Cart</h1>
                   <h2 className="font-semibold text-2xl">{cartItems?.length} items</h2>
                 </div>
-                <div className="flex mt-10 mb-5">
-                  <h3 className="font-semibold text-gray-600 text-xs uppercase w-2/5">Product Details</h3>
-                  <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">Quantity</h3>
-                  <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">Price</h3>
-                  <h3 className="font-semibold text-center text-gray-600 text-xs uppercase w-1/5 ">Total</h3>
-                </div>
-                {cartItems.map((item, index) => {
-                  return (
-                    <div key={item._id} className="flex items-center hover:bg-gray-100 -mx-8 px-6 py-5">
-                      <div className="flex w-2/5">
-                        {/* {console.log("item shpp : ", item)} */}
-                        <div className="w-20">
-                          <img onClick={() => handleClickImage(item?.productVariantId?.productId)} className="h-24 object-contain" src={`${BASE_URL}/uploads/${item.productVariantId?.images[0]}`} alt="" />
-                        </div>
-                        <div className="flex flex-col justify-around ml-4 flex-grow">
-                          <span className="font-bold text-sm">{item?.productVariantId?.variantName}</span>
-                          {/* <span className="text-red-500 text-xs">Apple</span> */}
-                          {/* {console.log("map : ",item.productVariantId)} */}
-                          <a onClick={() => deleteFromCart(item.productVariantId._id)} className="font-semibold mb-2 cursor-pointer hover:text-red-500 text-gray-500 text-xs">
-                            Remove
-                          </a>
-                        </div>
-                      </div>
-                      <div className="flex justify-center w-1/5">
-                        <svg onClick={() => decreaseQuantity(item?.productVariantId._id, index)} className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512">
-                          <path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
-                        </svg>
-                        <input className="mx-2 border text-center w-8" type="text" value={quantity[index]} readOnly />
-                        <svg onClick={() => increaseQuantity(item?.productVariantId._id, index)} className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512">
-                          <path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
-                        </svg>
-                      </div>
-                      {/* {console.log("item : ", item)} */}
-                      <span className="text-center w-1/5 font-semibold text-sm">₹{item?.productVariantId?.salePrice}</span>
-                      <span className="text-center w-1/5 font-semibold text-sm">₹{item?.productVariantId?.salePrice * item?.quantity}</span>
-                    </div>
-                  );
-                })}
+                <div className="p-3 pb-8 ">
+                  <div className="overflow-x-auto ">
+                    <table className="table-auto w-full">
+                      <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+                        <tr>
+                          <th className="p-2 whitespace-nowrap">
+                            <div className="font-semibold text-left">PRODUCT DETAILS</div>
+                          </th>
+                          <th className="p-2 whitespace-nowrap">
+                            <div className="font-semibold text-center">QUANTITY</div>
+                          </th>
+                          <th className="p-2 whitespace-nowrap">
+                            <div className="font-semibold text-center">PRICE</div>
+                          </th>
+                          <th className="p-2 whitespace-nowrap">
+                            <div className="font-semibold text-center">DISCOUNT</div>
+                          </th>
+                          <th className="p-2 whitespace-nowrap">
+                            <div className="font-semibold text-center">TOTAL</div>
+                          </th>
+                        </tr>
+                      </thead>
 
-                <div className="flex justify-between items-center mt-4">
-                  <a onClick={() => navigate("/")} href="#" className="flex items-center font-semibold text-indigo-600 text-sm ">
-                    <svg className="fill-current mr-2 text-indigo-600 w-4" viewBox="0 0 448 512">
-                      <path d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
-                    </svg>
-                    Continue Shopping
-                  </a>
+                      <tbody className="text-sm divide-y divide-gray-100">
+                        {cartItems.map((item, index) => (
+                          <tr key={item?.productVariantId?._id} className="hover:bg-slate-100 ">
+                            {console.log("cia : ", item.productVariantId.offer)}
+                            <td className="p-2 whitespace-nowrap ">
+                              <div className="flex gap-4 my-4">
+                                <div className="w-14">
+                                  <img onClick={() => handleClickImage(item?.productVariantId?.productId)} className="h-24 object-contain cursor-pointer" src={`${BASE_URL}/uploads/${item.productVariantId?.images[0]}`} alt="" />
+                                </div>
+                                <div className="flex flex-col justify-around ml-4 flex-grow">
+                                  <span className="font-bold text-sm">{item?.productVariantId?.variantName}</span>
+                                  <a onClick={() => deleteFromCart(item?.productVariantId?._id)} className="font-semibold mb-2 cursor-pointer hover:text-red-500 text-gray-500 text-xs">
+                                    Remove
+                                  </a>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="p-2 whitespace-nowrap">
+                              <div className="flex justify-center ">
+                                <svg onClick={() => decreaseQuantity(item?.productVariantId?._id, index)} className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512">
+                                  <path d="M416 208H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h384c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
+                                </svg>
+                                <input className="mx-2 border text-center w-8" type="text" value={quantity[index]} readOnly />
+                                <svg onClick={() => increaseQuantity(item?.productVariantId?._id, index)} className="fill-current text-gray-600 w-3 cursor-pointer" viewBox="0 0 448 512">
+                                  <path d="M416 208H272V64c0-17.67-14.33-32-32-32h-32c-17.67 0-32 14.33-32 32v144H32c-17.67 0-32 14.33-32 32v32c0 17.67 14.33 32 32 32h144v144c0 17.67 14.33 32 32 32h32c17.67 0 32-14.33 32-32V304h144c17.67 0 32-14.33 32-32v-32c0-17.67-14.33-32-32-32z" />
+                                </svg>
+                              </div>
+                            </td>
+                            <td className="p-2 whitespace-nowrap">
+                              <div className="text-center font-medium ">₹{item?.productVariantId?.salePrice}</div>
+                            </td>
+                            <td className="p-2 whitespace-nowrap">
+                              <div className="text-center font-medium text-green-500">
+                                {item?.productVariantId?.offer && (
+                                  <>
+                                    <p className=" font-bold text-[#26ae4a] text-xs my-6">
+                                      - <span className="text-green-500">{calculateDeductedAmount(item?.productVariantId?.salePrice, item?.productVariantId?.offer)}₹</span>
+                                    </p>
+                                  </>
+                                )}
+                              </div>
+                            </td>
+                            <td className="p-2 whitespace-nowrap">
+                              <div className="text-center font-medium text-green-500">₹{item?.productVariantId?.salePrice * item?.quantity}</div>
+                            </td>
+                            {/* <td className="p-2 whitespace-nowrap">
+                              <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md">Edit</button>
+                              <button className="bg-[#fedad4] py-2 px-6 text-red-600 rounded-md ">Delete</button>
+                            </td> */}
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    <div className="flex justify-between items-center mt-4">
+                      <a onClick={() => navigate("/")} href="#" className="flex items-center font-semibold text-indigo-600 text-sm ">
+                        <svg className="fill-current mr-2 text-indigo-600 w-4" viewBox="0 0 448 512">
+                          <path d="M134.059 296H436c6.627 0 12-5.373 12-12v-56c0-6.627-5.373-12-12-12H134.059v-46.059c0-21.382-25.851-32.09-40.971-16.971L7.029 239.029c-9.373 9.373-9.373 24.569 0 33.941l86.059 86.059c15.119 15.119 40.971 4.411 40.971-16.971V296z" />
+                        </svg>
+                        Continue Shopping
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
+
         <div className="border col-span-12  md:col-span-4 ">
           <div className="w-full h-full px-8 py-10 bg-[#f6f6f6]">
             <h1 className="font-semibold text-2xl border-b pb-8">Order Summary</h1>
