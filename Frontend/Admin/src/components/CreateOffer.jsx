@@ -154,7 +154,7 @@ const CreateOffer = () => {
       Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: "Invalid discount value. Please enter a valid value based on the discount type.!",
+        text: "Invalid discount value. Please enter a valid value based on the discount type(maxFixed:100, maxPercentage:70) .!",
       });
       return false;
     }

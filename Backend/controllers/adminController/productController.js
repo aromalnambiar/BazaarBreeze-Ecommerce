@@ -50,9 +50,9 @@ const viewProductVariant=async(req,res)=>{
 
 const addProduct=async(req,res)=>{
     try {
-        // const details=req.body;
+        const details=req.body;
         const {brand,name,category,description}=req.body;
-        // console.log("details : ",details);
+        console.log("details : ",details);
         // console.log("details : ");
         const product=new Products({
             brand,
@@ -65,7 +65,8 @@ const addProduct=async(req,res)=>{
         })
         let productId=await product.save();
         productId=productId._id;
-        // console.log("product Id : ",productId);
+
+        console.log("product Id : ",productId);
         res.status(201).json({message:"success",productId});
         // console.log(images);
     } catch (error) {

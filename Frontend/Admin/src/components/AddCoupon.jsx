@@ -1,9 +1,10 @@
 // Import necessary libraries
 import React, { useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "../../config";
 import Swal from "sweetalert2";
+import { BASE_URL } from "../../config";
 import { useNavigate } from "react-router-dom";
+
 // Define the CouponForm component
 const AddCoupon = () => {
   // State to manage form input values
@@ -19,6 +20,7 @@ const AddCoupon = () => {
   });
 
   const navigate = useNavigate();
+
   // Handle input changes
   const handleInputChange = (e) => {
     setFormData({
@@ -27,9 +29,53 @@ const AddCoupon = () => {
     });
   };
 
+  // Validate discount value function
+  const validateDiscountValue = (value, discountType) => {
+    const maxFixedAmount = 100;
+    const maxPercentage = 70;
+    const max = discountType === "FixedAmount" ? maxFixedAmount : maxPercentage;
+
+    return value >= 0 && value <= max;
+  };
+
+  // Validate form function
+  const validateForm = () => {
+    // Check if any required field is empty
+    if (
+      formData.code.trim() === "" ||
+      formData.discountValue === 0 || // Assuming 0 is not a valid value
+      formData.validFrom.trim() === "" ||
+      formData.validUntil.trim() === "" ||
+      formData.description.trim() === ""
+    ) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please fill in all required fields!",
+      });
+      return false;
+    }
+
+    // Validate discount value
+    if (!validateDiscountValue(formData.discountValue, formData.discountType)) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Invalid discount value. Please enter a valid value based on the discount type (maxFixed: 100, maxPercentage: 70)!",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
 
     try {
       // Send the user input values to the API using Axios
@@ -54,7 +100,7 @@ const AddCoupon = () => {
         icon: "success",
         title: "Coupon created successfully",
       });
-      navigate("/coupons");
+      navigate("/adminpanel/coupons");
     } catch (error) {
       console.error("Error creating coupon:", error.message);
       Swal.fire({

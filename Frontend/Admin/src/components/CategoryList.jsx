@@ -31,6 +31,7 @@ function CategoryList() {
         });
 
         setCategories(response.data.categories);
+        setCategoriesHolder(response.data.categories);
         setTotalCategories(response.data.totalCategories);
       } catch (error) {
         console.error(error);
@@ -39,7 +40,7 @@ function CategoryList() {
 
     fetchData();
   }, [pageNumber, isEdit]);
-
+  console.log("categories holder : ", categoriesHolder);
   const handleEdit = (categoryId) => {
     setCategoryId(categoryId);
     setIsEdit(true);
@@ -74,7 +75,7 @@ function CategoryList() {
                     View all
                   </button>
                   <button onClick={handleView} className="border-[#afb0e1]  px-8 py-2 mr-4 rounded-md shadow-lg">
-                    {isListed ? "View unlisted" : "View listed"}
+                    {isListed ? "View listed" : "View unlisted"}
                   </button>
                 </div>
                 <div>

@@ -139,8 +139,8 @@ function ViewProducts() {
                     ))}
                   </tbody>
                 </table>
-                <ReactPaginate pageCount={totalProducts / 10} pageRangeDisplayed={5} marginPagesDisplayed={2} onPageChange={handlePageClick} containerClassName="pagination" activeClassName="active" />
               </div>
+              <ReactPaginate pageCount={totalProducts / 10} pageRangeDisplayed={5} marginPagesDisplayed={2} onPageChange={handlePageClick} containerClassName="pagination" activeClassName="active" />
             </div>
           </div>
         </div>

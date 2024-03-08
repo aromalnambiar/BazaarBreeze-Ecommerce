@@ -47,23 +47,51 @@ const AddProduct = () => {
 
   const handleAddProduct = async () => {
     try {
-      if (!formData.productName || !formData.brand || !formData.category || !formData.description) {
-        // alert("Please fill in all required fields.");
+      if (!formData.productName || formData.productName.trim() === "" || formData.productName.split(/\s+/).length > 15) {
         Swal.fire({
           icon: "error",
           title: "Oops...",
-          text: "Please fill in all required fields!",
+          text: "Product name must not be empty, whitespace only, or exceed 15 words!",
         });
         return;
       }
 
+      // Check for empty or whitespace description and limit length to 100 characters
+      if (!formData.description || formData.description.trim() === "" || formData.description.length > 100) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Description must not be empty, whitespace only, or exceed 100 characters!",
+        });
+        return;
+      }
+
+      // Check for empty branch or limit length to 10 characters
+      if (!formData.brand || formData.brand.trim() === "" || formData.brand.length > 10) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Brand must not be empty, whitespace only, or exceed 10 characters!",
+        });
+        return;
+      }
+
+      // Check if category is selected
+      if (!formData.category) {
+        Swal.fire({
+          icon: "error",
+          title: "Oops...",
+          text: "Please select a category!",
+        });
+        return;
+      }
       const response = await axios.post(
         `${BASE_URL}/admin/products`,
         {
-          brand: formData.brand,
-          name: formData.productName,
+          brand: formData.brand.trim(),
+          name: formData.productName.trim(),
           category: formData.category,
-          description: formData.description,
+          description: formData.description.trim(),
         },
         {
           headers: {
@@ -121,48 +149,112 @@ const AddProduct = () => {
 
   const handleSendDataToVariant = async () => {
     try {
-      const variantFormData = new FormData();
-      variantFormData.append("productId", productId);
-      variantFormData.append("stock", formData.stock);
-      variantFormData.append("color", formData.color);
-      variantFormData.append("regularprice", formData.regularPrice);
-      variantFormData.append("specialprice", formData.salePrice);
-      variantFormData.append("variantName", formData.productVariant);
-      imagesObjects.forEach((image, index) => {
-        variantFormData.append("photos", image);
+      if (!formData.stock || !formData.regularPrice || !formData.salePrice || !formData.productVariant || imagesObjects.length === 0 || specifications.length === 0) {
+        Swal.fire({
+          title: "Fill all!",
+          text: "Please fill in all required fields and also add specifications and images.",
+          icon: "error",
+        });
+        return;
+      }
+
+      if (formData.productVariant.length > 15 || formData.productVariant.trim() === "") {
+        Swal.fire({
+          title: "Invalid input!",
+          text: "Variant name must not exceed 15 characters and it must not be empty space.",
+          icon: "error",
+        });
+        return;
+      }
+
+      const numericRegex = /^\d+$/;
+      if (!numericRegex.test(formData.stock) || !numericRegex.test(formData.regularPrice) || !numericRegex.test(formData.salePrice)) {
+        Swal.fire({
+          title: "Invalid input!",
+          text: "Stock, Regular Price, and Sale Price must contain only numbers.",
+          icon: "error",
+        });
+        return;
+      }
+      if (formData.regularPrice < 500 || formData.salePrice < 500) {
+        Swal.fire({
+          title: "Invalid input!",
+          text: " Regular Price, and Sale Price must not be less than 500.",
+          icon: "error",
+        });
+        return;
+      }
+      if (imagesObjects.length === 0) {
+        Swal.fire({
+          title: "Fill all!",
+          text: "At least one image is required.",
+          icon: "error",
+        });
+        return;
+      }
+
+      if (specifications.some((spec) => !spec.name || !spec.value)) {
+        Swal.fire({
+          title: "Fill all!",
+          text: "Specifications must not be empty.",
+          icon: "error",
+        });
+        return;
+      }
+
+      const confirmed = await Swal.fire({
+        title: "Are you sure?",
+        text: "Your edit will be submitted!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, Submit!",
       });
 
-      console.log("Images : ", imagesObjects);
-      console.log("variantFormData : ", variantFormData);
-      specifications.forEach((spec, index) => {
-        variantFormData.append(`specification[${index}][name]`, spec.name);
-        variantFormData.append(`specification[${index}][value]`, spec.value);
-      });
+      if (confirmed.isConfirmed) {
+        const variantFormData = new FormData();
+        variantFormData.append("productId", productId);
+        variantFormData.append("stock", formData.stock);
+        variantFormData.append("color", formData.color);
+        variantFormData.append("regularprice", formData.regularPrice);
+        variantFormData.append("specialprice", formData.salePrice);
+        variantFormData.append("variantName", formData.productVariant);
 
-      const variantResponse = await axios.post(`${BASE_URL}/admin/products/variant`, variantFormData, {
-        headers: {
-          Authorization: `${localStorage.getItem("adminToken")}`,
-        },
-      });
-      console.log(variantResponse.data);
-      const Toast = Swal.mixin({
-        toast: true,
-        position: "top-end",
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: false,
-        didOpen: (toast) => {
-          toast.onmouseenter = Swal.stopTimer;
-          toast.onmouseleave = Swal.resumeTimer;
-        },
-      });
-      Toast.fire({
-        icon: "success",
-        title: `${variantResponse.data.message}`,
-      });
-      // alert(variantResponse.data.message);
+        imagesObjects.forEach((image, index) => {
+          variantFormData.append("photos", image);
+        });
+
+        specifications.forEach((spec, index) => {
+          variantFormData.append(`specification[${index}][name]`, spec.name);
+          variantFormData.append(`specification[${index}][value]`, spec.value);
+        });
+
+        const variantResponse = await axios.put(`${BASE_URL}/admin/products/variant/${variantId}`, variantFormData, {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
+        });
+
+        const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.onmouseenter = Swal.stopTimer;
+            toast.onmouseleave = Swal.resumeTimer;
+          },
+        });
+
+        Toast.fire({
+          icon: "success",
+          title: "Product Variant added successfully",
+        });
+      }
     } catch (error) {
-      // console.error("Error adding product variant:", error);
+      console.error("Error adding product variant:", error);
       Swal.fire({
         icon: "error",
         title: "Oops...",

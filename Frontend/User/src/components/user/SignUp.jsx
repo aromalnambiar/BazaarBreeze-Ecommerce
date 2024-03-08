@@ -16,21 +16,21 @@ function SignUp() {
     e.preventDefault();
     const emailValue = email.current.value;
     console.log(email.current.value);
+
+    const usernameValue = username.current.value;
+    if (!usernameValue || usernameValue.trim() === "" || usernameValue.length > 15) {
+      alert("Please enter a valid username and it can't contain more than 15 characters");
+      return;
+    }
+
     if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
       alert("Please enter a valid email address");
       return;
     }
-
-    const usernameValue = username.current.value;
-    if (!usernameValue || usernameValue.trim() === "") {
-      alert("Please enter a valid username");
-      return;
-    }
-
     const passwordValue = password.current.value;
 
-    if (!passwordValue && passwordValue.length < 6) {
-      alert("Password must be at least 6 characters long and it must not be empty");
+    if (!passwordValue && passwordValue.length < 8) {
+      alert("Password must be at least 8 characters long and it must not be empty");
       return;
     }
 

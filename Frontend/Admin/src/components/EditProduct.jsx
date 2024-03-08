@@ -198,14 +198,53 @@ const EditProduct = () => {
 
   const handleAddProduct = async () => {
     try {
-      if (!productName || !brand || !category || !description) {
+      const nameRegex = /^[a-zA-Z\s]+$/;
+      if (!productName || !nameRegex.test(productName.trim())) {
         Swal.fire({
           title: "Fill all!",
-          text: `"Please fill in all required fields."`,
+          text: "Product name must contain only letters and white spaces.",
           icon: "error",
         });
         return;
       }
+      const brandRegex = /^[a-zA-Z\s]+$/;
+      if (!brand || !brandRegex.test(brand.trim())) {
+        Swal.fire({
+          title: "Fill all!",
+          text: "Brand must contain only letters and white spaces.",
+          icon: "error",
+        });
+        return;
+      }
+
+      if (!category) {
+        Swal.fire({
+          title: "Fill all!",
+          text: "Please select a category.",
+          icon: "error",
+        });
+        return;
+      }
+
+      const descriptionRegex = /^[a-zA-Z\s]+$/;
+      if (!description || !descriptionRegex.test(description.trim())) {
+        Swal.fire({
+          title: "Fill all!",
+          text: "Description must contain only letters and white spaces.",
+          icon: "error",
+        });
+        return;
+      }
+
+      if (productName.trim() === "" || brand.trim() === "" || description.trim() === "") {
+        Swal.fire({
+          title: "Fill all!",
+          text: "Input must not contain only white spaces.",
+          icon: "error",
+        });
+        return;
+      }
+
       const confirmed = await Swal.fire({
         title: "Are you sure?",
         text: "Your edit will be submitted!",
@@ -217,12 +256,20 @@ const EditProduct = () => {
       });
       if (confirmed.isConfirmed) {
         // Perform the API request with formData
-        const response = await axios.put(`${BASE_URL}/admin/products/${productId}`, {
-          brand,
-          name: productName,
-          category: categoryId,
-          description,
-        });
+        const response = await axios.put(
+          `${BASE_URL}/admin/products/${productId}`,
+          {
+            brand,
+            name: productName,
+            category: categoryId,
+            description,
+          },
+          {
+            headers: {
+              Authorization: `${localStorage.getItem("adminToken")}`,
+            },
+          }
+        );
         Swal.fire({
           title: "Edited!",
           text: `Product edited successfully`,
@@ -266,6 +313,60 @@ const EditProduct = () => {
 
   const handleSendDataToVariant = async () => {
     try {
+      if (!stock || !regularPrice || !salePrice || !variantName || imagesObjects.length === 0 || specifications.length === 0) {
+        Swal.fire({
+          title: "Fill all!",
+          text: "Please fill in all required fields and also add specifications.",
+          icon: "error",
+        });
+        return;
+      }
+
+      if (variantName.length > 15) {
+        Swal.fire({
+          title: "Invalid input!",
+          text: "Variant name must not exceed 10 characters.",
+          icon: "error",
+        });
+        return;
+      }
+
+      const numericRegex = /^\d+$/;
+      if (!numericRegex.test(stock) || !numericRegex.test(regularPrice) || !numericRegex.test(salePrice)) {
+        Swal.fire({
+          title: "Invalid input!",
+          text: "Stock, Regular Price, and Sale Price must contain only numbers.",
+          icon: "error",
+        });
+        return;
+      }
+
+      if (imagesObjects.length === 0) {
+        Swal.fire({
+          title: "Fill all!",
+          text: "At least one image is required.",
+          icon: "error",
+        });
+        return;
+      }
+
+      if (specifications.some((spec) => !spec.name || !spec.value)) {
+        Swal.fire({
+          title: "Fill all!",
+          text: "Specifications must not be empty.",
+          icon: "error",
+        });
+        return;
+      }
+      if (variantName.trim() === "") {
+        Swal.fire({
+          title: "Fill all!",
+          text: "Input must not contain only white spaces.",
+          icon: "error",
+        });
+        return;
+      }
+
       const confirmed = await Swal.fire({
         title: "Are you sure?",
         text: "Your edit will be submitted!",
@@ -291,7 +392,11 @@ const EditProduct = () => {
           variantFormData.append(`specification[${index}][value]`, spec.value);
         });
 
-        const variantResponse = await axios.put(`${BASE_URL}/admin/products/variant/${variantId}`, variantFormData);
+        const variantResponse = await axios.put(`${BASE_URL}/admin/products/variant/${variantId}`, variantFormData, {
+          headers: {
+            Authorization: `${localStorage.getItem("adminToken")}`,
+          },
+        });
         // navigate("/products/view-all");
         // console.log(variantResponse.data);
         const Toast = Swal.mixin({

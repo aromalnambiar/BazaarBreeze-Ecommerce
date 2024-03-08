@@ -29,8 +29,33 @@ const CreateBanner = () => {
     }));
   };
 
+  const validateForm = () => {
+    if (formData.title.trim() === "" || formData.description.trim() === "" || formData.link.trim() === "" || formData.startDate.trim() === "" || formData.endDate.trim() === "") {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Please fill in all required fields!",
+      });
+      return false;
+    }
+    if (formData.title.length > 20 || formData.description.length > 50 || formData.link.length > 40) {
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Length exceeded (title:max 20, description:max 50, link:max 40) !",
+      });
+      return false;
+    }
+
+    return true;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!validateForm()) {
+      return;
+    }
 
     try {
       const formDataForServer = new FormData();
@@ -48,6 +73,11 @@ const CreateBanner = () => {
       console.log("Banner created successfully:", response.data);
     } catch (error) {
       console.error("Error creating banner:", error.message);
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Something went wrong!",
+      });
     }
   };
 

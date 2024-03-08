@@ -30,6 +30,39 @@ function AddCategory() {
 
   const addCategory = async () => {
     try {
+      const categoryName = name.current.value.trim();
+      const categoryDescription = description.current.value.trim();
+
+      // Validate category name
+      if (!categoryName || categoryName.length > 15 || /\d/.test(categoryName)) {
+        Swal.fire({
+          title: "Invalid input!",
+          text: "Category name must not be empty, contain numbers, or exceed 15 characters.",
+          icon: "error",
+        });
+        return;
+      }
+
+      // Validate category description
+      if (!categoryDescription || categoryDescription.length > 1000) {
+        Swal.fire({
+          title: "Invalid input!",
+          text: "Category description must not be empty and should not exceed 1000 characters.",
+          icon: "error",
+        });
+        return;
+      }
+
+      // Validate image
+      if (!image) {
+        Swal.fire({
+          title: "Invalid input!",
+          text: "Please select an image.",
+          icon: "error",
+        });
+        return;
+      }
+
       const confirmed = await Swal.fire({
         title: "Are you sure?",
         text: "You will be able to delete this category later!",
@@ -42,8 +75,8 @@ function AddCategory() {
 
       if (confirmed.isConfirmed) {
         const formData = new FormData();
-        formData.append("name", name.current.value);
-        formData.append("description", description.current.value);
+        formData.append("name", categoryName);
+        formData.append("description", categoryDescription);
         formData.append("image", image);
 
         const result = await axios.post(`${BASE_URL}/admin/categories`, formData, {

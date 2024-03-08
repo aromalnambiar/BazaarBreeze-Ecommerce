@@ -2,6 +2,7 @@ import axios from "axios";
 import { BASE_URL } from "../../../User/config";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 
 function EditCategory({ categoryId, setIsEdit }) {
   const name = useRef();
@@ -42,14 +43,37 @@ function EditCategory({ categoryId, setIsEdit }) {
 
   const editSubmit = async () => {
     try {
-      const updatedName = name.current.value;
-      const updatedDescription = description.current.value;
+      const updatedName = name.current.value.trim();
+      const updatedDescription = description.current.value.trim();
+
+      // Validate updated category name
+      if (!updatedName || updatedName.length > 15 || /\d/.test(updatedName)) {
+        Swal.fire({
+          title: "Invalid input!",
+          text: "Category name must not be empty, contain numbers, or exceed 15 characters.",
+          icon: "error",
+        });
+        return;
+      }
+
+      // Validate updated category description
+      if (!updatedDescription || updatedDescription.length > 1000) {
+        Swal.fire({
+          title: "Invalid input!",
+          text: "Category description must not be empty and should not exceed 1000 characters.",
+          icon: "error",
+        });
+        return;
+      }
+
+      
 
       // Create a FormData object to handle file uploads
       const formData = new FormData();
       formData.append("name", updatedName);
       formData.append("description", updatedDescription);
-      formData.append("isListed", isListed); // Step 3
+      formData.append("isListed", isListed);
+
       if (imageInput.current.files[0]) {
         formData.append("image", imageInput.current.files[0]);
       }
@@ -70,6 +94,7 @@ function EditCategory({ categoryId, setIsEdit }) {
       console.error(error);
     }
   };
+
   console.log("isListed : ", isListed);
 
   return (
