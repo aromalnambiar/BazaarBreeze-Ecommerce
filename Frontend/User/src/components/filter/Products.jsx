@@ -24,7 +24,6 @@ function Products({ query }) {
       fetchData();
     }
 
-    // window.scrollTo(0, 0);
   }, [query]);
 
   // console.log("Products : ", products);

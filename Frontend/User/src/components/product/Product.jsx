@@ -215,9 +215,10 @@ function Product() {
               </p>
             </div>
           </div>
+          {/* ${offer && "line-through"} */}
           {/* {console.log("item ::: ", item)} */}
-          <p className={`text-[#2DA5F3] text-lg font-bold ${offer && "line-through"} my-6`}>Price : {item.productDetails?.salePrice || item?.salePrice}₹</p>
-          {offer && (
+          <p className={`text-[#2DA5F3] text-lg font-bold  my-6`}>Price : {item.productDetails?.salePrice || item?.salePrice}₹</p>
+          {/* {offer && (
             <>
               
               <div className="flex items-center gap-8 ">
@@ -228,7 +229,7 @@ function Product() {
               </div>
               <p className=" font-bold my-6 text-green-500">🎉 {offer.description}</p>
             </>
-          )}
+          )} */}
           {/* //tabs */}
           <div className="flex">
             {tabs.map((item, index) => (
