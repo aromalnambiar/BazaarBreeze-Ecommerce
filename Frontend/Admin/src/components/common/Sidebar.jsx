@@ -30,7 +30,16 @@ const Sidebar = () => {
         { to: "/adminpanel/products/add", text: "Add product" },
       ],
     },
-    { label: "Order", links: [{ to: "/adminpanel/orders/view-all", text: "View all orders" }, { text: "Submenu 6" }] },
+    {
+      label: "Order",
+      links: [
+        { to: "/adminpanel/orders/view-all", text: "View all orders" },
+        {
+          to: "/adminpanel/order/view",
+          text: "View Order Details",
+        },
+      ],
+    },
     {
       label: "Users",
       links: [

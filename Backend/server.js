@@ -24,17 +24,6 @@ app.use('/user', userRoutes);
 
 app.use('/admin', adminRoutes);
 
-app.get("/", function (req, res) {
-    res.sendFile(
-        path.join(__dirname, "../Frontend/User/dist/index.html"),
-        function (err) {
-            if (err) {
-                res.status(500).send(err);
-            }
-        }
-    );
-});
-
 app.get("/adminpanel*", function (req, res) {
     res.sendFile(
         path.join(__dirname, "../Frontend/Admin/dist/index.html"),
@@ -45,6 +34,18 @@ app.get("/adminpanel*", function (req, res) {
         }
     );
 });
+
+app.get("/*", function (req, res) {
+    res.sendFile(
+        path.join(__dirname, "../Frontend/User/dist/index.html"),
+        function (err) {
+            if (err) {
+                res.status(500).send(err);
+            }
+        }
+    );
+});
+
 
 const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`listening on port ${port}`));

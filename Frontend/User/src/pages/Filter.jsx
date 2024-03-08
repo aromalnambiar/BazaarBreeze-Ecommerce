@@ -69,7 +69,7 @@ function Filter() {
           <PriceFilter onPriceChange={handlePriceChange} />
         </div>
         <div className="col-span-12 md:col-span-9  min-h-[70vh]">
-          <Search />
+          {/* <Search /> */}
           <Products query={query} />
         </div>
       </div>

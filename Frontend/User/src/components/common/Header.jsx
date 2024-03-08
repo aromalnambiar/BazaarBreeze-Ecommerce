@@ -15,7 +15,11 @@ function Header() {
   useEffect(() => {
     const handleSearch = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/user/products/search?query=${query}`);
+        const response = await axios.get(`${BASE_URL}/user/products/search?query=${query}`, {
+          headers: {
+            Authorization: localStorage.getItem("token"),
+          },
+        });
         setProducts([...response.data]);
         setShowProducts(true);
       } catch (error) {

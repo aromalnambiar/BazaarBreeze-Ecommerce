@@ -166,7 +166,7 @@ try {
     // console.log("req.body : ",req.body);
     const {email,password}=req.body;
     const user=await User.findOne({email});
-    console.log(user);
+    // console.log(user);
     if(!user){
         return res.status(404).json({message:"User isn't available"});
     }
@@ -174,7 +174,7 @@ try {
         if(user.isBlocked){
            return res.status(400).json({message:"User is blocked"})
         }
-        const token=jwt.sign({userId:user._id,role:'user'},`${process.env.JWT_SECRET}`,{expiresIn:'24h'});
+        const token=jwt.sign({userId:user._id,role:'user'},`${process.env.JWT_SECRET}`,{expiresIn:'30d'});
         return res.status(200).json({token,message:"Login successfull"});
     }else{
         return res.status(400).json({message:"password isn't matching"});

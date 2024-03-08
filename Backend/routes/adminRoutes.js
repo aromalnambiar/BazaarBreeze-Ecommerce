@@ -54,6 +54,7 @@ router.get('/orders/bestselling-brands', order.getBestSellingBrands);
 router.get('/orders/monthlysales', order.getMonthlySales);
 // router.get('/orders/monthlysalesarray', order.getMonthlySalesArray);
 router.get('/orders/yearlysales', order.getYearlySales);
+router.get('/orders/:orderId', order.getOrderDetails);
 
 // Users
 router.get('/users',authenticateJWT,isAdmin, user.viewUsers);

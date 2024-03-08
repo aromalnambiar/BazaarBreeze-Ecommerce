@@ -1,11 +1,13 @@
 const Wallet = require('../../models/Wallet'); // Update the path as needed
-const Transaction = require('../../models/Transaction'); // Update the path as needed
 
 const getWalletHistory = async (req, res) => {
   try {
-    const {userId} = req.user;
+    const { userId } = req.user;
 
-    const wallet = await Wallet.findOne({ user: userId }).populate('transactions');
+    const wallet = await Wallet.findOne({ user: userId }).populate({
+      path: 'transactions',
+      options: { sort: { createdAt: -1 } }, // Sort transactions by createdAt in descending order
+    });
 
     if (!wallet) {
       return res.status(404).json({ error: 'Wallet not found for the user' });
@@ -24,5 +26,6 @@ const getWalletHistory = async (req, res) => {
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
+
 
 module.exports = { getWalletHistory };

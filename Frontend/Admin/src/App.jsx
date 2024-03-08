@@ -20,6 +20,7 @@ import UserDetails from "./components/UserDetails";
 import ViewBanners from "./components/ViewBanners.jsx";
 import CreateBanner from "./components/CreateBanner.jsx";
 import OrderList from "./components/OrdersList.jsx";
+import OrderDetails from "./components/OrderDetails.jsx";
 
 function App() {
   const { token } = useAuth();
@@ -44,6 +45,7 @@ function App() {
     { path: "/adminpanel/users/view", element: <UserDetails /> },
     { path: "/adminpanel/banners", element: <ViewBanners /> },
     { path: "/adminpanel/banners/add", element: <CreateBanner /> },
+    { path: "/adminpanel/order/view", element: <OrderDetails /> },
   ];
 
   return (

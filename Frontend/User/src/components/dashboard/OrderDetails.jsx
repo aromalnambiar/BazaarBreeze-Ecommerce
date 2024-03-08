@@ -8,6 +8,7 @@ import { useParams } from "react-router-dom";
 import { BASE_URL } from "../../../config";
 import axios from "axios";
 import Swal from "sweetalert2";
+import PdfDownload from "../dashboard/PdfDownload";
 
 function OrderDetails() {
   const [items, setItems] = useState([]);
@@ -82,7 +83,7 @@ function OrderDetails() {
     }
   }, [dataRetrieved]);
 
-  // console.log("joinedArray : ", joinedArray);
+  console.log("joinedArray : ", joinedArray);
 
   const handleStatus = async (orderedItemId, orderStatus) => {
     try {
@@ -159,20 +160,20 @@ function OrderDetails() {
     }
   };
 
-  const handleDownloadInvoice = async () => {
-    const confirmed = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to download invoice!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes!",
-    });
-    if (confirmed.isConfirmed) {
-      downloadInvoice();
-    }
-  };
+  // const handleDownloadInvoice = async () => {
+  //   const confirmed = await Swal.fire({
+  //     title: "Are you sure?",
+  //     text: "Do you want to download invoice!",
+  //     icon: "warning",
+  //     showCancelButton: true,
+  //     confirmButtonColor: "#3085d6",
+  //     cancelButtonColor: "#d33",
+  //     confirmButtonText: "Yes!",
+  //   });
+  //   if (confirmed.isConfirmed) {
+  //     downloadInvoice();
+  //   }
+  // };
 
   const changePaymentStatus = async () => {
     try {
@@ -247,7 +248,10 @@ function OrderDetails() {
       handlePayment();
     }
   };
-
+  console.log(
+    "joined edit : ",
+    joinedArray.map((obj, index) => [index + 1, { NAME: obj.productDetails.variantName, PRICE: obj.price, QUANTITY: obj.quantity, TOTAL: obj.quantity * obj.price }])
+  );
   return (
     <>
       <h3 className="text-center my-10 font-bold text-gray-600">Products</h3>
@@ -275,10 +279,11 @@ function OrderDetails() {
                     </tr>
                     <tr>
                       <td className="p-2 whitespace-nowrap">
-                        <div className="flex items-center">
+                        <div className="flex gap-4 items-center">
                           <div className="font-medium text-gray-800">
                             <img src={`${BASE_URL}/uploads/${item.productDetails.images[0]}`} className="w-10 h-10 object-contain" />
                           </div>
+                          <p>{item.productDetails.variantName}</p>
                         </div>
                       </td>
                       <td className="p-2 whitespace-nowrap">
@@ -321,11 +326,18 @@ function OrderDetails() {
                 ))}
             </tbody>
           </table>
-          {paymentStatus !== "Failed" && (
+          {/* {paymentStatus !== "Failed" && (
             <button onClick={handleDownloadInvoice} className="ml-4 p-2 rounded-md">
               Download Invoice
             </button>
+          )} */}
+
+          {paymentStatus !== "Failed" && (
+            <div className="ml-4 p-2 rounded-md">
+              Download invoice : <PdfDownload jsonData={joinedArray} fileName={"invoice"} />
+            </div>
           )}
+
           {paymentStatus === "Failed" && (
             <>
               <h3 className="text-red-500 text-center mb-4">Payment Failed</h3>

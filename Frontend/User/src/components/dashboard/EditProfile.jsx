@@ -165,12 +165,12 @@ function EditProfile() {
             <input type="text" id="name" ref={username} name="name" className="mt-1 p-2 w-full border rounded-md" disabled={!isEditing} />
           </div>
 
-          <div>
+          {/* <div>
             <label htmlFor="email" className="block text-sm font-medium text-gray-700">
               Email
             </label>
             <input type="email" id="email" ref={email} name="email" className=" mt-1 p-2 w-full border rounded-md" disabled />
-          </div>
+          </div> */}
 
           <div>
             <label htmlFor="phone1" className="block text-sm font-medium text-gray-700">

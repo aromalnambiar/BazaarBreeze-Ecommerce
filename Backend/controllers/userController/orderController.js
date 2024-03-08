@@ -37,69 +37,132 @@ const showOrders = async (req, res) => {
 };
 
 
-const addOrder  = async (req, res) => {
-    try {
-        console.log("Inside addOrder1");
-        const {
-            orderedItems,
-            paymentStatus,
-            deliveryDate,
-            offers,
-            payment,
-            shippingAddress,
-            orderDate,
-            coupons,
-            totalAmount,
-            paymentMethod,
-        } = req.body;
+// const addOrder  = async (req, res) => {
+//     try {
+//         console.log("Inside addOrder1");
+//         const {
+//             orderedItems,
+//             paymentStatus,
+//             deliveryDate,
+//             offers,
+//             payment,
+//             shippingAddress,
+//             orderDate,
+//             coupons,
+//             totalAmount,
+//             paymentMethod,
+//         } = req.body;
 
-        const { userId } = req.user;
+//         const { userId } = req.user;
 
 
-        const validatedCoupons = coupons ? mongoose.Types.ObjectId(coupons) : null;
+//         const validatedCoupons = coupons ? mongoose.Types.ObjectId(coupons) : null;
 
-        const newOrder = new Order({
-            orderedItems: orderedItems.map(item => ({
-                ...item,
-                orderStatus:  'Pending',
-                paymentStatus: paymentStatus || 'Pending',
-            })),
-            deliveryDate,
-            offers,
-            payment,
-            shippingAddress,
-            orderDate,
-            coupons: validatedCoupons,
-            totalAmount,
-            paymentMethod,
-            userId,
-        });
+//         const newOrder = new Order({
+//             orderedItems: orderedItems.map(item => ({
+//                 ...item,
+//                 orderStatus:  'Pending',
+//                 paymentStatus: paymentStatus || 'Pending',
+//             })),
+//             deliveryDate,
+//             offers,
+//             payment,
+//             shippingAddress,
+//             orderDate,
+//             coupons: validatedCoupons,
+//             totalAmount,
+//             paymentMethod,
+//             userId,
+//         });
 
-        const savedOrder = await newOrder.save();
-        // console.log("orderedItems : ", orderedItems);
-        for (const orderedItem of orderedItems) {
-            const { product, quantity, cancelStatus } = orderedItem;
-            console.log("product, quantity", product, quantity);
+//         const savedOrder = await newOrder.save();
+//         // console.log("orderedItems : ", orderedItems);
+//         for (const orderedItem of orderedItems) {
+//             const { product, quantity, cancelStatus } = orderedItem;
+//             console.log("product, quantity", product, quantity);
 
-            if (!cancelStatus) { 
-                const productVariant = await ProductVariant.findOne({ _id: product });
+//             if (!cancelStatus) { 
+//                 const productVariant = await ProductVariant.findOne({ _id: product });
 
-                if (productVariant && productVariant.stock >= quantity) {
-                    productVariant.stock -= quantity;
+//                 if (productVariant && productVariant.stock >= quantity) {
+//                     productVariant.stock -= quantity;
 
-                    await productVariant.save();
-                } else {
-                    return res.status(400).json({ message: `Not enough stock for product with ID ${product}` });
-                }
-            }
-        }
+//                     await productVariant.save();
+//                 } else {
+//                     return res.status(400).json({ message: `Not enough stock for product with ID ${product}` });
+//                 }
+//             }
+//         }
 
-        res.status(201).json({ message: 'Order added successfully', order: savedOrder });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ message: 'Internal Server Error' });
-    }
+//         res.status(201).json({ message: 'Order added successfully', order: savedOrder });
+//     } catch (error) {
+//         console.error(error);
+//         res.status(500).json({ message: 'Internal Server Error' });
+//     }
+// };
+
+const addOrder = async (req, res) => {
+  try {
+      const {
+          orderedItems,
+          paymentStatus,
+          offers,
+          payment,
+          shippingAddress,
+          coupons,
+          totalAmount,
+          paymentMethod,
+      } = req.body;
+
+      const { userId } = req.user;
+
+      const validatedCoupons = coupons ? mongoose.Types.ObjectId(coupons) : null;
+
+      // Calculate delivery date as current date plus 5 days
+      const deliveryDate = new Date();
+      deliveryDate.setDate(deliveryDate.getDate() + 5);
+
+      const newOrder = new Order({
+          orderedItems: orderedItems.map(item => ({
+              ...item,
+              orderStatus: 'Pending',
+              paymentStatus: paymentStatus || 'Pending',
+          })),
+          deliveryDate,
+          offers,
+          payment,
+          shippingAddress,
+          coupons: validatedCoupons,
+          totalAmount,
+          paymentMethod,
+          userId,
+      });
+
+      const savedOrder = await newOrder.save();
+
+      // Update product stock
+      for (const orderedItem of orderedItems) {
+          const { product, quantity, cancelStatus } = orderedItem;
+
+          if (!cancelStatus) {
+              const productVariant = await ProductVariant.findOne({ _id: product });
+
+              if (productVariant && productVariant.stock >= quantity) {
+                  productVariant.stock -= quantity;
+                  await productVariant.save();
+              } else {
+                  return res.status(400).json({ message: `Not enough stock for product with ID ${product}` });
+              }
+          }
+      }
+
+      res.status(201).json({ message: 'Order added successfully', order: savedOrder });
+  } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: 'Internal Server Error' });
+  }
 };
+
 
 const showOrder=async(req,res)=>{
   try {

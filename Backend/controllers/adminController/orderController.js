@@ -720,6 +720,30 @@ const getMonthlySalesArray = async (req, res) => {
   //   }
   // };
   
+  const getOrderDetails = async (req, res) => {
+    try {
+        const orderId = req.params.orderId; // Assuming you have the order ID in the dynamic parameter
+
+        // Find the order by ID and populate the necessary fields
+        const order = await Order.findById(orderId)
+            .populate('userId', 'email username') // Populate user information (email and username)
+            .populate({
+                path: 'orderedItems.product',
+                model: 'ProductVariant',
+                select: 'productId stock regularPrice color variantName salePrice regularPrice images specification', // Select the fields you want
+            });
+
+        if (!order) {
+            return res.status(404).json({ message: 'Order not found' });
+        }
+        console.log("order : ",order);
+        res.status(200).json({ order });
+    } catch (error) {
+        console.error('Error fetching order details:', error);
+        res.status(500).json({ message: 'Internal Server Error' });
+    }
+};
+
 
   const getYearlySales=async (req, res) => {
     try {
@@ -761,5 +785,6 @@ module.exports={
     getBestSellingBrands,
     getMonthlySales,
     getMonthlySalesArray,
-    getYearlySales
+    getYearlySales,
+    getOrderDetails
 }

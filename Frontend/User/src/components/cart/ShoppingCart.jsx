@@ -157,17 +157,17 @@ function ShoppingCart() {
     setCouponCode("");
     setCouponStatus("");
   };
-  const calculateDeductedAmount = (salePriceAmt, offer) => {
-    // console.log("calculate : ", offer);
-    // console.log("salePriceAmnt : ", salePriceAmt);
-    if (offer) {
-      const deductedAmount = offer.discountType === "Percentage" ? (salePriceAmt * offer.discountValue) / 100 : offer.discountValue;
-      // console.log("dedcuted amnt : ", deductedAmount);
-      return parseInt(deductedAmount);
-    } else {
-      return 0;
-    }
-  };
+  // const calculateDeductedAmount = (salePriceAmt, offer) => {
+  //   // console.log("calculate : ", offer);
+  //   // console.log("salePriceAmnt : ", salePriceAmt);
+  //   if (offer) {
+  //     const deductedAmount = offer.discountType === "Percentage" ? (salePriceAmt * offer.discountValue) / 100 : offer.discountValue;
+  //     // console.log("dedcuted amnt : ", deductedAmount);
+  //     return parseInt(deductedAmount);
+  //   } else {
+  //     return 0;
+  //   }
+  // };
 
   // console.log("couponCode : ", couponCode);
   console.log("couponeId : ", couponId);
@@ -202,9 +202,9 @@ function ShoppingCart() {
                           <th className="p-2 whitespace-nowrap">
                             <div className="font-semibold text-center">PRICE</div>
                           </th>
-                          <th className="p-2 whitespace-nowrap">
+                          {/* <th className="p-2 whitespace-nowrap">
                             <div className="font-semibold text-center">DISCOUNT</div>
-                          </th>
+                          </th> */}
                           <th className="p-2 whitespace-nowrap">
                             <div className="font-semibold text-center">TOTAL</div>
                           </th>
@@ -242,7 +242,7 @@ function ShoppingCart() {
                             <td className="p-2 whitespace-nowrap">
                               <div className="text-center font-medium ">₹{item?.productVariantId?.salePrice}</div>
                             </td>
-                            <td className="p-2 whitespace-nowrap">
+                            {/* <td className="p-2 whitespace-nowrap">
                               <div className="text-center font-medium text-green-500">
                                 {item?.productVariantId?.offer && (
                                   <>
@@ -252,7 +252,7 @@ function ShoppingCart() {
                                   </>
                                 )}
                               </div>
-                            </td>
+                            </td> */}
                             <td className="p-2 whitespace-nowrap">
                               <div className="text-center font-medium text-green-500">₹{item?.productVariantId?.salePrice * item?.quantity}</div>
                             </td>

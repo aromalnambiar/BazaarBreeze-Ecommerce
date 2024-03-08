@@ -184,7 +184,7 @@ function Product() {
   return (
     <>
       <div className="grid grid-cols-12 mt-8 text-sm max-w-[940px]  gap-8">
-        <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6 h-max border p-4 rounded-md ">
+        <div className="col-span-10 overflow-hidden col-start-2 col-end-12 lg:col-span-6 h-max border p-4 rounded-md ">
           <div className="border rounded-lg max-w-[350px] h-[310px] p-10 mx-auto">
             <div style={{ height: "210px", overflow: "hidden" }}>
               <InnerImageZoom src={`${BASE_URL}/uploads/${image}` || photo} alt="Product Image" zoomSrc={`${BASE_URL}/uploads/${image}` || photo} zoomScale={1.5} zoomType="hover" width={350} height={210} enlargeable={true} />

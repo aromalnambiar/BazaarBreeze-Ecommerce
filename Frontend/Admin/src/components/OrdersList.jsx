@@ -136,8 +136,10 @@ function OrdersList() {
                   {orders.map((item, idx) => (
                     <React.Fragment key={item?.orderId}>
                       <tr className="text-[#697a8d] text-sm border hover:bg-slate-50 " onClick={() => toggleDropdown(item?.orderId)} style={{ cursor: "pointer" }}>
-                        {/* {console.log("item : ", item)} */}
-                        <td className="py-2 px-4 border-b">{item?.username}</td>
+                        {/* {console.log("item : ", item.orderId)} */}
+                        <td onClick={() => navigate("/adminpanel/order/view", { state: { orderId: item?.orderId } })} className="py-2 px-4 border-b">
+                          {item?.username}
+                        </td>
                         <td className="py-2 px-4 border-b">{item?.orderDate ? new Date(item?.orderDate).toLocaleDateString() : ""}</td>
                         <td className="py-2 px-4 border-b text-green-500">{item.paymentMethod}</td>
                         <td className="py-2 px-4 border-b">{item?.totalAmount || "0"}</td>

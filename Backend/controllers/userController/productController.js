@@ -126,6 +126,7 @@ const listProductsByCategory = async (req, res) => {
   try {
     const { categoryName, page = 1, pageSize = 15 } = req.params;
     const skip = (page - 1) * pageSize;
+    
 
     if (!categoryName) {
       return res.status(400).json({ error: 'Category name is required' });
@@ -355,6 +356,7 @@ const listProductsByCategory = async (req, res) => {
   }
 
   const searchProducts=async (req, res)=> {
+    
     const { query } = req.query;
     console.log("query : ",req.query);
     try {

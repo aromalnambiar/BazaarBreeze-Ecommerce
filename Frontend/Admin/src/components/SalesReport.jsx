@@ -99,6 +99,7 @@ function SalesReport() {
   // console.log("endDate : ", endDate.format("YYYY-MM-DD"));
 
   console.log("Reports : ", reports);
+  console.log("Reports data : ", reports.map((obj, index) => [index + 1, ...Object.values(obj)]));
 
   return (
     <section className="flex flex-col justify-center antialiased bg-gray-100 text-gray-600  p-4">
