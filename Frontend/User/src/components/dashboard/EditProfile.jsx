@@ -57,12 +57,42 @@ function EditProfile() {
   };
 
   const handleSubmit = () => {
+    // Get form data
+    const ageValue = age.current.value;
+    const genderValue = genderSelect.current.value;
+    const usernameValue = username.current.value;
+
+    // Validation checks
+    if (usernameValue.trim() === "" || usernameValue.length > 15) {
+      // Handle invalid username
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Username must not be empty or exceed 15 characters!",
+      });
+      return;
+    }
+
+    const numericAge = Number(ageValue);
+    // console.log("age1 : ", numericAge);
+    if (isNaN(numericAge) || numericAge <= 0 || numericAge > 100) {
+      // console.log("age2 : ", numericAge);
+      // Handle invalid age
+      Swal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "Invalid age! Age must be a number between 0 and 100.",
+      });
+      return;
+    }
+
+    // If validation passes, proceed with the API call
     const formData = new FormData();
     formData.append("userid", userId);
-    formData.append("age", age.current.value);
-    formData.append("gender", genderSelect.current.value);
-    formData.append("username", username.current.value);
-    console.log("gender : ", genderSelect.current.value);
+    formData.append("age", ageValue);
+    formData.append("gender", genderValue);
+    formData.append("username", usernameValue);
+    console.log("gender : ", genderValue);
     formData.append("image", profileImage);
     console.log("image : ", profileImage);
 
@@ -91,7 +121,7 @@ function EditProfile() {
           title: "Profile edited successfully",
         });
         console.log("res : ", res);
-        setIsEditing(false); // Turn off edit mode after successful submission
+        setIsEditing(false);
       })
       .catch((err) => {
         console.error("Error updating user data", err);

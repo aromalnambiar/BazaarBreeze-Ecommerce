@@ -12,7 +12,6 @@ function AddAddress({ setIsEdit, addressDetails }) {
   // const email = useRef();
   const phone1 = useRef();
   const phone2 = useRef();
-  const [error, setError] = useState("");
 
   useEffect(() => {
     fullName.current.value = addressDetails.fullName;
@@ -20,7 +19,6 @@ function AddAddress({ setIsEdit, addressDetails }) {
     street.current.value = addressDetails.street;
     state.current.value = addressDetails.state;
     pincode.current.value = addressDetails.pincode;
-    // email.current.value = addressDetails.email;
     phone1.current.value = addressDetails.phone1;
     phone2.current.value = addressDetails.phone2;
     window.scrollTo(0, 0);
@@ -28,35 +26,40 @@ function AddAddress({ setIsEdit, addressDetails }) {
 
   console.log("addressDetails : ", addressDetails);
 
-  const validateInputs = () => {
-    const fullNameValue = fullName.current.value.trim();
-    const addressValue = address.current.value.trim();
-    const stateValue = state.current.value.trim();
-    const pincodeValue = pincode.current.value.trim();
-    // const emailValue = email.current.value.trim();
-    const phone1Value = phone1.current.value.trim();
-
-    if (!fullNameValue || !addressValue || !stateValue || !pincodeValue || !phone1Value) {
-      setErrorMessage("Please fill in all required fields.");
-      return false;
-    }
-
-    // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // if (!emailRegex.test(emailValue)) {
-    //   setErrorMessage("Please enter a valid email address.");
-    //   return false;
-    // }
-
-    const pincodeRegex = /^\d{6}$/;
-    if (!pincodeRegex.test(pincodeValue)) {
-      setErrorMessage("Please enter a valid 6-digit pincode.");
-      return false;
-    }
-
-    return true;
-  };
-
+  console.count("render : ");
   const handleSubmit = () => {
+    const validateInputs = () => {
+      const fullNameValue = fullName.current.value.trim();
+      const addressValue = address.current.value.trim();
+      const stateValue = state.current.value.trim();
+      const pincodeValue = pincode.current.value.trim();
+      const phone1Value = phone1.current.value.trim();
+
+      if (!fullNameValue || !addressValue || !stateValue || !pincodeValue || !phone1Value) {
+        alert("Validation Error: All fields are required!");
+        return false;
+      }
+
+      const pincodeRegex = /^\d{6}$/;
+      const phoneRegex = /^\d{10}$/;
+
+      if (!pincodeRegex.test(pincodeValue)) {
+        alert("Validation Error: Invalid Pincode! Pincode must be 6 digits.");
+        return false;
+      }
+
+      if (!phoneRegex.test(phone1Value)) {
+        alert("Validation Error: Invalid Phone Number! Phone number must be 10 digits.");
+        return false;
+      }
+
+      return true;
+    };
+
+    if (!validateInputs()) {
+      return;
+    }
+
     axios
       .put(
         `${BASE_URL}/user/address`,
@@ -77,18 +80,19 @@ function AddAddress({ setIsEdit, addressDetails }) {
         }
       )
       .then((res) => {
-        console.log("res : ", res.data.message);
-        alert(res.data.message);
+        alert("Success: " + res.data.message);
         setIsEdit((prev) => !prev);
       })
       .catch((err) => {
         console.log("err : ", err);
+        alert("Oops... Something went wrong!");
       });
   };
+
   const handleDelete = async () => {
     const confirmed = await Swal.fire({
       title: "Are you sure?",
-      text: "Do you want to delete this address !",
+      text: "Do you want to delete this address!",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#3085d6",
@@ -104,27 +108,13 @@ function AddAddress({ setIsEdit, addressDetails }) {
           },
         })
         .then(async (res) => {
-          const Toast = Swal.mixin({
-            toast: true,
-            position: "top-end",
-            showConfirmButton: false,
-            timer: 3000,
-            timerProgressBar: true,
-            didOpen: (toast) => {
-              toast.onmouseenter = Swal.stopTimer;
-              toast.onmouseleave = Swal.resumeTimer;
-            },
-          });
-          Toast.fire({
+          Swal.fire({
             icon: "success",
             title: "Deleted successfully",
           });
-          console.log("res : ", res.data.message);
-          // alert(res.data.message);
           setIsEdit((prev) => !prev);
         })
         .catch((err) => {
-          // console.log("err : ", err);
           Swal.fire({
             icon: "error",
             title: "Oops...",
@@ -155,7 +145,7 @@ function AddAddress({ setIsEdit, addressDetails }) {
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                 Address
               </label>
-              <input ref={address} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" required placeholder="Jane" />
+              <input ref={address} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" required placeholder="Jane"/>
             </div>
           </div>
 
@@ -189,12 +179,7 @@ function AddAddress({ setIsEdit, addressDetails }) {
               </label>
               <input ref={pincode} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="number" required placeholder="90210" />
             </div>
-            {/* <div className="w-full mt-6 px-3 mb-6 md:mb-0">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
-                Email
-              </label>
-              <input ref={email} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" required placeholder="Jane" />
-            </div> */}
+
             <div className="w-full md:w-2/4 mt-2 px-3 mb-6 md:mb-0">
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                 Phone1

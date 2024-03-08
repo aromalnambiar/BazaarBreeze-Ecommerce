@@ -34,24 +34,65 @@ const showAddresses = async (req, res) => {
     }
   }
   
+  // const editProfile = async (req, res) => {
+  //   try {
+  //     console.log("editProfile");
+  //     const { username, age, gender } = req.body;
+  //     const {userId}=req.user;
+  //     // console.log("user  : ", req.body);
+  //     console.log("req.file.filename : ",req.file);
+  //     const updatedUser = await User.findByIdAndUpdate(
+  //       { _id: userId },
+  //       { 
+  //         username,
+  //         age,
+  //         gender,
+  //         image:req.file.filename||null 
+  //       },
+  //       { new: true } 
+  //     );
+  //       console.log("updated user : ",updatedUser);
+  //     if (!updatedUser) {
+  //       return res.status(404).json({ message: "User not found" });
+  //     }
+  
+  //     res.status(200).json({ message: "Updated successfully", user: updatedUser });
+  //   } catch (error) {
+  //     console.log(error);
+  //     res.status(500).json({ message: "Server error" });
+  //   }
+  // };
+
   const editProfile = async (req, res) => {
     try {
       console.log("editProfile");
       const { username, age, gender } = req.body;
-      const {userId}=req.user;
-      console.log("user  : ", req.body);
-      console.log("req.file.filename : ",req.file);
+      const { userId } = req.user;
+      // console.log("user  : ", req.body);
+      console.log("req.file.filename : ", req?.file);
+  
+      // Fetch default values from the database (assuming you have a model named DefaultProfile)
+      const defaultProfile = await User.findById(userId);
+  
+      // Use default values if not provided in the request
+      const updatedUsername = username || (defaultProfile && defaultProfile.username) ;
+      const updatedAge = age || (defaultProfile && defaultProfile.age);
+      const updatedGender = gender || (defaultProfile && defaultProfile.gender) ;
+      const updatedImage = req?.file?.filename || (defaultProfile&&defaultProfile.image) ;
+  
       const updatedUser = await User.findByIdAndUpdate(
         { _id: userId },
-        { 
-          username,
-          age,
-          gender,
-          image:req.file.filename||null 
+        {
+          username: updatedUsername,
+          age: updatedAge,
+          gender: updatedGender,
+          image: updatedImage || null,
         },
-        { new: true } 
+        { new: true }
       );
-        console.log("updated user : ",updatedUser);
+  
+      console.log("updated user : ", updatedUser);
+  
       if (!updatedUser) {
         return res.status(404).json({ message: "User not found" });
       }
@@ -62,6 +103,7 @@ const showAddresses = async (req, res) => {
       res.status(500).json({ message: "Server error" });
     }
   };
+  
   const addAddress=async(req,res)=>{
     try {
       const {fullName,address,state,street,phone1,pincode}=req.body;

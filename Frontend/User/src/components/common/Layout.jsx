@@ -8,7 +8,7 @@ const Layout = ({ children }) => {
   return (
     <div>
       <Header />
-      <BreadCrump/>
+      {/* <BreadCrump/> */}
       <div>
         {children}
       </div>
