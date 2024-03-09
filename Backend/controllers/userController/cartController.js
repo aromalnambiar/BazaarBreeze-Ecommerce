@@ -16,13 +16,22 @@ const Offer=require('../../models/Offer');
       if (!productVariant) {
         return res.status(404).json({ message: 'Product variant not found' });
       }
-  
-      if (quantity > productVariant.stock) {
-        return res.status(400).json({ message: 'Insufficient stock available' });
+      console.log("quantity : ",quantity);
+      console.log("productVariant Stock : ",productVariant.stock);
+      const uCart = await Cart.findOne({
+        user: userId,
+        'product.productVariantId': productVariantId,
+      });
+      console.log("user cart : ",uCart);
+      if(uCart.product.length>0){
+        if ( uCart.product[0].quantity+1> productVariant.stock) {
+          return res.status(400).json({ message: 'Insufficient stock available' });
+        }
       }
+      
+      const userCart = await Cart.findOne({ user:userId });
   
        const maxQuantityPerPerson = 5; // Set your maximum quantity per person
-      const userCart = await Cart.findOne({ user:userId });
       // console.log("userCart : ",userCart);
   
       if (userCart) {
