@@ -34,7 +34,7 @@ try {
         console.error(error);
         reject(error);
       } else {
-        console.log(data);
+        console.log(data); 
         resolve();
       }
     });
