@@ -127,16 +127,16 @@ function Wishlist() {
                     ) : (
                       wishList.map((item, idx) => (
                         <tr key={item?.productVariant?._id}>
-                          <td className="flex items-center py-8 ps-2 sm:px-6 whitespace-nowrap">
+                          <td className="flex items-center min-w-max py-8 ps-2 sm:px-6 whitespace-nowrap">
                             <img onClick={() => handleClickImage(item.productVariant.productId)} src={`${BASE_URL}/uploads/${item?.productVariant?.images[0]}`} className="w-10 h-10 cursor-pointer object-contain mr-3" alt="" />
                             <div>
                               <span className="block text-gray-700 text-sm font-medium">{item?.productVariant?.variantName}</span>
                             </div>
                           </td>
-                          <td className="p-2 whitespace-nowrap">
+                          <td className="p-2 min-w-max whitespace-nowrap">
                             <div className="text-left font-medium ">{item?.productVariant?.salePrice}</div>
                           </td>
-                          <td className="p-2 whitespace-nowrap">
+                          <td className="p-2 min-w-max whitespace-nowrap">
                             <div className={`text-xs ${item?.productVariant?.stock == 0 ? "text-red-500" : "text-green-500"} `}>{item?.productVariant?.stock == 0 ? "Out of stock" : "In stock"}</div>
                           </td>
                           <td>

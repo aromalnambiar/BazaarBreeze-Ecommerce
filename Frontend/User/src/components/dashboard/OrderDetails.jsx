@@ -252,6 +252,8 @@ function OrderDetails() {
     "joined edit : ",
     joinedArray.map((obj, index) => [index + 1, { NAME: obj.productDetails.variantName, PRICE: obj.price, QUANTITY: obj.quantity, TOTAL: obj.quantity * obj.price }])
   );
+
+  console.log("shipping address : ", order?.shippingAddress);
   return (
     <>
       <h3 className="text-center my-10 font-bold text-gray-600">Products</h3>
@@ -334,7 +336,7 @@ function OrderDetails() {
 
           {paymentStatus !== "Failed" && (
             <div className="ml-4 p-2 rounded-md">
-              Download invoice : <PdfDownload jsonData={joinedArray} fileName={"invoice"} />
+              Download invoice : <PdfDownload jsonData={joinedArray} fileName={"invoice"} shippingAddress={order?.shippingAddress} orderDate={order?.orderDate} totalAmount={order?.totalAmount} />
             </div>
           )}
 

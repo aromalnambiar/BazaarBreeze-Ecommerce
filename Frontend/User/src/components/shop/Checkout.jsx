@@ -221,7 +221,7 @@ function Checkout() {
   return (
     <>
       <div className="grid grid-cols-12 py-10 gap-4 my-10">
-        <div className="flex border-t flex-col justify-center lg:flex-nowrap gap-4 lg:gap-0 col-span-9 ">
+        <div className="flex border-t flex-col justify-center lg:flex-nowrap gap-4 lg:gap-0 col-span-12 md:col-span-9 ">
           <form className="w-full  p-4 shadow-md ">
             <h3 className="border-b pb-2 mb-2">Shipping address</h3>
             <div className="flex flex-wrap -mx-3 mb-2">
@@ -294,7 +294,7 @@ function Checkout() {
             </div>
           </div>
         </div>
-        <div className=" col-span-3">
+        <div className="col-span-12 md:col-span-3">
           <div className="border p-2 text-sm">
             {cartItems.map((item) => {
               return (
