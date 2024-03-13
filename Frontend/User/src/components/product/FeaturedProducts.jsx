@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import { BASE_URL } from "../../../config";
 import { useNavigate } from "react-router-dom";
 import { IoIosHeartEmpty, IoMdHeart } from "react-icons/io";
 import Skeleton from "react-loading-skeleton";
+import axiosInstance from "../../utils/axiosConfig";
 
 function FeaturedProducts() {
   const [products, setProducts] = useState([]);
@@ -14,13 +15,7 @@ function FeaturedProducts() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/user/products/SmartPhone`, {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        });
-
-        // Store wishlist status locally
+        const res = await axiosInstance.get(`/user/products/SmartPhone`);
         const wishlistStatusMap = {};
         res.data.products.forEach((item) => {
           wishlistStatusMap[item.productVariantId] = item.isWishlist;
@@ -44,17 +39,8 @@ function FeaturedProducts() {
 
   const handleAddToWishlist = async (productVariant) => {
     try {
-      await axios.post(
-        `${BASE_URL}/user/wishlist`,
-        { productVariant },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await axiosInstance.post(`/user/wishlist`, { productVariant });
 
-      // Update wishlist status locally
       setWishlistStatus((prevStatus) => ({
         ...prevStatus,
         [productVariant]: true,
@@ -66,17 +52,8 @@ function FeaturedProducts() {
 
   const handleRemoveFromWishlist = async (productVariant) => {
     try {
-      await axios.put(
-        `${BASE_URL}/user/wishlist`,
-        { productVariant },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await axiosInstance.put(`/user/wishlist`, { productVariant });
 
-      // Update wishlist status locally
       setWishlistStatus((prevStatus) => ({
         ...prevStatus,
         [productVariant]: false,

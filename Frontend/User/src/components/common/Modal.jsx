@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
+
 import { BASE_URL } from "../../../config";
+import axiosInstance from "../../utils/axiosConfig";
 
 const Modal = ({ isOpen, onClose, children }) => {
   const [coupons, setCoupons] = useState([]);
@@ -25,7 +26,7 @@ const Modal = ({ isOpen, onClose, children }) => {
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const result = await axios.get(`${BASE_URL}/user/coupon`);
+        const result = await axiosInstance.get(`/user/coupon`);
         console.log("result : ", result.data);
         setCoupons(result.data);
       } catch (error) {

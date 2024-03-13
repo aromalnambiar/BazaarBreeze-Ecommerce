@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import Modal from "../common/Modal";
 import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
 import { BASE_URL } from "../../../config";
+import axiosInstance from "../../utils/axiosConfig";
 
 function ShoppingCart() {
   const [cartItems, setCartItems] = useState([]);
@@ -30,12 +30,8 @@ function ShoppingCart() {
 
   //cart items fetching
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/user/cart`, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      })
+    axiosInstance
+      .get(`/user/cart`)
       .then((res) => {
         // console.log("hello cart : ", res?.data?.cart);
         setCartItems(res.data.cart.product);
@@ -62,19 +58,11 @@ function ShoppingCart() {
 
   const increaseQuantity = (id, index) => {
     if (quantity[index] < 5) {
-      axios
-        .post(
-          `${BASE_URL}/user/cart`,
-          {
-            quantity: 1,
-            productVariantId: id,
-          },
-          {
-            headers: {
-              Authorization: `${localStorage.getItem("token")}`,
-            },
-          }
-        )
+      axiosInstance
+        .post(`/user/cart`, {
+          quantity: 1,
+          productVariantId: id,
+        })
         .then((res) => {
           // console.log("response : ", res);
           setIsUpdated(!isUpdated);
@@ -87,19 +75,11 @@ function ShoppingCart() {
 
   const decreaseQuantity = (id, index) => {
     if (quantity[index] > 1) {
-      axios
-        .post(
-          `${BASE_URL}/user/cart`,
-          {
-            quantity: -1,
-            productVariantId: id,
-          },
-          {
-            headers: {
-              Authorization: `${localStorage.getItem("token")}`,
-            },
-          }
-        )
+      axiosInstance
+        .post(`/user/cart`, {
+          quantity: -1,
+          productVariantId: id,
+        })
         .then((res) => {
           setIsUpdated(!isUpdated);
         })
@@ -111,12 +91,8 @@ function ShoppingCart() {
 
   const deleteFromCart = (id) => {
     if (confirm("Are you sure ?")) {
-      axios
-        .delete(`${BASE_URL}/user/cart?productVariantId=${id}`, {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        })
+      axiosInstance
+        .delete(`/user/cart?productVariantId=${id}`)
         .then((res) => {
           // console.log("response: ", res);
           setIsUpdated(!isUpdated);
@@ -129,7 +105,7 @@ function ShoppingCart() {
 
   const handleCoupon = async () => {
     try {
-      const result = await axios.post(`${BASE_URL}/user/coupon`, {
+      const result = await axiosInstance.post(`/user/coupon`, {
         couponCode,
       });
       console.log("result of handleCoupon : ", result.data);

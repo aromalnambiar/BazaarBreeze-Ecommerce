@@ -1,13 +1,12 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
-import { BASE_URL } from "../../../config";
+import axiosInstance from "../../utils/axiosConfig";
 
 function Offers() {
   const [offers, setOffers] = useState([]);
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const result = await axios.get(`${BASE_URL}/user/offers`);
+        const result = await axiosInstance.get(`/user/offers`);
         console.log("result : ", result.data.offers);
         setOffers(result.data.offers);
       } catch (error) {

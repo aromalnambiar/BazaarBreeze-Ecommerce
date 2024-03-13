@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { BASE_URL } from "../../../config";
+import axiosInstance from "../../utils/axiosConfig";
 
 function Banner() {
   const [banners, setBanners] = useState([]);
@@ -11,7 +12,7 @@ function Banner() {
   useEffect(() => {
     const fetchDetails = async () => {
       try {
-        const result = await axios.get(`${BASE_URL}/user/banner`);
+        const result = await axiosInstance.get(`/user/banner`);
         setBanners(result.data);
         // console.log("result : ", result.data);
       } catch (error) {

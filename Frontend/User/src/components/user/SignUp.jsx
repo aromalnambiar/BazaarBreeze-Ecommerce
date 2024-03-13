@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../config.js";
-import axios from "axios";
+
+import axiosInstance from "../../utils/axiosConfig.js";
 import EmailVerification from "./EmailVerification.jsx";
 
 function SignUp() {
@@ -40,8 +41,8 @@ function SignUp() {
       return;
     }
 
-    const result = axios
-      .post(`${BASE_URL}/user/registration`, {
+    const result = axiosInstance
+      .post(`/user/registration`, {
         email: emailValue,
       })
       .then((response) => {

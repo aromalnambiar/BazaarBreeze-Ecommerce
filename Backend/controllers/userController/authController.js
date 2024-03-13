@@ -158,7 +158,7 @@ try {
   console.log(error);
   res.status(500).json({ message: "Failed to send OTP email" });
 }
-};
+}; 
 
 const loginUser=async(req,res)=>{
 try {

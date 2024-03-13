@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import image from "../../assets/images/Image.png";
-import axios from "axios";
+
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../../config";
+import axiosInstance from "../../utils/axiosConfig";
 
 function ShopWithCategories() {
   const [categories, setCategories] = useState([]);
@@ -10,7 +11,7 @@ function ShopWithCategories() {
 
   useEffect(() => {
     const fetchDetails = async () => {
-      const result = await axios.get(`${BASE_URL}/user/categories`);
+      const result = await axiosInstance.get(`/user/categories`);
       // console.log("result : ", result.data.categories);
       setCategories(result.data.categories);
     };

@@ -1,6 +1,7 @@
 import { useRef } from "react";
-import axios from "axios";
+
 import { BASE_URL } from "../../../config";
+import axiosInstance from "../../utils/axiosConfig";
 
 function AddAddress({ setIsToggle }) {
   const fullName = useRef();
@@ -8,12 +9,8 @@ function AddAddress({ setIsToggle }) {
   const street = useRef();
   const state = useRef();
   const pincode = useRef();
-  const email = useRef();
   const phone1 = useRef();
   const phone2 = useRef();
-  const userId = localStorage.getItem("userId");
-  const token = localStorage.getItem("token");
-  console.log("TOKEN : ", token);
 
   const handleSubmit = () => {
     const data = {
@@ -27,12 +24,8 @@ function AddAddress({ setIsToggle }) {
       phone2: phone2.current.value,
     };
 
-    axios
-      .post(`${BASE_URL}/user/address`, data, {
-        headers: {
-          Authorization: localStorage.getItem("token"),
-        },
-      })
+    axiosInstance
+      .post(`/user/address`, data)
       .then((res) => {
         console.log("res : ", res);
         setIsToggle((prev) => !prev);

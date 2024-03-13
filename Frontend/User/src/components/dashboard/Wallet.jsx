@@ -1,20 +1,16 @@
 import { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { BASE_URL } from "../../../config";
+import axiosInstance from "../../utils/axiosConfig";
 
 function Wallet() {
   const navigate = useNavigate("");
   const [tableItems, setTableItems] = useState([]);
   const [balance, setBalance] = useState(null);
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/user/wallet`, {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      })
+    axiosInstance
+      .get(`/user/wallet`)
       .then((res) => {
         console.log("result of orders : ", res.data);
         setBalance(res.data.balance);
@@ -29,7 +25,7 @@ function Wallet() {
     <div className="max-w-screen-xl mx-auto px-4 md:px-8">
       <div className="flex justify-between my-6 px-4 font-bold text-green-500">
         <h1>Current Balance</h1>
-        <h1>{balance||0}</h1>
+        <h1>{balance || 0}</h1>
       </div>
       <div className=" shadow-sm border rounded-lg custom-scroll overflow-x-auto">
         <table className="w-full table-auto text-sm text-left ">

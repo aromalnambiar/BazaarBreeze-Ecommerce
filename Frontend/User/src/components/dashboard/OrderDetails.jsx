@@ -6,9 +6,10 @@ import Timeline from "../order/Timeline";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { BASE_URL } from "../../../config";
-import axios from "axios";
+
 import Swal from "sweetalert2";
 import PdfDownload from "../dashboard/PdfDownload";
+import axiosInstance from "../../utils/axiosConfig";
 
 function OrderDetails() {
   const [items, setItems] = useState([]);
@@ -23,11 +24,7 @@ function OrderDetails() {
   //order fetching
   useEffect(() => {
     const fetchData = async () => {
-      const result = await axios.get(`${BASE_URL}/user/orders/${orderId}`, {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      });
+      const result = await axiosInstance.get(`/user/orders/${orderId}`);
       console.log("result1 : ", result?.data?.order);
       setOrder(result?.data?.order);
       setPaymentStatus(result?.data?.order?.orderedItems[0].paymentStatus);
@@ -45,12 +42,9 @@ function OrderDetails() {
 
         const variantIds = order.orderedItems.map((item) => item.product);
 
-        const result = await axios.get(`${BASE_URL}/user/products/variants`, {
+        const result = await axiosInstance.get(`/user/products/variants`, {
           params: {
             variantIds: variantIds.join(","),
-          },
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
           },
         });
 
@@ -98,21 +92,11 @@ function OrderDetails() {
         confirmButtonText: "Yes, Submit!",
       });
       if (confirmed.isConfirmed) {
-        const result = await axios.patch(
-          `${BASE_URL}/user/order/status`,
-          {
-            orderId: order?._id,
-            orderedItemId,
-            orderStatus,
-          },
-          {
-            method: "PATCH", // Explicitly specify the HTTP method
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        const result = await axiosInstance.patch(`/user/order/status`, {
+          orderId: order?._id,
+          orderedItemId,
+          orderStatus,
+        });
 
         setIsToggle((prev) => !prev);
 
@@ -140,7 +124,7 @@ function OrderDetails() {
 
   const downloadInvoice = async () => {
     try {
-      const response = await axios.get(`${BASE_URL}/user/generateinvoice?id=${order._id}`, {
+      const response = await axiosInstance.get(`/user/generateinvoice?id=${order._id}`, {
         responseType: "blob",
       });
 
@@ -177,18 +161,10 @@ function OrderDetails() {
 
   const changePaymentStatus = async () => {
     try {
-      const response = await axios.patch(
-        `${BASE_URL}/user/order/paymentstatus`,
-        {
-          orderId: order?._id,
-          paymentStatus: "Completed",
-        },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await axiosInstance.patch(`/user/order/paymentstatus`, {
+        orderId: order?._id,
+        paymentStatus: "Completed",
+      });
       console.log("Payment Status : Success");
       setIsToggle((prev) => !prev);
     } catch (error) {
@@ -206,8 +182,8 @@ function OrderDetails() {
       order_id: data.id,
       handler: async (response) => {
         try {
-          const verifyUrl = `${BASE_URL}/user/orders/razorpay/verify`;
-          const { data } = await axios.post(verifyUrl, response);
+          const verifyUrl = `/user/orders/razorpay/verify`;
+          const { data } = await axiosInstance.post(verifyUrl, response);
           console.log("razorPay init : ", data);
           changePaymentStatus();
         } catch (error) {
@@ -225,8 +201,8 @@ function OrderDetails() {
   const handlePayment = async () => {
     try {
       console.log("HandlePayment");
-      const orderUrl = `${BASE_URL}/user/orders/razorpay`;
-      const { data } = await axios.post(orderUrl, { amount: order?.totalAmount });
+      const orderUrl = `/user/orders/razorpay`;
+      const { data } = await axiosInstance.post(orderUrl, { amount: order?.totalAmount });
       console.log(" razorPay : ", data);
       initPayment(data.data);
     } catch (error) {

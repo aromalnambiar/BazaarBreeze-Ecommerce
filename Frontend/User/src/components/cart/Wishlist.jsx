@@ -1,10 +1,10 @@
 import React from "react";
 import { BASE_URL } from "../../../config";
-import axios from "axios";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaCartPlus } from "react-icons/fa";
 import Swal from "sweetalert2";
+import axiosInstance from "../../utils/axiosConfig";
 
 function Wishlist() {
   const location = useLocation();
@@ -17,11 +17,7 @@ function Wishlist() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get(`${BASE_URL}/user/wishlist`, {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        });
+        const result = await axiosInstance.get(`/user/wishlist`);
         console.log("wishlist : ", result.data.wishlistItems);
         setWishList(result.data.wishlistItems);
       } catch (error) {
@@ -48,15 +44,7 @@ function Wishlist() {
       });
 
       if (confirmed.isConfirmed) {
-        await axios.put(
-          `${BASE_URL}/user/wishlist`,
-          { productVariant },
-          {
-            headers: {
-              Authorization: `${localStorage.getItem("token")}`,
-            },
-          }
-        );
+        await axiosInstance.put(`/user/wishlist`, { productVariant });
         setIsUpdated((prev) => !prev);
       }
     } catch (error) {
@@ -71,18 +59,10 @@ function Wishlist() {
   const handleAddToCart = async (id) => {
     try {
       // console.log("ID : ", id);
-      const response = await axios.post(
-        `${BASE_URL}/user/cart`,
-        {
-          productVariantId: id,
-          quantity: 1,
-        },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await axiosInstance.post(`/user/cart`, {
+        productVariantId: id,
+        quantity: 1,
+      });
       setIsUpdated((prev) => !prev);
     } catch (error) {
       console.log(error.response.data.message);

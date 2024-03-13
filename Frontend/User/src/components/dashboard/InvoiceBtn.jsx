@@ -1,7 +1,6 @@
 // client/src/components/InvoiceGenerator.js
 
 import React, { useState } from "react";
-import axios from "axios";
 import { BASE_URL } from "../../../config";
 
 // React component

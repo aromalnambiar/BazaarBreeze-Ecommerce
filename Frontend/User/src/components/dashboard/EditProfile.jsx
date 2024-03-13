@@ -4,9 +4,9 @@ import { FaUserPlus } from "react-icons/fa6";
 import { FaCircleUser } from "react-icons/fa6";
 import user from "../../assets/icons/user.png";
 import Swal from "sweetalert2";
-import axios from "axios";
 import { BASE_URL } from "../../../config";
 import { Link } from "react-router-dom";
+import axiosInstance from "../../utils/axiosConfig";
 
 function EditProfile() {
   const [isEditing, setIsEditing] = useState(false);
@@ -19,12 +19,8 @@ function EditProfile() {
   const genderSelect = useRef();
   const userId = localStorage.getItem("userId");
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/user`, {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      })
+    axiosInstance
+      .get(`/user`)
       .then((res) => {
         // console.log("res : ", );
         const user = res.data.user;
@@ -96,11 +92,10 @@ function EditProfile() {
     formData.append("image", profileImage);
     console.log("image : ", profileImage);
 
-    axios
-      .put(`${BASE_URL}/user/profile`, formData, {
+    axiosInstance
+      .put(`/user/profile`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          Authorization: `${localStorage.getItem("token")}`,
         },
       })
       .then((res) => {

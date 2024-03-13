@@ -1,9 +1,7 @@
 import { useState, useEffect } from "react";
 import { FaPlus } from "react-icons/fa6";
 import { useNavigate, useLocation } from "react-router-dom";
-import { BASE_URL } from "../../../config";
-import axios from "axios";
-import Checkout from "../shop/Checkout";
+import axiosInstance from "../../utils/axiosConfig";
 
 function ChooseAddress() {
   const [selectedAddress, setSelectedAddress] = useState({});
@@ -18,12 +16,8 @@ function ChooseAddress() {
   const couponId = data?.couponId;
   console.log("data from the navigate : ", grandTotal);
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/user/address`, {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      })
+    axiosInstance
+      .get(`/user/address`)
       .then((res) => {
         setAddress(res.data.addresses);
         setSelectedAddress(res.data.addresses[0]);

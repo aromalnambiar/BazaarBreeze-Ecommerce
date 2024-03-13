@@ -2,11 +2,12 @@ import React, { useEffect, useState } from "react";
 import { PiRocketLight } from "react-icons/pi";
 import { FaRegNewspaper, FaUserCircle, FaRegCheckSquare } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import { BASE_URL } from "../../../config";
 import profile from "../../assets/icons/user.png";
 import AddAddress from "./AddAddress";
 import EditAddress from "./EditAddress";
+import axiosInstance from "../../utils/axiosConfig";
 
 function AccountInfo({ user, handleEditAccount }) {
   // console.log("user : ", user);
@@ -96,12 +97,8 @@ function UserDetails() {
   const [editAddressDetails, setEditAddressDetails] = useState({});
 
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/user`, {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      })
+    axiosInstance
+      .get(`/user`)
       .then((res) => {
         setUser(res.data.user);
       })
@@ -111,12 +108,8 @@ function UserDetails() {
   }, []);
 
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/user/address`, {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      })
+    axiosInstance
+      .get(`/user/address`)
       .then((res) => {
         setAddress(res.data.addresses);
       })

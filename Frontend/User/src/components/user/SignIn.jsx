@@ -1,9 +1,10 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import { loginSuccess } from "../../redux/reducers/authSlice";
 import { BASE_URL } from "../../../config";
 import { useDispatch } from "react-redux";
+import axiosInstance from "../../utils/axiosConfig";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -27,8 +28,8 @@ function SignIn() {
       return;
     }
 
-    axios
-      .post(`${BASE_URL}/user/login`, {
+    axiosInstance
+      .post(`/user/login`, {
         email: email.current.value,
         password: password.current.value,
       })

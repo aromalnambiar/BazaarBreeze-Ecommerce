@@ -1,8 +1,7 @@
 import { useNavigate, Link } from "react-router-dom";
 import Logo from "../../assets/icons/Logo.png";
-import { BASE_URL } from "../../../../Admin/config";
 import { useState, useEffect, useRef } from "react";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosConfig";
 
 function Header() {
   const navigate = useNavigate();
@@ -15,11 +14,7 @@ function Header() {
   useEffect(() => {
     const handleSearch = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/user/products/search?query=${query}`, {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        });
+        const response = await axiosInstance.get(`/user/products/search?query=${query}`);
         setProducts([...response.data]);
         setShowProducts(true);
       } catch (error) {

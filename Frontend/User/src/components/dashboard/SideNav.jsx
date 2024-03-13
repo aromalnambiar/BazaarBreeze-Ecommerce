@@ -11,9 +11,6 @@ import { TbLogout } from "react-icons/tb";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logout } from "../../redux/reducers/authSlice";
-import InvoiceGenerator from "./InvoiceBtn";
-import axios from "axios";
-import { BASE_URL } from "../../../config";
 
 function SideNav() {
   const navigate = useNavigate();

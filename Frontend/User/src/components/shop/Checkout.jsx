@@ -4,7 +4,8 @@ import { FaMoneyBill } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import { BASE_URL } from "../../../config";
 import Swal from "sweetalert2";
-import axios from "axios";
+
+import axiosInstance from "../../utils/axiosConfig";
 
 function Checkout() {
   const navigate = useNavigate("");
@@ -40,8 +41,8 @@ function Checkout() {
       order_id: data.id,
       handler: async (response) => {
         try {
-          const verifyUrl = `${BASE_URL}/user/orders/razorpay/verify`;
-          const { data } = await axios.post(verifyUrl, response);
+          const verifyUrl = `/user/orders/razorpay/verify`;
+          const { data } = await axiosInstance.post(verifyUrl, response);
           console.log("razorPay init : ", data);
           placeOrder("Completed");
           navigate("/shop/checkoutsuccess");
@@ -74,8 +75,8 @@ function Checkout() {
   const handlePayment = async () => {
     try {
       console.log("HandlePayment");
-      const orderUrl = `${BASE_URL}/user/orders/razorpay`;
-      const { data } = await axios.post(orderUrl, { amount: total });
+      const orderUrl = `/user/orders/razorpay`;
+      const { data } = await axiosInstance.post(orderUrl, { amount: total });
       console.log(" razorPay : ", data);
 
       // Check the payment response and set paymentStatus accordingly
@@ -107,11 +108,7 @@ function Checkout() {
   // console.log("Cart Items : checkout : ", props.cartItems);
   const clearTheCart = async () => {
     try {
-      const result = await axios.delete(`${BASE_URL}/user/cart/clear`, {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      });
+      const result = await axiosInstance.delete(`/user/cart/clear`);
       // console.log("Clear the cart : ", result);
     } catch (error) {
       console.log(error);
@@ -133,26 +130,18 @@ function Checkout() {
     console.log("orderedItems : ", orderedItems);
     console.log("status of payment : ", status);
 
-    axios
-      .post(
-        `${BASE_URL}/user/order/add`,
-        {
-          orderedItems,
-          paymentStatus: status,
-          deliveryDate: new Date(),
-          offers: [],
-          paymentMethod: selectedPayment.name,
-          shippingAddress: address,
-          orderDate: new Date(),
-          coupons: couponId,
-          totalAmount: grandTotal,
-        },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        }
-      )
+    axiosInstance
+      .post(`/user/order/add`, {
+        orderedItems,
+        paymentStatus: status,
+        deliveryDate: new Date(),
+        offers: [],
+        paymentMethod: selectedPayment.name,
+        shippingAddress: address,
+        orderDate: new Date(),
+        coupons: couponId,
+        totalAmount: grandTotal,
+      })
       .then((res) => {
         // console.log("response : ", res);
         // console.log("Order placed successfully:", res.data.message);

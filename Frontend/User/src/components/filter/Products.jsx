@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import product from "../../assets/images/Laptop.png";
-import axios from "axios";
+
 import { BASE_URL } from "../../../config";
+import axiosInstance from "../../utils/axiosConfig";
 import { useNavigate, useLocation } from "react-router-dom";
 
 function Products({ query }) {
@@ -14,7 +15,7 @@ function Products({ query }) {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const result = await axios.get(`${BASE_URL}/user/products/filter?${query}`);
+        const result = await axiosInstance.get(`/user/products/filter?${query}`);
         setproducts(result.data);
       } catch (error) {
         console.log(error);
@@ -23,7 +24,6 @@ function Products({ query }) {
     if (query) {
       fetchData();
     }
-
   }, [query]);
 
   // console.log("Products : ", products);

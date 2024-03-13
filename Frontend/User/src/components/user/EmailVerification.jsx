@@ -1,7 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import { BASE_URL } from "../../../config";
+import axiosInstance from "../../utils/axiosConfig";
 
 function EmailVerification(props) {
   const navigate = useNavigate();
@@ -14,8 +15,8 @@ function EmailVerification(props) {
     const otpValue = otp.current.value;
     console.log(props.email, props.username, props.password, otpValue);
     if (props?.resetPassword) {
-      const result = axios
-        .post(`${BASE_URL}/user/reset-password`, {
+      const result = axiosInstance
+        .post(`/user/reset-password`, {
           email: props.email,
           username: props.username,
           password: props.password,
@@ -31,8 +32,8 @@ function EmailVerification(props) {
           alert(res.response.data.message);
         });
     } else {
-      const result = axios
-        .post(`${BASE_URL}/user/verify-otp`, {
+      const result = axiosInstance
+        .post(`/user/verify-otp`, {
           email: props.email,
           username: props.username,
           password: props.password,
@@ -53,8 +54,8 @@ function EmailVerification(props) {
   const handleResendCode = () => {
     setIsResendRequested(true);
     const otpValue = otp.current.value;
-    const result = axios
-      .post(`${BASE_URL}/user/resend-otp`, {
+    const result = axiosInstance
+      .post(`/user/resend-otp`, {
         email: props.email,
       })
       .then((res) => {
@@ -72,8 +73,8 @@ function EmailVerification(props) {
           });
         }, 1000);
 
-        const result = axios
-          .post(`${BASE_URL}/verify-otp`, {
+        const result = axiosInstance
+          .post(`/verify-otp`, {
             email: props.email,
             username: props.username,
             password: props.password,

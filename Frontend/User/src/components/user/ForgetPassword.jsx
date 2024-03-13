@@ -1,19 +1,20 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
+
 import { BASE_URL } from "../../../config";
 import ResetPassword from "./ResetPassword";
+import axiosInstance from "../../utils/axiosConfig";
 import { setUser } from "../../redux/reducers/userSlice";
 
 function ForgetPassword() {
   const navigate = useNavigate();
   const email = useRef();
-  const [username,setUsername]=useState("");
+  const [username, setUsername] = useState("");
   const [isOtpSend, setIsOtpSend] = useState(false);
 
   const handleSubmit = () => {
-    const result = axios
-      .post(`${BASE_URL}/user/forget-password`, {
+    const result = axiosInstance
+      .post(`/user/forget-password`, {
         email: email.current.value,
       })
       .then((res) => {
@@ -30,7 +31,7 @@ function ForgetPassword() {
   return (
     <>
       {isOtpSend ? (
-        <ResetPassword email={email.current.value} username={username}/>
+        <ResetPassword email={email.current.value} username={username} />
       ) : (
         <div className="border text-sm shadow-2xl max-w-[424px] flex flex-col mx-auto p-8 gap-6 my-16">
           <h2 className="text-center text-lg font-bold">Forget Password</h2>

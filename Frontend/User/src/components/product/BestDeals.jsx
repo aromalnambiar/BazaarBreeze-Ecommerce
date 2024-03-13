@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import axios from "axios";
+
 import { BASE_URL } from "../../../config";
+import axiosInstance from "../../utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { IoIosHeartEmpty, IoMdHeart } from "react-icons/io";
 import Skeleton from "react-loading-skeleton";
@@ -14,13 +15,8 @@ function BestDeals() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${BASE_URL}/user/products`, {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        });
+        const res = await axiosInstance.get(`/user/products`);
         // console.log("productVariants : ", res.data);
-
         // Store wishlist status locally
         const wishlistStatusMap = {};
         res.data.products.forEach((item) => {
@@ -45,15 +41,7 @@ function BestDeals() {
 
   const handleAddToWishlist = async (productVariant) => {
     try {
-      await axios.post(
-        `${BASE_URL}/user/wishlist`,
-        { productVariant },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await axiosInstance.post(`/user/wishlist`, { productVariant });
 
       // Update wishlist status locally
       setWishlistStatus((prevStatus) => ({
@@ -67,15 +55,7 @@ function BestDeals() {
 
   const handleRemoveFromWishlist = async (productVariant) => {
     try {
-      await axios.put(
-        `${BASE_URL}/user/wishlist`,
-        { productVariant },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      await axiosInstance.put(`/user/wishlist`, { productVariant });
 
       // Update wishlist status locally
       setWishlistStatus((prevStatus) => ({

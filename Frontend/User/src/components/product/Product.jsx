@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import photo from "../../assets/images/Laptop.png";
-import axios from "axios";
+
+import axiosInstance from "../../utils/axiosConfig";
 import { BASE_URL } from "../../../config";
 import { useNavigate, useParams } from "react-router-dom";
 import Specification from "./Specification";
@@ -29,11 +30,7 @@ function Product() {
 
   useEffect(() => {
     const fetchDetails = async () => {
-      const response = await axios.get(`${BASE_URL}/user/products/${productId}/product`, {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axiosInstance.get(`/user/products/${productId}/product`);
       // console.log("RESPONSE : ", response.data);
       setTabs(response.data?.variantIds);
       // console.log("RESPONSE : ", response.data.productDetails);
@@ -56,11 +53,7 @@ function Product() {
 
   useEffect(() => {
     const fetchDetails = async () => {
-      const response = await axios.get(`${BASE_URL}/user/offers/${productId}`, {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axiosInstance.get(`/user/offers/${productId}`);
       console.log("response offer : ", response?.data?.highestDiscountOffer);
       setOffer(response?.data?.highestDiscountOffer);
     };
@@ -72,18 +65,10 @@ function Product() {
   const handleAddToCart = async (id) => {
     try {
       console.log("ID : ", id);
-      const response = await axios.post(
-        `${BASE_URL}/user/cart`,
-        {
-          productVariantId: id,
-          quantity: 1,
-        },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await axiosInstance.post(`/user/cart`, {
+        productVariantId: id,
+        quantity: 1,
+      });
       // console.log(response);
       setIsCartFound(true);
     } catch (error) {
@@ -94,16 +79,7 @@ function Product() {
 
   const handleAddToWishlist = async (productVariant) => {
     try {
-      const response = await axios.post(
-        `${BASE_URL}/user/wishlist`,
-        { productVariant },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        }
-      );
-
+      const response = await axiosInstance.post(`/user/wishlist`, { productVariant });
       // console.log(response.data);
       setIsWishlistFound((prev) => !prev);
     } catch (error) {
@@ -112,15 +88,7 @@ function Product() {
   };
   const handleRemoveFromWishlist = async (productVariant) => {
     try {
-      const response = await axios.put(
-        `${BASE_URL}/user/wishlist`,
-        { productVariant },
-        {
-          headers: {
-            Authorization: `${localStorage.getItem("token")}`,
-          },
-        }
-      );
+      const response = await axiosInstance.put(`/user/wishlist`, { productVariant });
       setIsWishlistFound((prev) => !prev);
 
       console.log(response.data);
@@ -135,13 +103,8 @@ function Product() {
   const handleTabClick = async (index, id) => {
     setActiveTab(index);
     try {
-      const response = await axios.get(`${BASE_URL}/user/products/variants/${id}`, {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      });
+      const response = await axiosInstance.get(`/user/products/variants/${id}`);
       // console.log("handleClick Tab : ", response.data);
-
       // console.log("RESPONSE : ", response.data);
       // setTabs(response.data.productDetails);
       setItem(response.data.productVariant);
@@ -187,7 +150,7 @@ function Product() {
         <div className="col-span-10 overflow-hidden col-start-2 col-end-12 lg:col-span-6 h-max border p-4 rounded-md ">
           <div className="border rounded-lg max-w-[350px] h-[310px] p-10 mx-auto">
             <div style={{ height: "210px", overflow: "hidden" }}>
-              <InnerImageZoom src={`${BASE_URL}/uploads/${image}` || photo} alt="Product Image" zoomSrc={`${BASE_URL}/uploads/${image}` || photo} zoomScale={1.5} zoomType="hover" width={350} height={210} enlargeable={true} />
+              <InnerImageZoom src={`${BASE_URL}/uploads/${image}` || photo} alt="Product Image" zoomSrc={`${BASE_URL}/uploads/${image}` || photo} zoomScale={1.8} zoomType="hover" width={350} height={210} enlargeable={true} />
             </div>
           </div>
 

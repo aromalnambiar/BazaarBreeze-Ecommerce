@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import axios from "axios";
+
 import { BASE_URL } from "../../../config";
 import Swal from "sweetalert2";
+import axiosInstance from "../../utils/axiosConfig";
 
 function AddAddress({ setIsEdit, addressDetails }) {
   const fullName = useRef();
@@ -60,25 +61,17 @@ function AddAddress({ setIsEdit, addressDetails }) {
       return;
     }
 
-    axios
-      .put(
-        `${BASE_URL}/user/address`,
-        {
-          fullName: fullName.current.value,
-          address: address.current.value,
-          state: state.current.value,
-          street: street.current.value,
-          phone1: phone1.current.value,
-          pincode: pincode.current.value,
-          phone2: phone2.current.value,
-          addressId: addressDetails._id,
-        },
-        {
-          headers: {
-            Authorization: localStorage.getItem("token"),
-          },
-        }
-      )
+    axiosInstance
+      .put(`/user/address`, {
+        fullName: fullName.current.value,
+        address: address.current.value,
+        state: state.current.value,
+        street: street.current.value,
+        phone1: phone1.current.value,
+        pincode: pincode.current.value,
+        phone2: phone2.current.value,
+        addressId: addressDetails._id,
+      })
       .then((res) => {
         alert("Success: " + res.data.message);
         setIsEdit((prev) => !prev);
@@ -101,12 +94,8 @@ function AddAddress({ setIsEdit, addressDetails }) {
     });
 
     if (confirmed.isConfirmed) {
-      axios
-        .delete(`${BASE_URL}/user/address/${addressDetails._id}`, {
-          header: {
-            Authorization: localStorage.getItem("token"),
-          },
-        })
+      axiosInstance
+        .delete(`${BASE_URL}/user/address/${addressDetails._id}`)
         .then(async (res) => {
           Swal.fire({
             icon: "success",
@@ -145,7 +134,7 @@ function AddAddress({ setIsEdit, addressDetails }) {
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
                 Address
               </label>
-              <input ref={address} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" required placeholder="Jane"/>
+              <input ref={address} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" required placeholder="Jane" />
             </div>
           </div>
 

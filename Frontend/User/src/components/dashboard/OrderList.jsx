@@ -1,20 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { BASE_URL } from "../../../config";
+import axiosInstance from "../../utils/axiosConfig";
 
 function OrderList() {
   const navigate = useNavigate("");
   const [tableItems, setTableItems] = useState([]);
 
   useEffect(() => {
-    axios
-      .get(`${BASE_URL}/user/orders`, {
-        headers: {
-          Authorization: `${localStorage.getItem("token")}`,
-        },
-      })
+    axiosInstance
+      .get(`/user/orders`)
       .then((res) => {
         // console.log("result of orders : ", res.data.orders);
         setTableItems(res.data.orders);
