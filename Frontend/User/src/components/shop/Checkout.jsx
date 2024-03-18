@@ -4,6 +4,7 @@ import { FaMoneyBill } from "react-icons/fa";
 import { useNavigate, useLocation } from "react-router-dom";
 import { BASE_URL } from "../../../config";
 import Swal from "sweetalert2";
+import { showAlert, confirmAction } from "../../utils/sweetAlert";
 
 import axiosInstance from "../../utils/axiosConfig";
 
@@ -117,7 +118,7 @@ function Checkout() {
 
   const placeOrder = (status) => {
     if (cartItems?.length == 0) {
-      return alert("cartItems are empty or something went wrong");
+      return showAlert("error", "cartItems are empty or something went wrong!");
     }
     const orderedItems = cartItems.map((item) => {
       return {
@@ -150,11 +151,7 @@ function Checkout() {
       })
       .catch((err) => {
         console.error("Error placing order:", err);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Failed to place the order. Please try again.!",
-        });
+        showAlert("error", "Failed to place the order. Please try again.!", "Oops...");
       });
     // console.log("props : ", props);
   };
@@ -162,45 +159,20 @@ function Checkout() {
   const handlePlaceOrder = async () => {
     // console.log("selecte payment : ", Object.keys(selectedPayment).length === 0);
     if (Object.keys(selectedPayment).length === 0) {
-      // alert("Please select a payment method.");
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Please select a payment method!",
-      });
+      showAlert("error", "Please select a payment method!", "Oops...");
       return;
     }
 
     if (selectedPayment.name === "RazorPay") {
-      const confirmed = await Swal.fire({
-        title: "Are you sure?",
-        text: "Your edit will be submitted!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Submit!",
-      });
-      if (confirmed.isConfirmed) {
+      const confirm = confirmAction("warning", "Are you sure?", "Do you want to continue!", "Yes, Continue");
+      if (confirm) {
         handlePayment();
       }
     } else if (total > 1000) {
-      Swal.fire({
-        title: "Not allowed!",
-        text: "Order above Rs 1000 should not be allowed for COD",
-        icon: "error",
-      });
+      showAlert("error", "Order above Rs 1000 should not be allowed for COD", "Not allowed!");
     } else {
-      const confirmed = await Swal.fire({
-        title: "Are you sure?",
-        text: "Your order will be placed!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes!",
-      });
-      if (confirmed.isConfirmed) {
+      const confirm = confirmAction("warning", "Are you sure?", "Your order will be placed!", "Yes, Continue");
+      if (confirm) {
         placeOrder("pending");
         navigate("/shop/checkoutsuccess");
       }

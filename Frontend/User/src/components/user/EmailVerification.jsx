@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { BASE_URL } from "../../../config";
 import axiosInstance from "../../utils/axiosConfig";
+import { showAlert } from "../../utils/sweetAlert";
 
 function EmailVerification(props) {
   const navigate = useNavigate();
@@ -24,12 +23,12 @@ function EmailVerification(props) {
         })
         .then((res) => {
           console.log(res);
-          alert(res.data.message);
+          showAlert("success", res.data.message);
           navigate("/user/signin");
         })
         .catch((res) => {
           console.log(res);
-          alert(res.response.data.message);
+          showAlert("error", res.response.data.message);
         });
     } else {
       const result = axiosInstance
@@ -41,12 +40,12 @@ function EmailVerification(props) {
         })
         .then((res) => {
           console.log(res);
-          alert(res.data.message);
+          showAlert("success", res.data.message);
           navigate("/user/signin");
         })
         .catch((res) => {
           console.log(res);
-          alert(res.response.data.message);
+          showAlert("error", res.response.data.message);
         });
     }
   };
@@ -82,15 +81,14 @@ function EmailVerification(props) {
           })
           .then((res) => {
             console.log(res);
-            alert(res.message);
+            showAlert("success", res.message);
             navigate("/user/signin");
           })
           .catch((res) => {
             console.log(res);
-            alert(res.message);
+            showAlert("error", res.message);
           });
       });
-    // Reset the timer if needed
     setTimer(120);
     setIsTimerExpired(false);
   };

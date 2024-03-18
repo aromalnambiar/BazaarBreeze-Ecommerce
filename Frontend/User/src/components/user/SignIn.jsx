@@ -1,10 +1,9 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { loginSuccess } from "../../redux/reducers/authSlice";
-import { BASE_URL } from "../../../config";
 import { useDispatch } from "react-redux";
+import { loginSuccess } from "../../redux/reducers/authSlice";
 import axiosInstance from "../../utils/axiosConfig";
+import { showAlert } from "../../utils/sweetAlert";
 
 function SignIn() {
   const navigate = useNavigate();
@@ -16,12 +15,7 @@ function SignIn() {
   const handleSignin = (e) => {
     e.preventDefault();
     if (email.current.value.trim() == "" || password.current.value.trim() == "") {
-      // return alert("Fill the fields");
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Fill all the fields!",
-      });
+      showAlert("error", "Fill all the fields!", "Oops...");
     }
     if (!email.current.value || !password.current.value) {
       setError("Please enter both email and password");

@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../../config.js";
-
 import axiosInstance from "../../utils/axiosConfig.js";
 import EmailVerification from "./EmailVerification.jsx";
+import { showAlert } from "../../utils/sweetAlert";
 
 function SignUp() {
   const navigate = useNavigate();
@@ -20,24 +19,24 @@ function SignUp() {
 
     const usernameValue = username.current.value;
     if (!usernameValue || usernameValue.trim() === "" || usernameValue.length > 15) {
-      alert("Please enter a valid username and it can't contain more than 15 characters");
+      showAlert("error", "Please enter a valid username and it can't contain more than 15 characters");
       return;
     }
 
     if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-      alert("Please enter a valid email address");
+      showAlert("error", "Please enter a valid email address");
       return;
     }
     const passwordValue = password.current.value;
 
     if (!passwordValue && passwordValue.length < 8) {
-      alert("Password must be at least 8 characters long and it must not be empty");
+      showAlert("error", "Password must be at least 8 characters long and it must not be empty");
       return;
     }
 
     const confirmPasswordValue = confirmPassword.current.value;
     if (passwordValue !== confirmPasswordValue) {
-      alert("Passwords do not match");
+      showAlert("error", "Passwords do not match");
       return;
     }
 
@@ -51,7 +50,7 @@ function SignUp() {
       })
       .catch((res) => {
         console.log(res.response.data.message);
-        alert(res.response.data.message);
+        showAlert("error", res.response.data.message);
       });
   };
 

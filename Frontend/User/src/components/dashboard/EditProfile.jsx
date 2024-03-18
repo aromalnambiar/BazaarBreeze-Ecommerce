@@ -4,7 +4,7 @@ import { FaUserPlus } from "react-icons/fa6";
 import { FaCircleUser } from "react-icons/fa6";
 import user from "../../assets/icons/user.png";
 import Swal from "sweetalert2";
-import { showAlert } from "../../utils/sweetAlert";
+import { showAlert, showToast } from "../../utils/sweetAlert";
 import { BASE_URL } from "../../../config";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosConfig";
@@ -91,22 +91,7 @@ function EditProfile() {
         },
       })
       .then((res) => {
-        // alert("User data updated successfully");
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        });
-        Toast.fire({
-          icon: "success",
-          title: "Profile edited successfully",
-        });
+        showToast("success", "Profile edited successfully");
         console.log("res : ", res);
         setIsEditing(false);
       })

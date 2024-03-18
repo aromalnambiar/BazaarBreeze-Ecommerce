@@ -83,7 +83,6 @@ function AddAddress({ setIsEdit, addressDetails }) {
 
   const handleDelete = async () => {
     const confirm = confirmAction("warning", "Are you sure?", "Do you want to delete this address!", "Yes, Delete");
-
     if (confirm) {
       axiosInstance
         .delete(`${BASE_URL}/user/address/${addressDetails._id}`)

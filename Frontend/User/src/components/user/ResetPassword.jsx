@@ -1,19 +1,20 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import EmailVerification from "./EmailVerification";
+import { showAlert } from "../../utils/sweetAlert";
 
 function ResetPassword(props) {
   const navigate = useNavigate();
   const password = useRef();
   const password2 = useRef();
   const [isClicked, setIsClicked] = useState(false);
-  
+
   const handleClick = () => {
     const trimmedPassword = password.current.value.trim();
     const trimmedPassword2 = password2.current.value.trim();
 
     if (trimmedPassword !== trimmedPassword2 || !trimmedPassword || !trimmedPassword2) {
-      return alert("Password mismatch or contains empty spaces");
+      return showAlert("error", "Password mismatch or contains empty spaces");
     }
 
     setIsClicked(true);

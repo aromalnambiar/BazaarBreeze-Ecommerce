@@ -10,6 +10,7 @@ import { BASE_URL } from "../../../config";
 import Swal from "sweetalert2";
 import PdfDownload from "../dashboard/PdfDownload";
 import axiosInstance from "../../utils/axiosConfig";
+import { showToast } from "../../utils/sweetAlert";
 
 function OrderDetails() {
   const [items, setItems] = useState([]);
@@ -82,16 +83,8 @@ function OrderDetails() {
   const handleStatus = async (orderedItemId, orderStatus) => {
     try {
       console.log("handleStatus");
-      const confirmed = await Swal.fire({
-        title: "Are you sure?",
-        text: "You can't revert the changes!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Submit!",
-      });
-      if (confirmed.isConfirmed) {
+      const confirm = confirmAction("warning", "Are you sure?", "You can't revert the changes!", "Yes, Submit!");
+      if (confirm) {
         const result = await axiosInstance.patch(`/user/order/status`, {
           orderId: order?._id,
           orderedItemId,
@@ -99,22 +92,7 @@ function OrderDetails() {
         });
 
         setIsToggle((prev) => !prev);
-
-        const Toast = Swal.mixin({
-          toast: true,
-          position: "top-end",
-          showConfirmButton: false,
-          timer: 3000,
-          timerProgressBar: true,
-          didOpen: (toast) => {
-            toast.onmouseenter = Swal.stopTimer;
-            toast.onmouseleave = Swal.resumeTimer;
-          },
-        });
-        Toast.fire({
-          icon: "success",
-          title: "Status changed successfully",
-        });
+        showToast("success", "Status changed successfully");
         console.log("status result : ", result);
       }
     } catch (error) {
@@ -143,21 +121,6 @@ function OrderDetails() {
       // Handle error
     }
   };
-
-  // const handleDownloadInvoice = async () => {
-  //   const confirmed = await Swal.fire({
-  //     title: "Are you sure?",
-  //     text: "Do you want to download invoice!",
-  //     icon: "warning",
-  //     showCancelButton: true,
-  //     confirmButtonColor: "#3085d6",
-  //     cancelButtonColor: "#d33",
-  //     confirmButtonText: "Yes!",
-  //   });
-  //   if (confirmed.isConfirmed) {
-  //     downloadInvoice();
-  //   }
-  // };
 
   const changePaymentStatus = async () => {
     try {

@@ -1,10 +1,8 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-
-import { BASE_URL } from "../../../config";
 import ResetPassword from "./ResetPassword";
 import axiosInstance from "../../utils/axiosConfig";
-import { setUser } from "../../redux/reducers/userSlice";
+import { showAlert } from "../../utils/sweetAlert";
 
 function ForgetPassword() {
   const navigate = useNavigate();
@@ -25,7 +23,7 @@ function ForgetPassword() {
       })
       .catch((res) => {
         console.log(res.response.data.message);
-        alert(res.response.data.message);
+        showAlert("error", res.response.data.message);
       });
   };
   return (
