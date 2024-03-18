@@ -4,6 +4,7 @@ import { FaUserPlus } from "react-icons/fa6";
 import { FaCircleUser } from "react-icons/fa6";
 import user from "../../assets/icons/user.png";
 import Swal from "sweetalert2";
+import { showAlert } from "../../utils/sweetAlert";
 import { BASE_URL } from "../../../config";
 import { Link } from "react-router-dom";
 import axiosInstance from "../../utils/axiosConfig";
@@ -61,11 +62,7 @@ function EditProfile() {
     // Validation checks
     if (usernameValue.trim() === "" || usernameValue.length > 15) {
       // Handle invalid username
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Username must not be empty or exceed 15 characters!",
-      });
+      showAlert("error", "Username must not be empty or exceed 15 characters!", "Oops...");
       return;
     }
 
@@ -73,12 +70,7 @@ function EditProfile() {
     // console.log("age1 : ", numericAge);
     if (isNaN(numericAge) || numericAge <= 0 || numericAge > 100) {
       // console.log("age2 : ", numericAge);
-      // Handle invalid age
-      Swal.fire({
-        icon: "error",
-        title: "Oops...",
-        text: "Invalid age! Age must be a number between 0 and 100.",
-      });
+      showAlert("error", "Invalid age! Age must be a number between 0 and 100.", "Oops...");
       return;
     }
 
@@ -120,11 +112,7 @@ function EditProfile() {
       })
       .catch((err) => {
         console.error("Error updating user data", err);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Something went wrong!",
-        });
+        showAlert("error", "Something went wrong!", "Oops...");
       });
 
     console.log("Submitted User Data:", user);

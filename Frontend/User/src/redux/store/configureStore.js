@@ -1,10 +1,9 @@
 import { configureStore } from '@reduxjs/toolkit';
-import authReducer from '../reducers/authSlice.js';
+import authReducer, { loginSuccess, logout } from '../reducers/authSlice.js';
 import userReducer from '../reducers/userSlice.js';
-import { loginSuccess, logout} from '../reducers/authSlice.js';
+import jwtDecode from 'jwt-decode';
 
 const initialToken = localStorage.getItem('token');
-
 
 const store = configureStore({
   reducer: {
@@ -14,9 +13,14 @@ const store = configureStore({
 });
 
 if (initialToken) {
-  store.dispatch(loginSuccess(initialToken));
-} else {
-  store.dispatch(logout());
+  const decodedToken = jwtDecode(initialToken);
+  const currentTime = Date.now() / 1000; 
+
+  if (decodedToken.exp > currentTime) {
+    store.dispatch(loginSuccess(initialToken));
+  } else {
+    store.dispatch(logout());
+  }
 }
 
 export default store;

@@ -3,7 +3,7 @@ import { BASE_URL } from "../../../config";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaCartPlus } from "react-icons/fa";
-import Swal from "sweetalert2";
+import { confirmAction } from "../../utils/sweetAlert";
 import axiosInstance from "../../utils/axiosConfig";
 
 function Wishlist() {
@@ -33,17 +33,8 @@ function Wishlist() {
 
   const handleRemoveFromWishlist = async (productVariant) => {
     try {
-      const confirmed = await Swal.fire({
-        title: "Are you sure?",
-        text: "Do you want to remove from wishlist!",
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, Remove!",
-      });
-
-      if (confirmed.isConfirmed) {
+      const confirmed = await confirmAction("warning", "Are you sure?", "Do you want to remove from wishlist!", "yes,sure");
+      if (confirmed) {
         await axiosInstance.put(`/user/wishlist`, { productVariant });
         setIsUpdated((prev) => !prev);
       }

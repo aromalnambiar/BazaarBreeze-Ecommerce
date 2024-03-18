@@ -6,7 +6,6 @@ import Settings from "./Settings";
 import OrderDetails from "./OrderDetails.jsx";
 import ShoppingCart from "../cart/ShoppingCart.jsx";
 import { Routes, Route } from "react-router-dom";
-import Address from "./Address.jsx";
 import Wishlist from "../cart/Wishlist.jsx";
 import Wallet from "./Wallet.jsx";
 import Offers from "./Offers.jsx";

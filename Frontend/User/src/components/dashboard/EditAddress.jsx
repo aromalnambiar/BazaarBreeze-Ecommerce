@@ -1,7 +1,6 @@
-import { useEffect, useRef, useState } from "react";
-
+import { useEffect, useRef } from "react";
 import { BASE_URL } from "../../../config";
-import Swal from "sweetalert2";
+import { showAlert, confirmAction } from "../../utils/sweetAlert";
 import axiosInstance from "../../utils/axiosConfig";
 
 function AddAddress({ setIsEdit, addressDetails }) {
@@ -37,7 +36,7 @@ function AddAddress({ setIsEdit, addressDetails }) {
       const phone1Value = phone1.current.value.trim();
 
       if (!fullNameValue || !addressValue || !stateValue || !pincodeValue || !phone1Value) {
-        alert("Validation Error: All fields are required!");
+        showAlert("error", "Validation Error: All fields are required!");
         return false;
       }
 
@@ -45,12 +44,12 @@ function AddAddress({ setIsEdit, addressDetails }) {
       const phoneRegex = /^\d{10}$/;
 
       if (!pincodeRegex.test(pincodeValue)) {
-        alert("Validation Error: Invalid Pincode! Pincode must be 6 digits.");
+        showAlert("error", "Validation Error: Invalid Pincode! Pincode must be 6 digits.");
         return false;
       }
 
       if (!phoneRegex.test(phone1Value)) {
-        alert("Validation Error: Invalid Phone Number! Phone number must be 10 digits.");
+        showAlert("error", "Validation Error: Invalid Phone Number! Phone number must be 10 digits.");
         return false;
       }
 
@@ -73,42 +72,27 @@ function AddAddress({ setIsEdit, addressDetails }) {
         addressId: addressDetails._id,
       })
       .then((res) => {
-        alert("Success: " + res.data.message);
+        showAlert("success", "Success: " + res.data.message);
         setIsEdit((prev) => !prev);
       })
       .catch((err) => {
         console.log("err : ", err);
-        alert("Oops... Something went wrong!");
+        showAlert("error", "Oops... Something went wrong!");
       });
   };
 
   const handleDelete = async () => {
-    const confirmed = await Swal.fire({
-      title: "Are you sure?",
-      text: "Do you want to delete this address!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, Delete!",
-    });
+    const confirm = confirmAction("warning", "Are you sure?", "Do you want to delete this address!", "Yes, Delete");
 
-    if (confirmed.isConfirmed) {
+    if (confirm) {
       axiosInstance
         .delete(`${BASE_URL}/user/address/${addressDetails._id}`)
         .then(async (res) => {
-          Swal.fire({
-            icon: "success",
-            title: "Deleted successfully",
-          });
+          showAlert("success", "success", "Deleted successfully");
           setIsEdit((prev) => !prev);
         })
         .catch((err) => {
-          Swal.fire({
-            icon: "error",
-            title: "Oops...",
-            text: "Something went wrong!",
-          });
+          showAlert("error", "Something went wrong!", "Oops...");
         });
     }
   };
