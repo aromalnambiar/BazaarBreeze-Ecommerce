@@ -164,14 +164,14 @@ function Checkout() {
     }
 
     if (selectedPayment.name === "RazorPay") {
-      const confirm = confirmAction("warning", "Are you sure?", "Do you want to continue!", "Yes, Continue");
+      const confirm = await confirmAction("warning", "Are you sure?", "Do you want to continue!", "Yes, Continue");
       if (confirm) {
         handlePayment();
       }
     } else if (total > 1000) {
       showAlert("error", "Order above Rs 1000 should not be allowed for COD", "Not allowed!");
     } else {
-      const confirm = confirmAction("warning", "Are you sure?", "Your order will be placed!", "Yes, Continue");
+      const confirm = await confirmAction("warning", "Are you sure?", "Your order will be placed!", "Yes, Continue");
       if (confirm) {
         placeOrder("pending");
         navigate("/shop/checkoutsuccess");

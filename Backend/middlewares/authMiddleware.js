@@ -14,7 +14,7 @@ const authenticateJWT = (req, res, next) => {
     }
     // console.log("jwt verify user : ",user);
     req.user = user;
-    // console.log("req.user : ",req.user);
+    console.log("req.user : ",req.user);
     next();
   }); 
 };

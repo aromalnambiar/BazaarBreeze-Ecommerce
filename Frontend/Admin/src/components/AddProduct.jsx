@@ -49,7 +49,7 @@ const AddProduct = () => {
     try {
       if (!formData.productName || formData.productName.trim() === "" || formData.productName.split(/\s+/).length > 15) {
         Swal.fire({
-          icon: "error", 
+          icon: "error",
           title: "Oops...",
           text: "Product name must not be empty, whitespace only, or exceed 15 words!",
         });

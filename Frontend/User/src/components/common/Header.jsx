@@ -54,7 +54,7 @@ function Header() {
         <div></div>
         <div className="flex max-w-[1020px] h-[88px] justify-center items-center mx-auto ">
           <Link to={"/"}>
-            <div className="max-w-[190px] pt-[10px]">
+            <div className="max-w-[190px] sm:w-[100px] md:w-[190px] pt-[10px]">
               <img src={Logo} alt="" srcSet="" />
             </div>
           </Link>

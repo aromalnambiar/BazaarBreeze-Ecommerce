@@ -23,7 +23,7 @@ const Offer=require('../../models/Offer');
         'product.productVariantId': productVariantId,
       });
       console.log("user cart : ",uCart);
-      if(uCart.product.length>0){
+      if(uCart&&uCart.product.length>0){
         if ( uCart.product[0].quantity+1> productVariant.stock) {
           return res.status(400).json({ message: 'Insufficient stock available' });
         }

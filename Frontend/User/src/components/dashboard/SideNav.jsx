@@ -50,7 +50,7 @@ function SideNav() {
       handleLogout();
       navigate("/");
     } else {
-      navigate("/dashboard");
+      navigate(path);
     }
   };
 

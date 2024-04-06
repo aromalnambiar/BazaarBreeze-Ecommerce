@@ -177,7 +177,7 @@ try {
         const token=jwt.sign({userId:user._id,role:'user'},`${process.env.JWT_SECRET}`,{expiresIn:'30d'});
         return res.status(200).json({token,message:"Login successfull"});
     }else{
-        return res.status(400).json({message:"password isn't matching"});
+        return res.status(400).json({message:"username or password isn't matching"});
     }
 } catch (error) {
     console.log(error);

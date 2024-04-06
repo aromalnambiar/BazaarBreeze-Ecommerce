@@ -1,65 +1,45 @@
-import { useRef, useState } from "react";
+import { useFormik } from "formik";
+import { signupSchema } from "../../schemas/signupSchema.js";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../../utils/axiosConfig.js";
 import EmailVerification from "./EmailVerification.jsx";
 import { showAlert } from "../../utils/sweetAlert";
+import { useState } from "react";
 
 function SignUp() {
   const navigate = useNavigate();
-  const email = useRef();
-  const username = useRef();
-  const password = useRef();
-  const confirmPassword = useRef();
-  const [isOtpSend, setIsOtpSend] = useState(false);
-
-  const handleSignup = (e) => {
-    e.preventDefault();
-    const emailValue = email.current.value;
-    console.log(email.current.value);
-
-    const usernameValue = username.current.value;
-    if (!usernameValue || usernameValue.trim() === "" || usernameValue.length > 15) {
-      showAlert("error", "Please enter a valid username and it can't contain more than 15 characters");
-      return;
-    }
-
-    if (!emailValue || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue)) {
-      showAlert("error", "Please enter a valid email address");
-      return;
-    }
-    const passwordValue = password.current.value;
-
-    if (!passwordValue && passwordValue.length < 8) {
-      showAlert("error", "Password must be at least 8 characters long and it must not be empty");
-      return;
-    }
-
-    const confirmPasswordValue = confirmPassword.current.value;
-    if (passwordValue !== confirmPasswordValue) {
-      showAlert("error", "Passwords do not match");
-      return;
-    }
-
-    const result = axiosInstance
-      .post(`/user/registration`, {
-        email: emailValue,
-      })
-      .then((response) => {
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      username: "",
+      password: "",
+      confirmPassword: "",
+    },
+    validationSchema: signupSchema,
+    onSubmit: async (values, { setSubmitting }) => {
+      try {
+        const response = await axiosInstance.post(`/user/registration`, {
+          email: values.email,
+        });
         console.log(response.message);
         setIsOtpSend(true);
-      })
-      .catch((res) => {
-        console.log(res.response.data.message);
-        showAlert("error", res.response.data.message);
-      });
-  };
+      } catch (error) {
+        console.log(error.response.data.message);
+        showAlert("error", error.response.data.message);
+      } finally {
+        setSubmitting(false);
+      }
+    },
+  });
+
+  const [isOtpSend, setIsOtpSend] = useState(false);
 
   return (
     <div>
       {isOtpSend ? (
-        <EmailVerification email={email.current.value} username={username.current.value} password={password.current.value} />
+        <EmailVerification email={formik.values.email} username={formik.values.username} password={formik.values.password} />
       ) : (
-        <form onSubmit={handleSignup}>
+        <form onSubmit={formik.handleSubmit}>
           <div className="border text-sm shadow-2xl max-w-[424px] flex flex-col mx-auto p-8 gap-4 my-16">
             <div className="flex justify-between">
               <div onClick={() => navigate("/user/signin")} className="w-full pb-4 text-center cursor-pointer">
@@ -68,14 +48,18 @@ function SignUp() {
               <div className="w-full border-b-4 border-orange-400 pb-4 text-center">Sign Up</div>
             </div>
             <p>Name</p>
-            <input ref={username} className="h-12 border-2 pl-2" type="text" />
+            <input name="username" type="text" className="h-12 border-2 pl-2" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.username} />
+            {formik.errors.username && formik.touched.username && <p className="text-red-500 ">{formik.errors.username}</p>}
             <p>Email Address</p>
-            <input ref={email} className="h-12 border-2 pl-2" type="text" />
+            <input name="email" type="text" className="h-12 border-2 pl-2" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.email} />
+            {formik.errors.email && formik.touched.email && <p className="text-red-500 ">{formik.errors.email}</p>}
             <p>Password</p>
-            <input ref={password} className="h-12 border-2 pl-2" type="password" />
+            <input name="password" type="password" className="h-12 border-2 pl-2" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.password} />
+            {formik.errors.password && formik.touched.password && <p className="text-red-500 ">{formik.errors.password}</p>}
             <p>Confirm Password</p>
-            <input ref={confirmPassword} className="h-12 border-2 pl-2" type="password" />
-            <button type="submit" className="bg-[#FA8232] text-white py-3 rounded-sm text-sm mt-8 mb-2">
+            <input name="confirmPassword" type="password" className="h-12 border-2 pl-2" onChange={formik.handleChange} onBlur={formik.handleBlur} value={formik.values.confirmPassword} />
+            {formik.errors.confirmPassword && formik.touched.confirmPassword && <p className="text-red-500 ">{formik.errors.confirmPassword}</p>}
+            <button type="submit" className="bg-[#FA8232] text-white py-3 rounded-sm text-sm mt-8 mb-2" disabled={formik.isSubmitting}>
               SIGN UP
             </button>
             <p onClick={() => navigate("/user/signin")} className="text-center">

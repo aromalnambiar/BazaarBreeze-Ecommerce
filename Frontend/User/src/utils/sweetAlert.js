@@ -1,6 +1,6 @@
-import Swal from "sweetalert2";
+ import Swal from "sweetalert2";
 
-export const showAlert = (icon = "error", text = "text", title = "title") => {
+export const showAlert = (icon = "error", text = "text", title = "") => {
   Swal.fire({
     icon: icon,
     title: title,
@@ -8,7 +8,7 @@ export const showAlert = (icon = "error", text = "text", title = "title") => {
   });
 };
 
-export const showToast = (icon = "success", title = "Title", text = "Text", position = "top-end", timer = 3000) => {
+export const showToast = (icon = "success", title = "", text = "Text", position = "top-end", timer = 3000) => {
   const Toast = Swal.mixin({
     toast: true,
     position: position,
@@ -28,7 +28,7 @@ export const showToast = (icon = "success", title = "Title", text = "Text", posi
   });
 };
 
-export const confirmAction = async (icon, title, text, cbtntext) => {
+export const confirmAction = async (icon, title="", text, cbtntext) => {
   try {
     const confirmed = await Swal.fire({
       title: title,

@@ -30,21 +30,26 @@ function Product() {
 
   useEffect(() => {
     const fetchDetails = async () => {
-      const response = await axiosInstance.get(`/user/products/${productId}/product`);
-      // console.log("RESPONSE : ", response.data);
-      setTabs(response.data?.variantIds);
-      // console.log("RESPONSE : ", response.data.productDetails);
-      // setTabs(response.data.productDetails);
-      setItem(response.data.productDetails);
-      setBrand(response.data.productDetails.brand);
-      setDescription(response.data.productDetails.description);
-      setCategory(response.data.category);
-      setIsCartFound(response.data.isCartFound);
-      setIsWishlistFound(response.data.isWishlistFound);
-      setSpecification(response.data.productDetails.productDetails.specification);
-      setImage(response.data.productDetails.productDetails.images[0]);
-      setGalleryImages(response.data.productDetails.productDetails.images);
-      setDataRetrieved(true);
+      try {
+        const response = await axiosInstance.get(`/user/products/${productId}/product`);
+        // console.log("RESPONSE : ", response.data);
+        setTabs(response.data?.variantIds);
+        // console.log("RESPONSE : ", response.data.productDetails);
+        // setTabs(response.data.productDetails);
+        setItem(response.data.productDetails);
+        setBrand(response.data.productDetails.brand);
+        setDescription(response.data.productDetails.description);
+        setCategory(response.data.category);
+        setIsCartFound(response.data.isCartFound);
+        setIsWishlistFound(response.data.isWishlistFound);
+        setSpecification(response.data.productDetails.productDetails.specification);
+        setImage(response.data.productDetails.productDetails.images[0]);
+        setGalleryImages(response.data.productDetails.productDetails.images);
+        setDataRetrieved(true);
+      } catch (error) {
+        console.log("error in product : ", error);
+        navigate("/error");
+      }
     };
 
     fetchDetails();
