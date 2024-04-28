@@ -9,7 +9,6 @@ const userRoutes = require('./routes/userRoutes.js');
 const adminRoutes = require('./routes/adminRoutes.js');
 const userBuildPath = path.join(__dirname, "../Frontend/User/dist");
 const adminBuildPath=path.join(__dirname,"../Frontend/Admin/dist")
-
 mongooseConnection();
 
 app.use(express.static(userBuildPath));

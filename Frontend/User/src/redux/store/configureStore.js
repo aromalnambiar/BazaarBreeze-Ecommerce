@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer, { loginSuccess, logout } from '../reducers/authSlice.js';
 import userReducer from '../reducers/userSlice.js';
-import jwtDecode from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 
 const initialToken = localStorage.getItem('token');
 

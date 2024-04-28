@@ -11,6 +11,17 @@ function Header() {
 
   const productsRef = useRef(null);
 
+  const throttle = (func, delay) => {
+    let lastCall = 0;
+    return function () {
+      const now = Date.now();
+      if (now - lastCall >= delay) {
+        func();
+        lastCall = now;
+      }
+    };
+  };
+
   useEffect(() => {
     const handleSearch = async () => {
       try {
@@ -22,11 +33,13 @@ function Header() {
       }
     };
 
+    const throttledSearch = throttle(handleSearch, 2000);
+
     if (query === "" || query.trim() === "") {
       setProducts([]);
       setShowProducts(false);
     } else {
-      handleSearch();
+      throttledSearch();
     }
   }, [query]);
 
@@ -54,7 +67,7 @@ function Header() {
         <div></div>
         <div className="flex max-w-[1020px] h-[88px] justify-center items-center mx-auto ">
           <Link to={"/"}>
-            <div className="max-w-[190px] pt-[10px]">
+            <div className="max-w-[190px] sm:w-[100px] md:w-[190px] pt-[10px]">
               <img src={Logo} alt="" srcSet="" />
             </div>
           </Link>
