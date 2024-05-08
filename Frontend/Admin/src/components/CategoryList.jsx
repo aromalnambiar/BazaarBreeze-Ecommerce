@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from "react";
-import photo from "../assets/images/image2.png";
+import  { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import EditCategory from "./EditCategory";
 import axios from "axios";
 import ReactPaginate from "react-paginate";
 import { BASE_URL } from "../../config";
-import Swal from "sweetalert2";
 
 function CategoryList() {
   const [categories, setCategories] = useState([]);

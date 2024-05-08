@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAuth } from "./context/AuthContext.jsx";
-import AdminSignIn from "./components/AdminSignin";
+import AdminSignIn from "./components/AdminSignIn";
 import Sidebar from "./components/common/Sidebar";
 import Headerbar from "./components/common/Headerbar";
 import Dashboard from "./components/Dashboard";

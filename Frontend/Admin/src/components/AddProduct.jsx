@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
+import  { useEffect, useState } from "react";
 import axios from "axios";
-import { BASE_URL } from "../../../User/config";
+import { BASE_URL } from "../../config";
 import AddImages from "./AddImages";
 import Swal from "sweetalert2";
 

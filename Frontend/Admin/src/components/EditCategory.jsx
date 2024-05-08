@@ -1,5 +1,5 @@
 import axios from "axios";
-import { BASE_URL } from "../../../User/config";
+import { BASE_URL } from "../../config";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";

@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import photo from "../assets/images/Customer.png";
-import { FaCircleUser } from "react-icons/fa6";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../../config";
@@ -10,7 +8,6 @@ import Swal from "sweetalert2";
 function OrdersList() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
-  const [isToggle, setIsToggle] = useState(false);
   const [selectedOrderStatus, setSelectedOrderStatus] = useState({});
   const [openDropdownOrderId, setOpenDropdownOrderId] = useState(null);
   const [pageNumber, setPageNumber] = useState(0);

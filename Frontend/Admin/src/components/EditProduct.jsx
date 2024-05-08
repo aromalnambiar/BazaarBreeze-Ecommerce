@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios"; // Import axios for making API requests
+import  { useEffect, useState } from "react";
+import axios from "axios"; 
 import AddImages from "./AddImages";
-import { BASE_URL } from "../../../User/config";
-import { useNavigate, useParams } from "react-router-dom";
+import { BASE_URL } from "../../config.js";
+import { useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 
 const EditProduct = () => {
@@ -29,7 +29,6 @@ const EditProduct = () => {
   const [imagesObjects, setImagesObjects] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
 
-  const navigate = useNavigate();
 
   //productDatafetching
   useEffect(() => {
