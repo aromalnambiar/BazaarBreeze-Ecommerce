@@ -25,6 +25,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3004:3000"
+    env_file: ./Backend/.env  # Specify the location of your .env file here
     volumes:
       - ./Frontend/User/dist:/app/user/dist
       - ./Frontend/Admin/dist:/app/admin/dist
