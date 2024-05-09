@@ -20,25 +20,16 @@ app.use("/user", userRoutes);
 
 app.use("/admin", adminRoutes);
 
-// Serve static files from the shared volume
-app.use("/user", express.static(path.join(__dirname, "static/user")));
-app.use("/admin", express.static(path.join(__dirname, "static/admin")));
+app.use(express.static(path.join(__dirname, "../user/dist")));
+app.use(express.static(path.join(__dirname, "../admin/dist")));
 
 app.get("/adminpanel*", function (req, res) {
-  res.sendFile(path.join(__dirname, "static/admin/index.html"), function (err) {
-    if (err) {
-      res.status(500).send(err);
-    }
-  });
+  res.sendFile(path.join(__dirname, "../admin/dist/index.html"));
 });
 
 app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname, "static/user/index.html"), function (err) {
-    if (err) {
-      res.status(500).send(err);
-    }
-  });
+  res.sendFile(path.join(__dirname, "../user/dist/index.html"));
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 4000;
 app.listen(port, () => console.log(`listening on port ${port}`));

@@ -1,18 +1,19 @@
-# Use a lightweight Node.js image as the base
+# Dockerfile for frontend admin
 FROM node:20.9.0-alpine
 
-# Set the working directory inside the container
 WORKDIR /app/admin
 
-# Copy package.json and package-lock.json (if available)
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
 RUN npm install
 
-# Copy the entire React application code
+# Copy the entire source code
 COPY . .
 
-EXPOSE 5173
+# Build the application
+RUN npm run build
 
-CMD ["npm", "run", "dev"]
+# Expose port
+EXPOSE 5173

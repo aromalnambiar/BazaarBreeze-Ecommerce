@@ -25,3 +25,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3004:3000"
+    volumes:
+      - ./Frontend/User/dist:/app/user/dist
+      - ./Frontend/Admin/dist:/app/admin/dist
