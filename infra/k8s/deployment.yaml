@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecommerce-backend
+  template:
+    metadata:
+      labels:
+        app: ecommerce-backend
+    spec:
+      containers:
+      - name: backend
+        image: aswantht/ecommerce-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        volumeMounts:
+        - name: admin-build
+          mountPath: /app/admin/dist
+        - name: user-build
+          mountPath: /app/user/dist
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: PORT
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: DB_URL
+        - name: CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: CLIENT_ID
+        # Add other secret environment variables here
+      volumes:
+      - name: admin-build
+        persistentVolumeClaim:
+          claimName: admins-pvc
+      - name: user-build
+        persistentVolumeClaim:
+          claimName: users-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-frontend-admin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecommerce-frontend-admin
+  template:
+    metadata:
+      labels:
+        app: ecommerce-frontend-admin
+    spec:
+      containers:
+      - name: frontend-admin
+        image: aswantht/ecommerce-frontend-admin:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: admin-build
+          mountPath: /app/dist
+        lifecycle:
+          postStart:
+            exec:
+              command: ['sh', '-c', 'cp -r /app/admin/dist/* /app/dist']
+      volumes:
+      - name: admin-build
+        persistentVolumeClaim:
+          claimName: admins-pvc
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-frontend-user
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecommerce-frontend-user
+  template:
+    metadata:
+      labels:
+        app: ecommerce-frontend-user
+    spec:
+      containers:
+      - name: frontend-user
+        image: aswantht/ecommerce-frontend-user:latest
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: user-build
+          mountPath: /app/dist
+        lifecycle:
+          postStart:
+            exec:
+              command: ['sh', '-c', 'cp -r /app/user/dist/* /app/dist']
+      volumes:
+      - name: user-build
+        persistentVolumeClaim:
+          claimName: users-pvc

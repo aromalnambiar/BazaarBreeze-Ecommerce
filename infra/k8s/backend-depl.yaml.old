@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ecommerce-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ecommerce-backend
+  template:
+    metadata:
+      labels:
+        app: ecommerce-backend
+    spec:
+      containers:
+      - name: backend
+        image: aswantht/ecommerce-backend:latest
+        imagePullPolicy: Always
+        ports:
+        - containerPort: 3000
+        env:
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: backend-config
+              key: PORT
+        - name: DB_URL
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: DB_URL
+        - name: CLIENT_ID
+          valueFrom:
+            secretKeyRef:
+              name: backend-secret
+              key: CLIENT_ID
+        # Add other secret environment variables here

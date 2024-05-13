@@ -12,8 +12,14 @@ RUN npm install
 # Copy the entire source code
 COPY . .
 
+# Print out the contents of the source directory
+RUN ls -l
+
 # Build the application
 RUN npm run build
+
+# Print out the contents of the dist directory
+RUN ls -l dist
 
 # Expose port
 EXPOSE 5173

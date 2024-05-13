@@ -5,6 +5,7 @@ services:
     build:
       context: ./Frontend/User
       dockerfile: Dockerfile
+    image: aswantht/ecommerce-frontend-user
     ports:
       - "5174:5173"
     depends_on:
@@ -14,6 +15,7 @@ services:
     build:
       context: ./Frontend/Admin
       dockerfile: Dockerfile
+    image: aswantht/ecommerce-frontend-admin
     ports:
       - "5173:5173"
     depends_on:
@@ -23,8 +25,9 @@ services:
     build:
       context: ./Backend
       dockerfile: Dockerfile
+    image: aswantht/ecommerce-backend
     ports:
-      - "3004:3000"
+      - "4002:3000"
     env_file: ./Backend/.env  # Specify the location of your .env file here
     volumes:
       - ./Frontend/User/dist:/app/user/dist
