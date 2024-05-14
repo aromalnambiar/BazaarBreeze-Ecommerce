@@ -12,19 +12,20 @@ const offer=require('../controllers/adminController/offerController.js');
 const sales=require('../controllers/adminController/salesController.js');
 const sample=require('../controllers/adminController/sample.js');
 const banner=require('../controllers/adminController/bannerController.js');
+const {uploadSingle,uploadArray}=require('../middlewares/imageUpload.js');
 
 
 
-const storage = multer.diskStorage({
-    destination: 'uploads/',
-    filename: function (req, file, cb) {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-      const fileExtension = path.extname(file.originalname);
-      cb(null, file.fieldname + '-' + uniqueSuffix + fileExtension);
-    }
-  });
+// const storage = multer.diskStorage({
+//     destination: 'uploads/',
+//     filename: function (req, file, cb) {
+//       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+//       const fileExtension = path.extname(file.originalname);
+//       cb(null, file.fieldname + '-' + uniqueSuffix + fileExtension);
+//     }
+//   });
   
-  const upload = multer({ storage: storage });
+//   const upload = multer({ storage: storage });
 
 router.post('/login', auth.login);
 
@@ -34,15 +35,15 @@ router.get('/products/:productId', authenticateJWT,isAdmin,product.viewProduct);
 router.post('/products', authenticateJWT,isAdmin,product.addProduct);
 router.put('/products', authenticateJWT,isAdmin,product.addProduct);
 router.get('/products/variant/:productId', authenticateJWT,isAdmin,product.viewProductVariant);
-router.post('/products/variant',authenticateJWT,isAdmin, upload.array('photos', 12), product.addProductVariant);
+router.post('/products/variant',authenticateJWT,isAdmin, uploadArray('product'), product.addProductVariant);
 router.put('/products/:productId',authenticateJWT,isAdmin, product.editProduct);
-router.put('/products/variant/:variantId', upload.array('photos'), product.editProductVariant);
+router.put('/products/variant/:variantId', uploadArray('product'), product.editProductVariant);
 router.patch('/products/:productId',authenticateJWT,isAdmin, product.deleteProduct);
 
 // Categories
 router.get('/categories',authenticateJWT,isAdmin, category.viewCategories);
-router.post('/categories',authenticateJWT,isAdmin, upload.single('image'), category.addCategory);
-router.put('/categories/:categoryId',authenticateJWT,isAdmin, upload.single('image'), category.editCategory);
+router.post('/categories',authenticateJWT,isAdmin, uploadSingle('category'), category.addCategory);
+router.put('/categories/:categoryId',authenticateJWT,isAdmin, uploadSingle('category'), category.editCategory);
 router.get('/categories/:categoryId',authenticateJWT,isAdmin, category.viewCategory);
 
 // Orders
@@ -92,7 +93,7 @@ router.get('/salesPDF',sample.exportPDF);
 //banners
 router.get('/banner',banner.viewBanners)
 router.get('/banner/:bannerId',banner.getBanner)
-router.post('/banner',upload.single('image'),banner.addBanner)
+router.post('/banner',uploadSingle("banner"),banner.addBanner)
 router.put('/banner/:bannerId' ,banner.editBanner)
 
 
