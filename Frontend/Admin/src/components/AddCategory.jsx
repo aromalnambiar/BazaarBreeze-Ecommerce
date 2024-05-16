@@ -34,7 +34,11 @@ function AddCategory() {
       const categoryDescription = description.current.value.trim();
 
       // Validate category name
-      if (!categoryName || categoryName.length > 15 || /\d/.test(categoryName)) {
+      if (
+        !categoryName ||
+        categoryName.length > 15 ||
+        /\d/.test(categoryName)
+      ) {
         Swal.fire({
           title: "Invalid input!",
           text: "Category name must not be empty, contain numbers, or exceed 15 characters.",
@@ -79,12 +83,16 @@ function AddCategory() {
         formData.append("description", categoryDescription);
         formData.append("image", image);
 
-        const result = await axios.post(`${BASE_URL}/admin/categories`, formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-            Authorization: `${localStorage.getItem("adminToken")}`,
-          },
-        });
+        const result = await axios.post(
+          `${BASE_URL}/admin/categories`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `${localStorage.getItem("adminToken")}`,
+            },
+          }
+        );
 
         name.current.value = "";
         description.current.value = "";
@@ -111,24 +119,50 @@ function AddCategory() {
       <h1>Add Category</h1>
       <hr />
       <h3>Title</h3>
-      <input ref={name} className="border-2 rounded-md p-2" type="text" placeholder="Enter category title" />
+      <input
+        ref={name}
+        className="border-2 rounded-md p-2"
+        type="text"
+        placeholder="Enter category title"
+      />
       <h3>Description</h3>
-      <textarea ref={description} className="border-2 rounded-md p-2" name="description" id="" cols="30" rows="10" placeholder="Enter category description..."></textarea>
+      <textarea
+        ref={description}
+        className="border-2 rounded-md p-2"
+        name="description"
+        id=""
+        cols="30"
+        rows="10"
+        placeholder="Enter category description..."
+      ></textarea>
       <h3>Image</h3>
       {previewImage && (
         <div className="mb-4">
-          <img src={previewImage} alt="Preview" className="max-w-full h-auto rounded-md" />
-          <button onClick={deleteImage} className="text-red-500 mt-2 cursor-pointer">
+          <img
+            src={previewImage}
+            alt="Preview"
+            className="max-w-full h-auto rounded-md"
+          />
+          <button
+            onClick={deleteImage}
+            className="text-red-500 mt-2 cursor-pointer"
+          >
             Delete Image
           </button>
         </div>
       )}
       <input type="file" onChange={handleImageChange} />
       <div className="flex gap-4">
-        <button onClick={addCategory} className=" bg-[#696cff] text-white px-8 py-2 rounded-md ">
+        <button
+          onClick={addCategory}
+          className=" bg-[#696cff] text-white px-8 py-2 rounded-md "
+        >
           Add
         </button>
-        <button onClick={() => navigate("/category/view-all")} className="bg-[#fedad4] py-2 px-6 text-red-600 rounded-md ">
+        <button
+          onClick={() => navigate("/category/view-all")}
+          className="bg-[#fedad4] py-2 px-6 text-red-600 rounded-md "
+        >
           Discard
         </button>
       </div>

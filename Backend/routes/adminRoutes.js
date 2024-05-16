@@ -1,6 +1,4 @@
 const router=require('express').Router();
-const multer=require('multer');
-const path=require('path');
 const { authenticateJWT,isAdmin} = require('../middlewares/authMiddleware.js');
 const auth=require('../controllers/adminController/authController.js');
 const category=require('../controllers/adminController/categoryController.js');
@@ -13,19 +11,6 @@ const sales=require('../controllers/adminController/salesController.js');
 const sample=require('../controllers/adminController/sample.js');
 const banner=require('../controllers/adminController/bannerController.js');
 const {uploadSingle,uploadArray}=require('../middlewares/imageUpload.js');
-
-
-
-// const storage = multer.diskStorage({
-//     destination: 'uploads/',
-//     filename: function (req, file, cb) {
-//       const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-//       const fileExtension = path.extname(file.originalname);
-//       cb(null, file.fieldname + '-' + uniqueSuffix + fileExtension);
-//     }
-//   });
-  
-//   const upload = multer({ storage: storage });
 
 router.post('/login', auth.login);
 
@@ -61,7 +46,6 @@ router.get('/orders/:orderId', order.getOrderDetails);
 router.get('/users',authenticateJWT,isAdmin, user.viewUsers);
 router.put('/users/:userId',authenticateJWT,isAdmin, user.blockUser);
 router.get('/users/:userId', user.viewUser);
-
 
 // Coupons
 router.get('/coupon',authenticateJWT,isAdmin,coupon.getAllCoupons);

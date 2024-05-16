@@ -230,7 +230,7 @@ const AddProduct = () => {
           variantFormData.append(`specification[${index}][value]`, spec.value);
         });
 
-        const variantResponse = await axios.put(`${BASE_URL}/admin/products/variant/${variantId}`, variantFormData, {
+        const variantResponse = await axios.post(`${BASE_URL}/admin/products/variant`, variantFormData, {
           headers: {
             Authorization: `${localStorage.getItem("adminToken")}`,
           },
