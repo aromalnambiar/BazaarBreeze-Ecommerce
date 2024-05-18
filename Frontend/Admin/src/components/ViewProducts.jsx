@@ -48,11 +48,14 @@ function ViewProducts() {
 
     if (confirmed.isConfirmed) {
       try {
-        const response = await axios.delete(`${BASE_URL}/admin/products/${id}`, {
-          headers: {
-            Authorization: `${localStorage.getItem("adminToken")}`,
-          },
-        });
+        const response = await axios.delete(
+          `${BASE_URL}/admin/products/${id}`,
+          {
+            headers: {
+              Authorization: `${localStorage.getItem("adminToken")}`,
+            },
+          }
+        );
         console.log(response);
         // alert("Deletion success");
         Swal.fire({
@@ -82,11 +85,19 @@ function ViewProducts() {
         <div className="h-full">
           <div className="w-full  max-w-6xl mx-auto bg-white shadow-lg rounded-sm border  border-gray-200">
             <div className="bg-white p-6 flex items-center justify-between py-8">
-              <input type="text" className="px-4 py-2 rounded-md border-2" placeholder="search products..." />
-              <h2 className="font-semibold text-gray-800 text-center ">Products</h2>
+              <input
+                type="text"
+                className="px-4 py-2 rounded-md border-2"
+                placeholder="search products..."
+              />
+              <h2 className="font-semibold text-gray-800 text-center ">
+                Products
+              </h2>
               <div>
                 <Link to={"/adminpanel/products/add"}>
-                  <button className="bg-[#696cff] text-white px-8 py-2 rounded-md shadow-lg">Add Product</button>
+                  <button className="bg-[#696cff] text-white px-8 py-2 rounded-md shadow-lg">
+                    Add Product
+                  </button>
                 </Link>
               </div>
             </div>
@@ -103,7 +114,9 @@ function ViewProducts() {
                         <div className="font-semibold text-left">BRAND</div>
                       </th>
                       <th className="p-2 whitespace-nowrap">
-                        <div className="font-semibold text-left">TOTAL EARNINGS</div>
+                        <div className="font-semibold text-left">
+                          PRODUCT IMAGES
+                        </div>
                       </th>
                       <th className="p-2 whitespace-nowrap">
                         <div className="font-semibold text-center">ACTION</div>
@@ -116,21 +129,45 @@ function ViewProducts() {
                       <tr key={item?._id}>
                         <td className="p-2 whitespace-nowrap">
                           <div className="flex flex-col">
-                            <p className="text-gray-800 max-w-[250px] truncate">{item?.name}</p>
-                            <small className="text-gray-800 max-w-[250px] truncate">{item?.description}</small>
+                            <p className="text-gray-800 max-w-[250px] truncate">
+                              {item?.name}
+                            </p>
+                            <small className="text-gray-800 max-w-[250px] truncate">
+                              {item?.description}
+                            </small>
                           </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
                           <div className="text-left">{item?.brand || "0"}</div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
-                          <div className="text-left font-medium text-green-500">{item.totalEarnings || "0"}</div>
+                          <div className="text-left flex gap-4 items-center font-medium text-green-500">
+                            {item?.firstVariantImages?.map((image, id) => {
+                              return (
+                                <img
+                                className="max-h-16"
+                                  key={id}
+                                  src={`${image}`}
+                                  alt=""
+                                />
+                              );
+                            })}
+                          </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
-                          <Link to={{ pathname: `/adminpanel/products/edit/${item._id}` }}>
-                            <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md">Edit</button>
+                          <Link
+                            to={{
+                              pathname: `/adminpanel/products/edit/${item._id}`,
+                            }}
+                          >
+                            <button className="bg-[#d4f7fe] py-2 px-6 mr-4 text-blue-800 rounded-md">
+                              Edit
+                            </button>
                           </Link>
-                          <button onClick={() => handleDelete(item._id)} className="bg-[#fedad4] py-2 px-6 text-red-600 rounded-md ">
+                          <button
+                            onClick={() => handleDelete(item._id)}
+                            className="bg-[#fedad4] py-2 px-6 text-red-600 rounded-md "
+                          >
                             Delete
                           </button>
                         </td>
@@ -139,7 +176,14 @@ function ViewProducts() {
                   </tbody>
                 </table>
               </div>
-              <ReactPaginate pageCount={totalProducts / 10} pageRangeDisplayed={5} marginPagesDisplayed={2} onPageChange={handlePageClick} containerClassName="pagination" activeClassName="active" />
+              <ReactPaginate
+                pageCount={totalProducts / 10}
+                pageRangeDisplayed={5}
+                marginPagesDisplayed={2}
+                onPageChange={handlePageClick}
+                containerClassName="pagination"
+                activeClassName="active"
+              />
             </div>
           </div>
         </div>

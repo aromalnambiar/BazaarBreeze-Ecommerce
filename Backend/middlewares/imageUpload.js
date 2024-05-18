@@ -9,7 +9,7 @@ const storage = (folderName) =>
     params: async (req, file) => {
       return {
         folder: "ecommerce/" + folderName,
-        public_id: file.fieldname + "-" + Date.now(),
+        public_id: file.originalname + "-" + Date.now(),
         allowedFormats: ["jpg", "png", "jpeg", "gif", "webp"],
       };
     },

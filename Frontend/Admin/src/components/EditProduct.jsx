@@ -1,5 +1,5 @@
-import  { useEffect, useState } from "react";
-import axios from "axios"; 
+import { useEffect, useState } from "react";
+import axios from "axios";
 import AddImages from "./AddImages";
 import { BASE_URL } from "../../config.js";
 import { useParams } from "react-router-dom";
@@ -24,21 +24,25 @@ const EditProduct = () => {
   const [index, setIndex] = useState(0);
   // console.log("Product ID : ", productId);
 
-  const [specifications, setSpecifications] = useState([{ name: "", value: "" }]);
+  const [specifications, setSpecifications] = useState([
+    { name: "", value: "" },
+  ]);
   const [images, setImages] = useState([]);
   const [imagesObjects, setImagesObjects] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
-
 
   //productDatafetching
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`${BASE_URL}/admin/products/${productId}`, {
-          headers: {
-            Authorization: `${localStorage.getItem("adminToken")}`,
-          },
-        });
+        const response = await axios.get(
+          `${BASE_URL}/admin/products/${productId}`,
+          {
+            headers: {
+              Authorization: `${localStorage.getItem("adminToken")}`,
+            },
+          }
+        );
         const product = response.data.product;
         // console.log("proudct : ", product);
         setProductName(product.name);
@@ -75,11 +79,14 @@ const EditProduct = () => {
     const fetchData = async () => {
       try {
         if (categoryId) {
-          const response = await axios.get(`${BASE_URL}/admin/categories/${categoryId}`, {
-            headers: {
-              Authorization: `${localStorage.getItem("adminToken")}`,
-            },
-          });
+          const response = await axios.get(
+            `${BASE_URL}/admin/categories/${categoryId}`,
+            {
+              headers: {
+                Authorization: `${localStorage.getItem("adminToken")}`,
+              },
+            }
+          );
           const categoryName = response.data.category.name;
           setCategory(categoryName);
           // console.log("category Name : ", categoryName);
@@ -97,13 +104,16 @@ const EditProduct = () => {
     const fetchData = async () => {
       try {
         if (productId) {
-          const response = await axios.get(`${BASE_URL}/admin/products/variant/${productId}`, {
-            headers: {
-              Authorization: `${localStorage.getItem("adminToken")}`,
-            },
-          });
+          const response = await axios.get(
+            `${BASE_URL}/admin/products/variant/${productId}`,
+            {
+              headers: {
+                Authorization: `${localStorage.getItem("adminToken")}`,
+              },
+            }
+          );
           const variantData = response.data.variant;
-          // console.log("variant: ", variantData);
+          console.log("variant: ", variantData);
           // console.log("variant ID ::: ", variantData[0]._id);
           setVariantId(variantData[index]._id);
           setVariant(variantData);
@@ -114,14 +124,19 @@ const EditProduct = () => {
           setSalePrice(variantData[index].salePrice);
           setRegularPrice(variantData[index].regularPrice);
           let file = [];
-          const blobPromises = variantData[index].images.map(async (imageUrl) => {
-            const response = await fetch(`${BASE_URL}/uploads/${imageUrl}`);
-            const blob = await response.blob();
-            const fileOne = new File([blob], `${imageUrl}`, { type: blob.type });
-            file.push(fileOne);
-            // console.log("file : ", file);
-            return URL.createObjectURL(blob);
-          });
+          const blobPromises = variantData[index].publicIds.map(
+            async (imageUrl) => {
+              // const response = await fetch(`${BASE_URL}/uploads/${imageUrl}`);
+              const response = await fetch(`${imageUrl}`);
+              const blob = await response.blob();
+              const fileOne = new File([blob], `${imageUrl}`, {
+                type: blob.type,
+              });
+              file.push(fileOne);
+              // console.log("file : ", file);
+              return URL.createObjectURL(blob);
+            }
+          );
           const blobs = await Promise.all(blobPromises);
           // console.log("file : ", file);
           setImages(blobs);
@@ -198,7 +213,7 @@ const EditProduct = () => {
   const handleAddProduct = async () => {
     try {
       const nameRegex = /^[a-zA-Z\s]+$/;
-      if (!productName || !nameRegex.test(productName.trim())) {
+      if (!productName) {
         Swal.fire({
           title: "Fill all!",
           text: "Product name must contain only letters and white spaces.",
@@ -226,7 +241,7 @@ const EditProduct = () => {
       }
 
       const descriptionRegex = /^[a-zA-Z\s]+$/;
-      if (!description || !descriptionRegex.test(description.trim())) {
+      if (!description) {
         Swal.fire({
           title: "Fill all!",
           text: "Description must contain only letters and white spaces.",
@@ -235,7 +250,11 @@ const EditProduct = () => {
         return;
       }
 
-      if (productName.trim() === "" || brand.trim() === "" || description.trim() === "") {
+      if (
+        productName.trim() === "" ||
+        brand.trim() === "" ||
+        description.trim() === ""
+      ) {
         Swal.fire({
           title: "Fill all!",
           text: "Input must not contain only white spaces.",
@@ -312,7 +331,14 @@ const EditProduct = () => {
 
   const handleSendDataToVariant = async () => {
     try {
-      if (!stock || !regularPrice || !salePrice || !variantName || imagesObjects.length === 0 || specifications.length === 0) {
+      if (
+        !stock ||
+        !regularPrice ||
+        !salePrice ||
+        !variantName ||
+        imagesObjects.length === 0 ||
+        specifications.length === 0
+      ) {
         Swal.fire({
           title: "Fill all!",
           text: "Please fill in all required fields and also add specifications.",
@@ -331,7 +357,11 @@ const EditProduct = () => {
       }
 
       const numericRegex = /^\d+$/;
-      if (!numericRegex.test(stock) || !numericRegex.test(regularPrice) || !numericRegex.test(salePrice)) {
+      if (
+        !numericRegex.test(stock) ||
+        !numericRegex.test(regularPrice) ||
+        !numericRegex.test(salePrice)
+      ) {
         Swal.fire({
           title: "Invalid input!",
           text: "Stock, Regular Price, and Sale Price must contain only numbers.",
@@ -391,11 +421,15 @@ const EditProduct = () => {
           variantFormData.append(`specification[${index}][value]`, spec.value);
         });
 
-        const variantResponse = await axios.put(`${BASE_URL}/admin/products/variant/${variantId}`, variantFormData, {
-          headers: {
-            Authorization: `${localStorage.getItem("adminToken")}`,
-          },
-        });
+        const variantResponse = await axios.put(
+          `${BASE_URL}/admin/products/variant/${variantId}`,
+          variantFormData,
+          {
+            headers: {
+              Authorization: `${localStorage.getItem("adminToken")}`,
+            },
+          }
+        );
         // navigate("/products/view-all");
         // console.log(variantResponse.data);
         const Toast = Swal.mixin({
@@ -447,17 +481,31 @@ const EditProduct = () => {
 
       <div className="mb-4">
         <label className="block text-sm font-semibold mb-1">Name</label>
-        <input value={productName} type="text" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("productName", e.target.value)} />
+        <input
+          value={productName}
+          type="text"
+          className="w-full border border-gray-300 p-2"
+          onChange={(e) => handleInputChange("productName", e.target.value)}
+        />
       </div>
 
       <div className="flex mb-4">
         <div className="w-1/2 pr-2">
           <label className="block text-sm font-semibold mb-1">Brand</label>
-          <input value={brand} type="text" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("brand", e.target.value)} />
+          <input
+            value={brand}
+            type="text"
+            className="w-full border border-gray-300 p-2"
+            onChange={(e) => handleInputChange("brand", e.target.value)}
+          />
         </div>
         <div className="w-1/2 pl-2">
           <label className="block text-sm font-semibold mb-1">Category</label>
-          <select className="w-full border border-gray-300 p-2" value={category} onChange={(e) => handleInputChange("category", e.target.value)}>
+          <select
+            className="w-full border border-gray-300 p-2"
+            value={category}
+            onChange={(e) => handleInputChange("category", e.target.value)}
+          >
             <option value="" disabled>
               Select a category
             </option>
@@ -478,17 +526,27 @@ const EditProduct = () => {
 
       <div className="mb-4">
         <label className="block text-sm font-semibold mb-1">Description</label>
-        <textarea value={description} className="w-full border border-gray-300 p-2" rows="6" onChange={(e) => handleInputChange("description", e.target.value)}></textarea>
+        <textarea
+          value={description}
+          className="w-full border border-gray-300 p-2"
+          rows="6"
+          onChange={(e) => handleInputChange("description", e.target.value)}
+        ></textarea>
       </div>
 
-      <button className="bg-blue-500 text-white py-2 px-4 rounded-md mt-6 mb-12" onClick={handleAddProduct}>
+      <button
+        className="bg-blue-500 text-white py-2 px-4 rounded-md mt-6 mb-12"
+        onClick={handleAddProduct}
+      >
         Add Product
       </button>
       <div className="flex border-b border-gray-300 mb-10">
         {productVariantArray.map((item, index) => (
           <div
             key={index}
-            className={`cursor-pointer py-2 px-4 ${activeTab === index ? "bg-gray-400  text-white" : "bg-gray-200"}`}
+            className={`cursor-pointer py-2 px-4 ${
+              activeTab === index ? "bg-gray-400  text-white" : "bg-gray-200"
+            }`}
             onClick={() => {
               setActiveTab(index);
               handleTabClicks(index);
@@ -502,42 +560,102 @@ const EditProduct = () => {
 
       <div>
         <div className="mb-4">
-          <label className="block text-sm font-semibold mb-1">Variant name</label>
-          <input value={variantName} type="text" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("productVariant", e.target.value)} />
+          <label className="block text-sm font-semibold mb-1">
+            Variant name
+          </label>
+          <input
+            value={variantName}
+            type="text"
+            className="w-full border border-gray-300 p-2"
+            onChange={(e) =>
+              handleInputChange("productVariant", e.target.value)
+            }
+          />
         </div>
         <div className="mb-4">
           <label className="block text-sm font-semibold mb-1">Stock</label>
-          <input value={stock} type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("stock", e.target.value)} />
+          <input
+            value={stock}
+            type="number"
+            className="w-full border border-gray-300 p-2"
+            onChange={(e) => handleInputChange("stock", e.target.value)}
+          />
         </div>
 
         <div className="flex mb-4">
           <div className="w-1/2 pr-2">
-            <label className="block text-sm font-semibold mb-1">Regular Price</label>
-            <input value={regularPrice} type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("regularPrice", e.target.value)} />
+            <label className="block text-sm font-semibold mb-1">
+              Regular Price
+            </label>
+            <input
+              value={regularPrice}
+              type="number"
+              className="w-full border border-gray-300 p-2"
+              onChange={(e) =>
+                handleInputChange("regularPrice", e.target.value)
+              }
+            />
           </div>
           <div className="w-1/2 pl-2">
-            <label className="block text-sm font-semibold mb-1">Sale Price</label>
-            <input value={salePrice} type="number" className="w-full border border-gray-300 p-2" onChange={(e) => handleInputChange("salePrice", e.target.value)} />
+            <label className="block text-sm font-semibold mb-1">
+              Sale Price
+            </label>
+            <input
+              value={salePrice}
+              type="number"
+              className="w-full border border-gray-300 p-2"
+              onChange={(e) => handleInputChange("salePrice", e.target.value)}
+            />
           </div>
         </div>
 
-        <AddImages images={images} onImageUpload={handleImageUpload} onRemoveImage={handleRemoveImage} />
+        <AddImages
+          images={images}
+          onImageUpload={handleImageUpload}
+          onRemoveImage={handleRemoveImage}
+        />
         <div className="mt-10">
-          <label className="block text-xl font-semibold mb-4">Specifications</label>
+          <label className="block text-xl font-semibold mb-4">
+            Specifications
+          </label>
           {specifications.map((spec, index) => (
             <div key={index} className="flex mb-4">
-              <input type="text" className="w-1/2 mr-4 border border-gray-300 p-3 rounded-md" placeholder="Specification Name" value={spec.name} onChange={(e) => handleSpecificationChange(index, "name", e)} />
-              <input type="text" className="w-1/2 border border-gray-300 p-3 rounded-md" placeholder="Define Specification" value={spec.value} onChange={(e) => handleSpecificationChange(index, "value", e)} />
-              <button type="button" className="ml-4 text-red-600" onClick={() => handleRemoveSpecification(index)}>
+              <input
+                type="text"
+                className="w-1/2 mr-4 border border-gray-300 p-3 rounded-md"
+                placeholder="Specification Name"
+                value={spec.name}
+                onChange={(e) => handleSpecificationChange(index, "name", e)}
+              />
+              <input
+                type="text"
+                className="w-1/2 border border-gray-300 p-3 rounded-md"
+                placeholder="Define Specification"
+                value={spec.value}
+                onChange={(e) => handleSpecificationChange(index, "value", e)}
+              />
+              <button
+                type="button"
+                className="ml-4 text-red-600"
+                onClick={() => handleRemoveSpecification(index)}
+              >
                 Remove
               </button>
             </div>
           ))}
-          <button type="button" className="bg-green-500 text-white py-2 px-4 rounded-md" onClick={handleAddSpecification}>
+          <button
+            type="button"
+            className="bg-green-500 text-white py-2 px-4 rounded-md"
+            onClick={handleAddSpecification}
+          >
             Add Specification
           </button>
         </div>
-        <button type="button" className="bg-lime-500 ms-auto block py-4 my-8 text-white  px-4 rounded-md" onClick={handleSendDataToVariant}>
+        <button
+          type="button"
+          className="bg-lime-500 ms-auto block py-4 my-8 text-white  px-4 rounded-md"
+          onClick={handleSendDataToVariant}
+        >
           Send Data to Variant
         </button>
       </div>

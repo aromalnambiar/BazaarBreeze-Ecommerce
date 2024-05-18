@@ -39,7 +39,6 @@ spec:
             secretKeyRef:
               name: backend-secret
               key: CLIENT_ID
-        # Add other secret environment variables here
       volumes:
       - name: admin-build
         persistentVolumeClaim:

@@ -4,14 +4,41 @@ const cloudinary = require("../../utils/cloudinary.js");
 
 const viewProducts = async (req, res) => {
   try {
-    const page = req.query.page || 1;
-    const limit = req.query.limit || 10;
+    const page = Number(req.query.page) || 1;
+    const limit = Number(req.query.limit) || 10;
 
     const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
+
+    // Use aggregation to join products with their variants
+    const products = await Products.aggregate([
+      { $match: {} },
+      { $skip: startIndex },
+      { $limit: limit },
+      {
+        $lookup: {
+          from: "productvariants", // the name of the product variant collection
+          localField: "_id",
+          foreignField: "productId",
+          as: "variants",
+        },
+      },
+      {
+        $project: {
+          name: 1,
+          description: 1,
+          brand: 1,
+          isDelete: 1,
+          offer: 1,
+          variants: 1,
+          firstVariantImages: {
+            $slice: [{ $arrayElemAt: ["$variants.publicIds", 0] }, 3], // Get the first 3 images of the first variant
+          },
+        },
+      },
+    ]);
+    console.log("products : ", products);
 
     const totalProducts = await Products.countDocuments();
-    const products = await Products.find().skip(startIndex).limit(limit);
 
     res.status(200).json({ message: "Success", products, totalProducts });
   } catch (error) {
@@ -82,9 +109,12 @@ const addProductVariant = async (req, res) => {
       req.body;
     let { specification } = req.body;
     const files = req.files;
-
+    console.log("Files : ", req.files);
     const images = files.map((item) => {
       return item.filename;
+    });
+    const publicIds = files.map((item) => {
+      return item.path;
     });
 
     specification = specification.map((item) => item);
@@ -97,6 +127,7 @@ const addProductVariant = async (req, res) => {
       salePrice: specialprice,
       variantName,
       images,
+      publicIds,
       specification,
     });
     await productvariant.save();
@@ -149,7 +180,7 @@ const editProductVariant = async (req, res) => {
     let { specification } = req.body;
     const files = req.files;
     // console.log("req.body : ",req.body);
-    // console.log("req.file: ",req.files);
+    console.log("req.file: ", req.files);
 
     // Retrieve the existing product variant data
     const originalProductVariant = await ProductVariant.findById(variantId);
@@ -164,11 +195,35 @@ const editProductVariant = async (req, res) => {
       images: files
         ? files.map((item) => item.filename)
         : originalProductVariant.images, // Update or keep originals
+      publicIds: files
+        ? files.map((item) => item.path)
+        : originalProductVariant.publicIds, // Update or keep originals
       specification: specification
         ? specification.map((item) => item)
         : originalProductVariant.specification, // Update or keep originals
     };
-
+    if (req.files && originalProductVariant.images) {
+      const deletionPromises = originalProductVariant.images.map((image) =>
+        cloudinary.uploader.destroy(image)
+      );
+      const deletionResults = await Promise.all(deletionPromises);
+      console.log("deletionResults : ", deletionResults);
+      deletionResults.forEach((result) => {
+        if (result.result === "ok") {
+          console.log(`Deleted image: ${result.public_id}`);
+        } else {
+          console.error(
+            `Error deleting image ${result.public_id}:`,
+            result.error
+          );
+        }
+      });
+      // originalProductVariant.images.forEach(async (image) => {
+      //   await cloudinary.uploader.destroy(image, function (error, result) {
+      //     console.log(result, error);
+      //   });
+      // });
+    }
     // Perform the update using findByIdAndUpdate with safe: true
     const updatedProductVariant = await ProductVariant.findByIdAndUpdate(
       { _id: variantId },
