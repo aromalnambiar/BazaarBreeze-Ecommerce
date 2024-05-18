@@ -23,7 +23,6 @@ function BestDeals() {
           wishlistStatusMap[item.productVariantId] = item.isWishlist;
         });
         setWishlistStatus(wishlistStatusMap);
-        console.log("data products : ", res.data.products);
         setProducts(res.data.products);
       } catch (error) {
         console.log(error);

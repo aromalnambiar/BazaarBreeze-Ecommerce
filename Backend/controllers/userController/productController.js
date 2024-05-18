@@ -5,58 +5,6 @@ const Cart = require("../../models/Cart");
 const Wishlist = require("../../models/Wishlist");
 const Category = require("../../models/Category");
 
-// const listProducts = async (req, res) => {
-//   try {
-//     const { categoryName, page = 1, pageSize = 15 } = req.params;
-//     const skip = (page - 1) * pageSize;
-
-//     if (!categoryName) {
-//       return res.status(400).json({ error: 'Category name is required' });
-//     }
-
-//     const products = await Products.aggregate([
-//       {
-//         $match: {
-//           category: mongoose.Types.ObjectId(categoryName),
-//         },
-//       },
-//       {
-//         $lookup: {
-//           from: 'productvariants',
-//           localField: '_id',
-//           foreignField: 'productId',
-//           as: 'variants',
-//         },
-//       },
-//       {
-//         $addFields: {
-//           firstVariant: { $arrayElemAt: ['$variants', 0] },
-//         },
-//       },
-//       {
-//         $project: {
-//           productId: '$_id',
-//           productVariantId: '$firstVariant._id',
-//           description: 1,
-//           salePrice: '$firstVariant.salePrice',
-//           // Include more fields as needed
-//           firstImage: { $arrayElemAt: ['$firstVariant.images', 0] },
-//         },
-//       },
-//       {
-//         $skip: skip,
-//       },
-//       {
-//         $limit: parseInt(pageSize),
-//       },
-//     ]);
-
-//     res.status(200).json({ message: 'success', products });
-//     } catch (error) {
-//       console.error(error);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     }
-//   };
 const listProducts = async (req, res) => {
   try {
     const { page = 1, pageSize = 15 } = req.params;
@@ -175,7 +123,7 @@ const listProductsByCategory = async (req, res) => {
           salePrice: "$firstVariant.salePrice",
           productId: "$_id",
           productVariantId: "$firstVariant._id",
-          image: { $arrayElemAt: ["$firstVariant.images", 0] },
+          image: { $arrayElemAt: ["$firstVariant.publicIds", 0] },
           isWishlist: { $in: ["$firstVariant._id", wishlistProductVariantIds] },
         },
       },
