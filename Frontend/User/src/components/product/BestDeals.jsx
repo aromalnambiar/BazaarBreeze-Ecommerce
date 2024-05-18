@@ -23,7 +23,7 @@ function BestDeals() {
           wishlistStatusMap[item.productVariantId] = item.isWishlist;
         });
         setWishlistStatus(wishlistStatusMap);
-
+        console.log("data products : ", res.data.products);
         setProducts(res.data.products);
       } catch (error) {
         console.log(error);
@@ -71,26 +71,55 @@ function BestDeals() {
     <div className="mx-auto text-xs md:text-base break-all">
       <div className="flex my-4 justify-between mx-2 sm:mx-20 md:mx-0">
         <h4 className="font-bold">Best Deals</h4>
-        <p className="text-[#2DA5F3] font-medium cursor-pointer">Browse All product</p>
+        <p className="text-[#2DA5F3] font-medium cursor-pointer">
+          Browse All product
+        </p>
       </div>
       <div className="flex flex-wrap justify-center gap-3 ">
         {loading
           ? Array.from({ length: 15 }).map((_, index) => (
-              <div key={index} className="w-40 sm:w-48 h-64 rounded-lg bg-slate-50 p-2 shadow-lg border">
+              <div
+                key={index}
+                className="w-40 sm:w-48 h-64 rounded-lg bg-slate-50 p-2 shadow-lg border"
+              >
                 <Skeleton height={176} />
               </div>
             ))
           : products.map((item) => (
-              <div key={item.productVariantId} className="flex w-[138px]  sm:w-48 h-56 sm:h-64 rounded-lg relative  flex-col p-2 shadow-lg border">
+              <div
+                key={item.productVariantId}
+                className="flex w-[138px]  sm:w-48 h-56 sm:h-64 rounded-lg relative  flex-col p-2 shadow-lg border"
+              >
                 {/* {console.log("item Best : ", item)} */}
-                <div onClick={() => handleClick(item)} className="w-full h-44 overflow-hidden cursor-pointer">
-                  <img className="w-30 sm:w-44 h-36 mx-auto sm:h-44 object-contain rounded-sm" src={`${BASE_URL}/uploads/${item.image}` || ""} alt="" />
+                <div
+                  onClick={() => handleClick(item)}
+                  className="w-full h-44 overflow-hidden cursor-pointer"
+                >
+                  <img
+                    className="w-30 sm:w-44 h-36 mx-auto sm:h-44 object-contain rounded-sm"
+                    src={`${item.image}` || ""}
+                    alt=""
+                  />
                 </div>
                 <div className="absolute bottom-2">
-                  <p className="text-sm  sm:text-base font-semibold text-gray-500 w-[100px] sm:w-[140px] overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">{item.description}</p>
+                  <p className="text-sm  sm:text-base font-semibold text-gray-500 w-[100px] sm:w-[140px] overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">
+                    {item.description}
+                  </p>
                   <p className="text-xs text-[#2DA5F3]">₹ {item.salePrice}</p>
                 </div>
-                {wishlistStatus[item.productVariantId] ? <IoMdHeart onClick={() => handleRemoveFromWishlist(item.productVariantId)} className="text-red-500  absolute right-1 sm:right-4 bottom-6 text-xl cursor-pointer" /> : <IoIosHeartEmpty onClick={() => handleAddToWishlist(item.productVariantId)} className="absolute text-xl right-1 sm:right-4 bottom-6 cursor-pointer" />}
+                {wishlistStatus[item.productVariantId] ? (
+                  <IoMdHeart
+                    onClick={() =>
+                      handleRemoveFromWishlist(item.productVariantId)
+                    }
+                    className="text-red-500  absolute right-1 sm:right-4 bottom-6 text-xl cursor-pointer"
+                  />
+                ) : (
+                  <IoIosHeartEmpty
+                    onClick={() => handleAddToWishlist(item.productVariantId)}
+                    className="absolute text-xl right-1 sm:right-4 bottom-6 cursor-pointer"
+                  />
+                )}
               </div>
             ))}
       </div>
