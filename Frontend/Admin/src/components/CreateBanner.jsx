@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import { BASE_URL } from "../../config";
+import Swal from "sweetalert2";
 import axios from "axios";
 
 const CreateBanner = () => {
@@ -38,7 +39,7 @@ const CreateBanner = () => {
       });
       return false;
     }
-    if (formData.title.length > 20 || formData.description.length > 50 || formData.link.length > 40) {
+    if (formData.title.length > 25 || formData.description.length > 50 || formData.link.length > 40) {
       Swal.fire({
         icon: "error",
         title: "Oops...",

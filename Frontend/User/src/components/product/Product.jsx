@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosConfig";
-import { BASE_URL } from "../../../config";
 import { useNavigate, useParams } from "react-router-dom";
 import Specification from "./Specification";
 import InnerImageZoom from "react-inner-image-zoom";

@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import ReactPaginate from "react-paginate";
 import { BASE_URL } from "../../config";
 import axios from "axios";
 
 function ViewBanners() {
   const [banners, setBanners] = useState([]);
-  const [toggle, setToggle] = useState(false);
+  const [toggle] = useState(false);
   const [pageNumber, setPageNumber] = useState(1); // Default to the first page
   const [totalPages, setTotalPages] = useState(1); // Default to 1 page
   const bannersPerPage = 10; // Adjust as needed
@@ -64,16 +64,22 @@ function ViewBanners() {
                         <div className="font-semibold text-left">Link</div>
                       </th>
                       <th className="p-2 whitespace-nowrap">
-                        <div className="font-semibold text-center">description</div>
+                        <div className="font-semibold text-center">
+                          description
+                        </div>
                       </th>
                       <th className="p-2 whitespace-nowrap">
-                        <div className="font-semibold text-center">startDate</div>
+                        <div className="font-semibold text-center">
+                          startDate
+                        </div>
                       </th>
                       <th className="p-2 whitespace-nowrap">
                         <div className="font-semibold text-center">endDate</div>
                       </th>
                       <th className="p-2 whitespace-nowrap">
-                        <div className="font-semibold text-center">isActive</div>
+                        <div className="font-semibold text-center">
+                          isActive
+                        </div>
                       </th>
                     </tr>
                   </thead>
@@ -83,32 +89,53 @@ function ViewBanners() {
                       <tr key={item._id}>
                         <td className="p-2 whitespace-nowrap">
                           <div className="flex items-center">
-                            <div className="font-medium text-gray-800">{idx + 1}</div>
+                            <div className="font-medium text-gray-800">
+                              {idx + 1}
+                            </div>
                           </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
                           <div className="text-left">
-                            <img src={`${BASE_URL}/uploads/${item.imageUrl}`} alt="" srcSet="" />
+                            <img src={`${item.publicId}`} alt="" srcSet="" />
                           </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
-                          <div className="text-left font-medium text-green-500">{item.title}</div>
+                          <div className="text-left font-medium text-green-500">
+                            {item.title}
+                          </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
                           <div className="text-xs text-center">{item.link}</div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
-                          <div className="text-sm text-center">{item.description}</div>
+                          <div className="text-sm text-center">
+                            {item.description}
+                          </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
-                          <div className="text-sm text-center">{item.startDate.slice(0, 10)}</div>
+                          <div className="text-sm text-center">
+                            {item.startDate.slice(0, 10)}
+                          </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
-                          <div className="text-sm text-center">{item.endDate.slice(0, 10)}</div>
+                          <div className="text-sm text-center">
+                            {item.endDate.slice(0, 10)}
+                          </div>
                         </td>
                         <td className="p-2 whitespace-nowrap">
-                          <div onClick={() => handleActiveStatus(item._id)} className="text-sm text-center">
-                            <button className={`px-3 py-1 rounded-full ${item.isActive ? "bg-green-500 text-white" : "bg-red-500 text-white"}`}>{item.isActive ? "Active" : "Inactive"}</button>
+                          <div
+                            onClick={() => handleActiveStatus(item._id)}
+                            className="text-sm text-center"
+                          >
+                            <button
+                              className={`px-3 py-1 rounded-full ${
+                                item.isActive
+                                  ? "bg-green-500 text-white"
+                                  : "bg-red-500 text-white"
+                              }`}
+                            >
+                              {item.isActive ? "Active" : "Inactive"}
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -117,7 +144,16 @@ function ViewBanners() {
                 </table>
               </div>
             </div>
-            {totalPages > 1 && <ReactPaginate pageCount={totalPages} pageRangeDisplayed={5} marginPagesDisplayed={2} onPageChange={handlePageClick} containerClassName="pagination" activeClassName="active" />}
+            {totalPages > 1 && (
+              <ReactPaginate
+                pageCount={totalPages}
+                pageRangeDisplayed={5}
+                marginPagesDisplayed={2}
+                onPageChange={handlePageClick}
+                containerClassName="pagination"
+                activeClassName="active"
+              />
+            )}
           </div>
         </div>
       </section>

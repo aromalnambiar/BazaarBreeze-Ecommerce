@@ -1,4 +1,3 @@
-import React from "react";
 import { BASE_URL } from "../../../config";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
@@ -33,7 +32,12 @@ function Wishlist() {
 
   const handleRemoveFromWishlist = async (productVariant) => {
     try {
-      const confirmed = await confirmAction("warning", "Are you sure?", "Do you want to remove from wishlist!", "yes,sure");
+      const confirmed = await confirmAction(
+        "warning",
+        "Are you sure?",
+        "Do you want to remove from wishlist!",
+        "yes,sure"
+      );
       if (confirmed) {
         await axiosInstance.put(`/user/wishlist`, { productVariant });
         setIsUpdated((prev) => !prev);
@@ -62,7 +66,11 @@ function Wishlist() {
 
   return (
     <div className={`${isDashboardCartPath ? "my-0" : "my-10"}`}>
-      <section className={`flex flex-col justify-center antialiased text-gray-600 p-4 ${isDashboardCartPath ? "p-0" : "p-4"}`}>
+      <section
+        className={`flex flex-col justify-center antialiased text-gray-600 p-4 ${
+          isDashboardCartPath ? "p-0" : "p-4"
+        }`}
+      >
         <div className="h-full">
           <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
             <header className="px-5 py-4 border-b border-gray-100">
@@ -80,7 +88,9 @@ function Wishlist() {
                         <div className="font-semibold text-left">Price</div>
                       </th>
                       <th className="p-2 whitespace-nowrap">
-                        <div className="font-semibold text-left">Stock status</div>
+                        <div className="font-semibold text-left">
+                          Stock status
+                        </div>
                       </th>
                       <th className="p-2 whitespace-nowrap">
                         <div className="font-semibold text-center">Actions</div>
@@ -99,26 +109,59 @@ function Wishlist() {
                       wishList.map((item, idx) => (
                         <tr key={item?.productVariant?._id}>
                           <td className="flex items-center min-w-max py-8 ps-2 sm:px-6 whitespace-nowrap">
-                            <img onClick={() => handleClickImage(item.productVariant.productId)} src={`${BASE_URL}/uploads/${item?.productVariant?.images[0]}`} className="w-10 h-10 cursor-pointer object-contain mr-3" alt="" />
+                            <img
+                              onClick={() =>
+                                handleClickImage(item.productVariant.productId)
+                              }
+                              src={`${BASE_URL}/uploads/${item?.productVariant?.images[0]}`}
+                              className="w-10 h-10 cursor-pointer object-contain mr-3"
+                              alt=""
+                            />
                             <div>
-                              <span className="block text-gray-700 text-sm font-medium">{item?.productVariant?.variantName}</span>
+                              <span className="block text-gray-700 text-sm font-medium">
+                                {item?.productVariant?.variantName}
+                              </span>
                             </div>
                           </td>
                           <td className="p-2 min-w-max whitespace-nowrap">
-                            <div className="text-left font-medium ">{item?.productVariant?.salePrice}</div>
+                            <div className="text-left font-medium ">
+                              {item?.productVariant?.salePrice}
+                            </div>
                           </td>
                           <td className="p-2 min-w-max whitespace-nowrap">
-                            <div className={`text-xs ${item?.productVariant?.stock == 0 ? "text-red-500" : "text-green-500"} `}>{item?.productVariant?.stock == 0 ? "Out of stock" : "In stock"}</div>
+                            <div
+                              className={`text-xs ${
+                                item?.productVariant?.stock == 0
+                                  ? "text-red-500"
+                                  : "text-green-500"
+                              } `}
+                            >
+                              {item?.productVariant?.stock == 0
+                                ? "Out of stock"
+                                : "In stock"}
+                            </div>
                           </td>
                           <td>
                             <div>
                               {item.isInCart !== true && (
-                                <div onClick={() => handleAddToCart(item?.productVariant?._id)} className="flex items-center gap-4 text-sm mx-auto justify-center p-2 text-green-400 hover:text-green-700 cursor-pointer border-2 border-green-200 hover:border-green-700 max-w-44 min-w-32 rounded-md">
+                                <div
+                                  onClick={() =>
+                                    handleAddToCart(item?.productVariant?._id)
+                                  }
+                                  className="flex items-center gap-4 text-sm mx-auto justify-center p-2 text-green-400 hover:text-green-700 cursor-pointer border-2 border-green-200 hover:border-green-700 max-w-44 min-w-32 rounded-md"
+                                >
                                   <FaCartPlus />
                                   <p>Add to cart</p>
                                 </div>
                               )}
-                              <p onClick={() => handleRemoveFromWishlist(item?.productVariant?._id)} className="p-2 whitespace-nowrap text-red-500 cursor-pointer text-sm text-center ">
+                              <p
+                                onClick={() =>
+                                  handleRemoveFromWishlist(
+                                    item?.productVariant?._id
+                                  )
+                                }
+                                className="p-2 whitespace-nowrap text-red-500 cursor-pointer text-sm text-center "
+                              >
                                 Remove
                               </p>
                             </div>

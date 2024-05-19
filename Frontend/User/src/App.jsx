@@ -27,19 +27,17 @@ function App() {
   ];
 
   return (
-    <>
-      <BrowserRouter>
-        <Layout>
-          <MaxWidth>
-            <Routes>
-              {routes.map(({ path, element }) => (
-                <Route key={path} path={path} element={element} />
-              ))}
-            </Routes>
-          </MaxWidth>
-        </Layout>
-      </BrowserRouter>
-    </>
+    <BrowserRouter>
+      <Layout>
+        <MaxWidth>
+          <Routes>
+            {routes.map(({ path, element }) => (
+              <Route key={path} path={path} element={element} />
+            ))}
+          </Routes>
+        </MaxWidth>
+      </Layout>
+    </BrowserRouter>
   );
 }
 

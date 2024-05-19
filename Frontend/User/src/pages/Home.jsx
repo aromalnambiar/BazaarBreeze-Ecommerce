@@ -6,22 +6,11 @@ import NotFound from "../components/common/NotFound";
 import { useParams } from "react-router-dom";
 
 function Home() {
-  const d = useParams();
-  // console.log(d);
-  const section = d["*"];
-  // console.log(section);
+  const { "*": section } = useParams();
 
   const renderComponentBasedOnRoute = () => {
     switch (section) {
       case "":
-        return (
-          <>
-            <Banner />
-            <BestDeals />
-            <ShopWithCategories />
-            <FeaturedProducts />
-          </>
-        );
       case "home":
         return (
           <>
@@ -36,7 +25,7 @@ function Home() {
     }
   };
 
-  return <>{renderComponentBasedOnRoute()};</>;
+  return <>{renderComponentBasedOnRoute()}</>;
 }
 
 export default Home;
