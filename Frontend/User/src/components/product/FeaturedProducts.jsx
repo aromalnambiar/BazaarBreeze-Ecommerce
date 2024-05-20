@@ -19,7 +19,7 @@ function FeaturedProducts() {
           wishlistStatusMap[item.productVariantId] = item.isWishlist;
         });
         setWishlistStatus(wishlistStatusMap);
-        console.log("Smartphones : ", res.data.products);
+        // console.log("Smartphones : ", res.data.products);
         setProducts(res.data.products);
       } catch (error) {
         console.log(error);
