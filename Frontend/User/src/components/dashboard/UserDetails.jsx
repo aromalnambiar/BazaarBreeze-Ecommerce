@@ -18,8 +18,17 @@ function AccountInfo({ user, handleEditAccount }) {
       </div>
       <div className="text-sm mx-4">
         <div className="flex text-xs items-center gap-4 my-4">
-          {console.log("user image : ", user.image)}
-          {user.image ? <img src={`${BASE_URL}/uploads/${user.image}`} className="w-10 h-10 rounded-full" alt="" srcSet="" /> : <FaUserCircle className="w-10 h-10 text-gray-400" />}
+          {/* {console.log("user image : ", user.image)} */}
+          {user.image ? (
+            <img
+              src={`${BASE_URL}/uploads/${user.image}`}
+              className="w-10 h-10 rounded-full"
+              alt=""
+              srcSet=""
+            />
+          ) : (
+            <FaUserCircle className="w-10 h-10 text-gray-400" />
+          )}
           <div>
             <h3 className="text-sm ">{user.username}</h3>
           </div>
@@ -37,7 +46,10 @@ function AccountInfo({ user, handleEditAccount }) {
             <span className="text-black">Age : </span>
             {user.age || "Not set"}
           </p>
-          <button onClick={handleEditAccount} className="uppercase border absolute bottom-0 border-[#D5EDFD] text-[#2DA5F3] font-bold py-3 px-4 rounded-md mb-4 w-max mx-auto">
+          <button
+            onClick={handleEditAccount}
+            className="uppercase border absolute bottom-0 border-[#D5EDFD] text-[#2DA5F3] font-bold py-3 px-4 rounded-md mb-4 w-max mx-auto"
+          >
             Edit Account
           </button>
         </div>
@@ -48,7 +60,10 @@ function AccountInfo({ user, handleEditAccount }) {
 
 function ShippingAddress({ item, handleEditAddress }) {
   return (
-    <div key={item._id} className="border min-h-[40vh] relative pb-20  rounded-md col-span-12 sm:col-span-6 lg:col-span-4">
+    <div
+      key={item._id}
+      className="border min-h-[40vh] relative pb-20  rounded-md col-span-12 sm:col-span-6 lg:col-span-4"
+    >
       <div className="text-sm font-semibold border-b">
         <p className="px-4 py-4">SHIPPING ADDRESS</p>
       </div>
@@ -71,15 +86,21 @@ function ShippingAddress({ item, handleEditAddress }) {
             {item.phone1}
           </p>
           <p className="text-gray-600">
-            <span className="text-black">Phone2 : </span> {item.phone2 || "Not set"}
+            <span className="text-black">Phone2 : </span>{" "}
+            {item.phone2 || "Not set"}
           </p>
           <p className="text-gray-600">
-            <span className="text-black">Street : </span> {item.street || "Not set"}
+            <span className="text-black">Street : </span>{" "}
+            {item.street || "Not set"}
           </p>
           <p className="text-gray-600">
-            <span className="text-black">State : </span> {item.state || "Not set"}
+            <span className="text-black">State : </span>{" "}
+            {item.state || "Not set"}
           </p>
-          <button onClick={() => handleEditAddress(item)} className="absolute bottom-0 uppercase border border-[#D5EDFD] text-[#2DA5F3] font-bold py-3 px-4 rounded-md mb-4 w-max mx-auto">
+          <button
+            onClick={() => handleEditAddress(item)}
+            className="absolute bottom-0 uppercase border border-[#D5EDFD] text-[#2DA5F3] font-bold py-3 px-4 rounded-md mb-4 w-max mx-auto"
+          >
             Edit Address
           </button>
         </div>
@@ -136,20 +157,34 @@ function UserDetails() {
       {isToggle ? (
         <AddAddress setIsToggle={setIsToggle} />
       ) : isEdit ? (
-        <EditAddress setIsEdit={setIsEdit} addressDetails={editAddressDetails} />
+        <EditAddress
+          setIsEdit={setIsEdit}
+          addressDetails={editAddressDetails}
+        />
       ) : (
         <div className="mb-10">
           <h3 className="text-lg font-bold my-2">Hello, User</h3>
-          <p className="text-sm w-3/6">From your account dashboard. you can easily check & view your Recent Orders, manage your Shipping and Billing Addresses and edit your Password and Account Details.</p>
+          <p className="text-sm w-3/6">
+            From your account dashboard. you can easily check & view your Recent
+            Orders, manage your Shipping and Billing Addresses and edit your
+            Password and Account Details.
+          </p>
           <div className="grid relative grid-cols-12 gap-4 mt-4">
             <AccountInfo user={user} handleEditAccount={handleEditAccount} />
 
-            <button onClick={handleAddAddress} className="uppercase border absolute  right-0  -top-[120px]  border-[#f3792d] text-[#f3792d] font-bold py-3 px-4 rounded-md mb-4 text-xs w-max ">
+            <button
+              onClick={handleAddAddress}
+              className="uppercase border absolute  right-0  -top-[120px]  border-[#f3792d] text-[#f3792d] font-bold py-3 px-4 rounded-md mb-4 text-xs w-max "
+            >
               Add Address
             </button>
 
             {address.map((item, index) => (
-              <ShippingAddress key={item._id} item={item} handleEditAddress={handleEditAddress} />
+              <ShippingAddress
+                key={item._id}
+                item={item}
+                handleEditAddress={handleEditAddress}
+              />
             ))}
 
             <div className="min-h-[40vh] rounded-md col-span-4 flex flex-col gap-2">

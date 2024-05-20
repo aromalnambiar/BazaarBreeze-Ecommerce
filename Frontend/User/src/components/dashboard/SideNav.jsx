@@ -50,7 +50,7 @@ function SideNav() {
       handleLogout();
       navigate("/");
     } else {
-      navigate("/dashboard");
+      navigate(path);
     }
   };
 
@@ -61,7 +61,15 @@ function SideNav() {
         const isActive = location.pathname === item.path;
 
         return (
-          <li onClick={() => handleClick(item.path)} className={`flex items-center gap-4 pl-6 cursor-pointer text-gray-600 ${isActive ? "bg-[#FA8232] text-white" : "hover:bg-[#ffa365] hover:text-white"} p-2`} key={item.name}>
+          <li
+            onClick={() => handleClick(item.path)}
+            className={`flex items-center gap-4 pl-6 cursor-pointer text-gray-600 ${
+              isActive
+                ? "bg-[#FA8232] text-white"
+                : "hover:bg-[#ffa365] hover:text-white"
+            } p-2`}
+            key={item.name}
+          >
             <LogoComponent />
             <p>{item.name}</p>
           </li>
