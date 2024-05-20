@@ -228,7 +228,6 @@ function ShoppingCart() {
                               <td className="p-2 whitespace-nowrap">
                                 <div className="flex gap-4 my-4">
                                   <div className="w-14">
-                                    {console.log("cartItem : ", item)}
                                     <img
                                       onClick={() =>
                                         handleClickImage(

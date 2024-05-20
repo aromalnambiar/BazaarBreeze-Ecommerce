@@ -108,15 +108,18 @@ function Product() {
   };
 
   const handleTabClick = async (index, id) => {
+    console.log("Index : ", index);
+    console.log("id : ", id);
     setActiveTab(index);
     setLoading(true); // Show loading skeletons for tab change
     try {
       const response = await axiosInstance.get(`/user/products/variants/${id}`);
+      // console.log("response : ", response);
       setItem(response.data.productVariant);
       setIsWishlistFound(response.data.isWishlistFound);
       setIsCartFound(response.data.isCartFound);
-      setImage(response.data.productVariant.images[0]);
-      setGalleryImages(response.data.productVariant.images);
+      setImage(response.data.productVariant.publicIds[0]);
+      setGalleryImages(response.data.productVariant.publicIds);
       setSpecification(response.data.productVariant.specification);
     } catch (error) {
       console.log(error);
