@@ -25,7 +25,7 @@ function BestDeals() {
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false); 
+        setLoading(false);
       }
     };
 
