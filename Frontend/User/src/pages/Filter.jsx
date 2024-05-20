@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import SideRadioCategories from "../components/filter/SideRadioCategories";
 import Search from "../components/filter/Search.jsx";
 import PriceFilter from "../components/filter/PriceFilter.jsx";
@@ -22,7 +22,9 @@ function Filter() {
   const handleOptionChange = (option) => {
     setFilter((prevFilter) => ({
       ...prevFilter,
-      selectedOptions: prevFilter.selectedOptions.includes(option) ? prevFilter.selectedOptions.filter((item) => item !== option) : [...prevFilter.selectedOptions, option],
+      selectedOptions: prevFilter.selectedOptions.includes(option)
+        ? prevFilter.selectedOptions.filter((item) => item !== option)
+        : [...prevFilter.selectedOptions, option],
     }));
   };
 
