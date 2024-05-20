@@ -260,7 +260,7 @@ const showCart = async (req, res) => {
       path: "product.productVariantId",
       model: "ProductVariant",
       select:
-        "variantName salePrice images _id productId category regularPrice",
+        "variantName salePrice publicIds _id productId category regularPrice",
     });
 
     if (!cart) {
