@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-
-import { BASE_URL } from "../../../config";
 import { useNavigate } from "react-router-dom";
 import { IoIosHeartEmpty, IoMdHeart } from "react-icons/io";
 import Skeleton from "react-loading-skeleton";
@@ -64,9 +62,9 @@ function FeaturedProducts() {
   };
 
   return (
-    <div className="mx-auto text-xs md:text-base break-all">
-      <div className="flex my-4 justify-between mx-2 sm:mx-20 md:mx-0">
-        <h4 className="font-bold">Smart Phone</h4>
+    <div className="mx-auto text-xs md:text-base break-all mb-10">
+      <div className="flex my-16 justify-between mx-2 sm:mx-20 md:mx-0">
+        <h4 className="font-bold text-xl">Smart Phone</h4>
         <p className="text-[#2DA5F3] font-medium cursor-pointer">
           Browse All product
         </p>

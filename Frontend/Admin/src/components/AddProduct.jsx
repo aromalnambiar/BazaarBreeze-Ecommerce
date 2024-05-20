@@ -57,14 +57,14 @@ const AddProduct = () => {
       }
 
       // Check for empty or whitespace description and limit length to 100 characters
-      if (!formData.description || formData.description.trim() === "" || formData.description.length > 100) {
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Description must not be empty, whitespace only, or exceed 100 characters!",
-        });
-        return;
-      }
+      // if (!formData.description || formData.description.trim() === "" || formData.description.length > 200) {
+      //   Swal.fire({
+      //     icon: "error",
+      //     title: "Oops...",
+      //     text: "Description must not be empty, whitespace only, or exceed 200 characters!",
+      //   });
+      //   return;
+      // }
 
       // Check for empty branch or limit length to 10 characters
       if (!formData.brand || formData.brand.trim() === "" || formData.brand.length > 10) {
