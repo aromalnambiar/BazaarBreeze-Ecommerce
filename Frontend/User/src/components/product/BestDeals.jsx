@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-
-import { BASE_URL } from "../../../config";
 import axiosInstance from "../../utils/axiosConfig";
 import { useNavigate } from "react-router-dom";
 import { IoIosHeartEmpty, IoMdHeart } from "react-icons/io";
@@ -27,7 +25,7 @@ function BestDeals() {
       } catch (error) {
         console.log(error);
       } finally {
-        setLoading(false); // Set loading to false regardless of success or failure
+        setLoading(false); 
       }
     };
 
