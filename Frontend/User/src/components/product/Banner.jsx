@@ -1,13 +1,14 @@
 import { useEffect, useState } from "react";
-
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { BASE_URL } from "../../../config";
 import axiosInstance from "../../utils/axiosConfig";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function Banner() {
   const [banners, setBanners] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -16,6 +17,8 @@ function Banner() {
         setBanners(result.data);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchDetails();
@@ -32,28 +35,31 @@ function Banner() {
   };
 
   return (
-    <Slider
-      {...settings}
-      className="w-[94%] mx-auto  sm:w-full h-[350px] my-10 md:px-4"
-    >
-      {banners.map((item, index) => (
-        <div key={index} className="relative h-[350px] rounded-lg over">
-          <img
-            src={`${item.publicId}`}
-            alt="Banner"
-            className="w-full h-full object-cover absolute inset-0"
-          />
-          <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
-            <div className="text-center z-10">
-              <h2 className="text-4xl font-bold text-white mb-2">
-                {item.title}
-              </h2>
-              <p className="text-lg text-white">{item.description}</p>
+    <div className="w-[94%] mx-auto sm:w-full h-[350px] my-10 md:px-4">
+      {loading ? (
+        <Skeleton height={350} width="100%" />
+      ) : (
+        <Slider {...settings}>
+          {banners.map((item, index) => (
+            <div key={index} className="relative h-[350px] rounded-lg">
+              <img
+                src={`${item.publicId}`}
+                alt="Banner"
+                className="w-full h-full object-cover absolute inset-0"
+              />
+              <div className="absolute inset-0 bg-black bg-opacity-20 flex items-center justify-center">
+                <div className="text-center z-10">
+                  <h2 className="text-4xl font-bold text-white mb-2">
+                    {item.title}
+                  </h2>
+                  <p className="text-lg text-white">{item.description}</p>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
-      ))}
-    </Slider>
+          ))}
+        </Slider>
+      )}
+    </div>
   );
 }
 
