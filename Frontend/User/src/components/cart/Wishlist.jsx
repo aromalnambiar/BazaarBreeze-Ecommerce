@@ -1,9 +1,10 @@
-import { BASE_URL } from "../../../config";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { FaCartPlus } from "react-icons/fa";
 import { confirmAction } from "../../utils/sweetAlert";
 import axiosInstance from "../../utils/axiosConfig";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 function Wishlist() {
   const location = useLocation();
@@ -12,6 +13,7 @@ function Wishlist() {
 
   const [wishList, setWishList] = useState([]);
   const [isUpdated, setIsUpdated] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,6 +23,8 @@ function Wishlist() {
         setWishList(result.data.wishlistItems);
       } catch (error) {
         console.log(error);
+      } finally {
+        setLoading(false);
       }
     };
     fetchData();
@@ -53,7 +57,6 @@ function Wishlist() {
 
   const handleAddToCart = async (id) => {
     try {
-      // console.log("ID : ", id);
       const response = await axiosInstance.post(`/user/cart`, {
         productVariantId: id,
         quantity: 1,
@@ -99,7 +102,30 @@ function Wishlist() {
                   </thead>
 
                   <tbody className="text-sm divide-y divide-gray-100">
-                    {wishList.length === 0 ? (
+                    {loading ? (
+                      Array.from({ length: 3 }).map((_, idx) => (
+                        <tr key={idx}>
+                          <td className="flex items-center min-w-max py-8 ps-2 sm:px-6 whitespace-nowrap">
+                            <Skeleton width={40} height={40} />
+                            <div className="ml-3">
+                              <Skeleton width={100} />
+                            </div>
+                          </td>
+                          <td className="p-2 min-w-max whitespace-nowrap">
+                            <Skeleton width={50} />
+                          </td>
+                          <td className="p-2 min-w-max whitespace-nowrap">
+                            <Skeleton width={70} />
+                          </td>
+                          <td className="p-2 min-w-max whitespace-nowrap">
+                            <div className="flex justify-center gap-4">
+                              <Skeleton width={100} height={30} />
+                              <Skeleton width={70} height={30} />
+                            </div>
+                          </td>
+                        </tr>
+                      ))
+                    ) : wishList.length === 0 ? (
                       <tr>
                         <td className="text-center text-xl py-24" colSpan={4}>
                           No items in wishlist
@@ -113,7 +139,7 @@ function Wishlist() {
                               onClick={() =>
                                 handleClickImage(item.productVariant.productId)
                               }
-                              src={`${BASE_URL}/uploads/${item?.productVariant?.images[0]}`}
+                              src={`${item?.productVariant?.publicIds[0]}`}
                               className="w-10 h-10 cursor-pointer object-contain mr-3"
                               alt=""
                             />
@@ -160,7 +186,7 @@ function Wishlist() {
                                     item?.productVariant?._id
                                   )
                                 }
-                                className="p-2 whitespace-nowrap text-red-500 cursor-pointer text-sm text-center "
+                                className="p-2 whitespace-nowrap text-red-500 cursor-pointer text-sm text-center"
                               >
                                 Remove
                               </p>
