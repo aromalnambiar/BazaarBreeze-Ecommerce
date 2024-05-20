@@ -23,7 +23,7 @@ const addToCart = async (req, res) => {
       "product.productVariantId": productVariantId,
     });
     console.log("user cart : ", uCart);
-    if (uCart.product.length > 0) {
+    if (uCart?.product?.length > 0) {
       if (uCart.product[0].quantity + 1 > productVariant.stock) {
         return res
           .status(400)
