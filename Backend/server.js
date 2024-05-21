@@ -21,18 +21,18 @@ app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 
 console.log("Directory name : ", __dirname);
-console.log("path join user : ", path.join(__dirname, "../user/dist"));
+console.log("path join user : ", path.join(__dirname, "../Frontend/User/dist"));
 
 // Serve frontend build files
-app.use(express.static(path.join(__dirname, "../user/dist")));
-app.use(express.static(path.join(__dirname, "../admin/dist")));
+app.use(express.static(path.join(__dirname, "../Frontend/User/dist")));
+app.use(express.static(path.join(__dirname, "../Frontend/Admin/dist")));
 
 app.get("/adminpanel*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../admin/dist", "index.html"));
+  res.sendFile(path.join(__dirname, "../Frontend/Admin/dist", "index.html"));
 });
 
 app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../user/dist", "index.html"));
+  res.sendFile(path.join(__dirname, "../Frontend/User/dist", "index.html"));
 });
 
 const port = process.env.PORT || 4000;
