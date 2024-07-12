@@ -19,7 +19,7 @@ function App() {
     { path: "/user/*", element: isAuthenticated ? <Navigate to="/dashboard" replace /> : <User /> },
     { path: "/cart/*", element: isAuthenticated ? <Cart /> : <Navigate to="/user/signin" replace /> },
     { path: "/wishlist/*", element: isAuthenticated ? <Wishlist /> : <Navigate to="/user/signin" replace /> },
-    { path: "/product/:id", element: isAuthenticated ? <Product /> : <Navigate to="/user/signin" replace /> },
+    { path: "/product/:id", element:<Product />  },
     { path: "/dashboard/*", element: isAuthenticated ? <Dashboard /> : <Navigate to="/user/signin" replace /> },
     { path: "/filter/*", element: <Filter /> },
     { path: "/Offers/*", element: <Filter /> },
