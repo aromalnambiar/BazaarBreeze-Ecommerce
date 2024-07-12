@@ -55,7 +55,7 @@ router.get(
 );
 router.get(
   "/products/:productid/product",
-  authenticateJWT,
+  nonAuthMiddleware,
   product.productDetails
 );
 router.get(

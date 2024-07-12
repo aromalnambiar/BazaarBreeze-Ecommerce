@@ -156,7 +156,15 @@ const productDetails = async (req, res) => {
   try {
     const productId = new mongoose.Types.ObjectId(req.params.productid);
 
-    const { userId } = req.user;
+    // Initialize userId as null and other variables
+    let userId = null;
+    let isCartFound = false;
+    let isWishlistFound = false;
+
+    // Check if user is logged in
+    if (req.user) {
+      userId = req.user.userId;
+    }
 
     const result = await Products.aggregate([
       {
@@ -174,20 +182,14 @@ const productDetails = async (req, res) => {
       },
     ]);
 
-    const category = await Category.findById(result[0].category);
-    let isCartFound = false;
-    let isWishlistFound = false;
-    // console.log("result : ",result[0].productDetails.map(item=>item._id));
-    // const variantIds = product.productDetails.map(variant => variant._id);
-    // console.log("variantIds : ",variantIds);
-    const variantIds = result[0].productDetails.map((item) => item._id);
-
     if (result.length > 0) {
       const product = result[0];
       const firstVariant = product.productDetails[0];
-      // console.log("first Variant : ",firstVariant);
-      product.productDetails = firstVariant;
+      const variantIds = product.productDetails.map((item) => item._id);
 
+      const category = await Category.findById(product.category);
+
+      // Check if userId is available before accessing cart and wishlist
       if (userId) {
         // Check if the product variant exists in the cart
         const cart = await Cart.findOne({ user: userId });
@@ -198,19 +200,20 @@ const productDetails = async (req, res) => {
           );
 
         // Check if the product variant exists in the wishlist
-        const wishlist = await Wishlist.findOne({ userId });
-        // console.log("Wishlist : ",wishlist);
+        const wishlist = await Wishlist.findOne({ user: userId });
         isWishlistFound =
           wishlist &&
           wishlist.items.some((item) =>
             item.productVariant.equals(firstVariant._id)
           );
-        // console.log("isWishlistFound : ",isWishlistFound);
       }
 
       res.status(200).json({
         message: "success",
-        productDetails: product,
+        productDetails: {
+          ...product,
+          productDetails: firstVariant,
+        },
         isCartFound,
         variantIds,
         isWishlistFound,
