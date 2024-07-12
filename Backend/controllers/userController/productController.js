@@ -8,19 +8,23 @@ const Category = require("../../models/Category");
 const listProducts = async (req, res) => {
   try {
     const { page = 1, pageSize = 15 } = req.params;
-    const { userId } = req.user;
-
     const skip = (page - 1) * parseInt(pageSize);
 
-    const wishlistItems = await Wishlist.findOne({ userId })
-      .select("items.productVariant")
-      .lean();
+    // Check if user is logged in
+    const wishlistProductVariantIds = [];
+    if (req.user) {
+      const { userId } = req.user;
 
-    const wishlistProductVariantIds = wishlistItems
-      ? wishlistItems.items.map(
+      const wishlistItems = await Wishlist.findOne({ userId })
+        .select("items.productVariant")
+        .lean();
+
+      if (wishlistItems) {
+        wishlistProductVariantIds = wishlistItems.items.map(
           (item) => new mongoose.Types.ObjectId(item.productVariant)
-        )
-      : [];
+        );
+      }
+    }
 
     const products = await Products.aggregate([
       {

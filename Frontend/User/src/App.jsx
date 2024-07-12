@@ -23,7 +23,7 @@ function App() {
     { path: "/dashboard/*", element: isAuthenticated ? <Dashboard /> : <Navigate to="/user/signin" replace /> },
     { path: "/filter/*", element: <Filter /> },
     { path: "/Offers/*", element: <Filter /> },
-    { path: "/*", element: isAuthenticated ? <Home /> : <Navigate to="/user/signin" replace /> },
+    { path: "/*", element:<Home />},
   ];
 
   return (
