@@ -74,7 +74,7 @@ const listProducts = async (req, res) => {
 const listProductsByCategory = async (req, res) => {
   try {
     const { categoryName, page = 1, pageSize = 15 } = req.params;
-    const skip = (page - 1) * pageSize;
+    const skip = (page - 1) * parseInt(pageSize);
 
     if (!categoryName) {
       return res.status(400).json({ error: "Category name is required" });
@@ -87,17 +87,23 @@ const listProductsByCategory = async (req, res) => {
       return res.status(404).json({ error: "Category not found" });
     }
 
-    const { userId } = req.user;
+    // Initialize wishlistProductVariantIds as an empty array
+    const wishlistProductVariantIds = [];
 
-    const wishlistItems = await Wishlist.findOne({ userId })
-      .select("items.productVariant")
-      .lean();
+    // Check if user is logged in
+    if (req.user) {
+      const { userId } = req.user;
 
-    const wishlistProductVariantIds = wishlistItems
-      ? wishlistItems.items.map(
+      const wishlistItems = await Wishlist.findOne({ userId })
+        .select("items.productVariant")
+        .lean();
+
+      if (wishlistItems) {
+        wishlistProductVariantIds = wishlistItems.items.map(
           (item) => new mongoose.Types.ObjectId(item.productVariant)
-        )
-      : [];
+        );
+      }
+    }
 
     const products = await Products.aggregate([
       {
