@@ -68,142 +68,157 @@ function Wishlist() {
   };
 
   return (
-    <div className={`${isDashboardCartPath ? "my-0" : "my-10"}`}>
-      <section
-        className={`flex flex-col justify-center antialiased text-gray-600 p-4 ${
-          isDashboardCartPath ? "p-0" : "p-4"
-        }`}
-      >
-        <div className="h-full">
-          <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
-            <header className="px-5 py-4 border-b border-gray-100">
-              <h2 className="font-semibold text-gray-800">Wishlist</h2>
-            </header>
-            <div className="p-3">
-              <div className="overflow-x-auto">
-                <table className="table-auto w-full">
-                  <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
-                    <tr>
-                      <th className="p-2 whitespace-nowrap">
-                        <div className="font-semibold text-left">Products</div>
-                      </th>
-                      <th className="p-2 whitespace-nowrap">
-                        <div className="font-semibold text-left">Price</div>
-                      </th>
-                      <th className="p-2 whitespace-nowrap">
-                        <div className="font-semibold text-left">
-                          Stock status
-                        </div>
-                      </th>
-                      <th className="p-2 whitespace-nowrap">
-                        <div className="font-semibold text-center">Actions</div>
-                      </th>
-                    </tr>
-                  </thead>
-
-                  <tbody className="text-sm divide-y divide-gray-100">
-                    {loading ? (
-                      Array.from({ length: 3 }).map((_, idx) => (
-                        <tr key={idx}>
-                          <td className="flex items-center min-w-max py-8 ps-2 sm:px-6 whitespace-nowrap">
-                            <Skeleton width={40} height={40} />
-                            <div className="ml-3">
-                              <Skeleton width={100} />
-                            </div>
-                          </td>
-                          <td className="p-2 min-w-max whitespace-nowrap">
-                            <Skeleton width={50} />
-                          </td>
-                          <td className="p-2 min-w-max whitespace-nowrap">
-                            <Skeleton width={70} />
-                          </td>
-                          <td className="p-2 min-w-max whitespace-nowrap">
-                            <div className="flex justify-center gap-4">
-                              <Skeleton width={100} height={30} />
-                              <Skeleton width={70} height={30} />
-                            </div>
+    <div className="p-2 sm:p-0 grid grid-cols-12 gap-4 my-14 min-h-[80vh]">
+      <div className="col-span-12">
+        <section className="flex flex-col justify-center antialiased text-gray-600 rounded-md">
+          <div className="h-full">
+            <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
+              <div className="flex justify-between border-b p-6 pb-8">
+                <h1 className="font-semibold text-2xl">Wishlist</h1>
+                <h2 className="font-semibold text-2xl">
+                  {wishList?.length} items
+                </h2>
+              </div>
+              <div className="p-3 pb-8">
+                <div className="overflow-x-auto">
+                  <table className="table-auto w-full">
+                    <thead className="text-xs font-semibold uppercase text-gray-400 bg-gray-50">
+                      <tr>
+                        <th className="p-2 whitespace-nowrap">
+                          <div className="font-semibold text-left">
+                            PRODUCT DETAILS
+                          </div>
+                        </th>
+                        <th className="p-2 whitespace-nowrap">
+                          <div className="font-semibold text-center">
+                            PRICE
+                          </div>
+                        </th>
+                        <th className="p-2 whitespace-nowrap">
+                          <div className="font-semibold text-center">
+                            STOCK STATUS
+                          </div>
+                        </th>
+                        <th className="p-2 whitespace-nowrap">
+                          <div className="font-semibold text-center">
+                            ACTION
+                          </div>
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="text-sm divide-y divide-gray-100">
+                      {loading ? (
+                        <>
+                          <SkeletonProduct />
+                          <SkeletonProduct />
+                          <SkeletonProduct />
+                        </>
+                      ) : wishList.length === 0 ? (
+                        <tr>
+                          <td className="text-center text-xl py-24" colSpan={4}>
+                            No items in wishlist
                           </td>
                         </tr>
-                      ))
-                    ) : wishList.length === 0 ? (
-                      <tr>
-                        <td className="text-center text-xl py-24" colSpan={4}>
-                          No items in wishlist
-                        </td>
-                      </tr>
-                    ) : (
-                      wishList.map((item, idx) => (
-                        <tr key={item?.productVariant?._id}>
-                          <td className="flex items-center min-w-max py-8 ps-2 sm:px-6 whitespace-nowrap">
-                            <img
-                              onClick={() =>
-                                handleClickImage(item.productVariant.productId)
-                              }
-                              src={`${item?.productVariant?.publicIds[0]}`}
-                              className="w-10 h-10 cursor-pointer object-contain mr-3"
-                              alt=""
-                            />
-                            <div>
-                              <span className="block text-gray-700 text-sm font-medium">
-                                {item?.productVariant?.variantName}
-                              </span>
-                            </div>
-                          </td>
-                          <td className="p-2 min-w-max whitespace-nowrap">
-                            <div className="text-left font-medium ">
-                              {item?.productVariant?.salePrice}
-                            </div>
-                          </td>
-                          <td className="p-2 min-w-max whitespace-nowrap">
-                            <div
-                              className={`text-xs ${
+                      ) : (
+                        wishList.map((item) => (
+                          <tr
+                            key={item?.productVariant?._id}
+                            className="hover:bg-slate-100"
+                          >
+                            <td className="p-2 whitespace-nowrap">
+                              <div className="flex gap-4 my-4">
+                                <div className="w-14">
+                                  <img
+                                    onClick={() =>
+                                      handleClickImage(
+                                        item?.productVariant?.productId
+                                      )
+                                    }
+                                    className="h-24 object-contain cursor-pointer"
+                                    src={`${item?.productVariant?.publicIds[0]}`}
+                                    alt=""
+                                  />
+                                </div>
+                                <div className="flex flex-col justify-around ml-4 flex-grow">
+                                  <span className="font-bold text-sm">
+                                    {item?.productVariant?.variantName}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="p-2 whitespace-nowrap">
+                              <div className="text-center font-semibold">
+                                ${item.productVariant?.salePrice}
+                              </div>
+                            </td>
+                            <td className="p-2 whitespace-nowrap">
+                              <div className={`text-xs text-center ${
                                 item?.productVariant?.stock == 0
                                   ? "text-red-500"
                                   : "text-green-500"
-                              } `}
-                            >
-                              {item?.productVariant?.stock == 0
-                                ? "Out of stock"
-                                : "In stock"}
-                            </div>
-                          </td>
-                          <td>
-                            <div>
-                              {item.isInCart !== true && (
-                                <div
-                                  onClick={() =>
-                                    handleAddToCart(item?.productVariant?._id)
-                                  }
-                                  className="flex items-center gap-4 text-sm mx-auto justify-center p-2 text-green-400 hover:text-green-700 cursor-pointer border-2 border-green-200 hover:border-green-700 max-w-44 min-w-32 rounded-md"
+                              }`}>
+                                {item?.productVariant?.stock == 0
+                                  ? "Out of stock"
+                                  : "In stock"}
+                              </div>
+                            </td>
+                            <td className="p-2 whitespace-nowrap">
+                              <div className="text-center">
+                                {item.isInCart !== true && (
+                                  <button
+                                    onClick={() => handleAddToCart(item?.productVariant?._id)}
+                                    className="bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 flex items-center justify-center mx-auto mb-2"
+                                  >
+                                    <FaCartPlus className="mr-2" />
+                                    Add to Cart
+                                  </button>
+                                )}
+                                <button
+                                  onClick={() => handleRemoveFromWishlist(item?.productVariant?._id)}
+                                  className="text-red-500 hover:text-red-700"
                                 >
-                                  <FaCartPlus />
-                                  <p>Add to cart</p>
-                                </div>
-                              )}
-                              <p
-                                onClick={() =>
-                                  handleRemoveFromWishlist(
-                                    item?.productVariant?._id
-                                  )
-                                }
-                                className="p-2 whitespace-nowrap text-red-500 cursor-pointer text-sm text-center"
-                              >
-                                Remove
-                              </p>
-                            </div>
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
+                                  Remove
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </div>
   );
 }
+
+const SkeletonProduct = () => (
+  <tr className="animate-pulse">
+    <td className="p-2 whitespace-nowrap">
+      <div className="flex gap-4 my-4">
+        <div className="w-14 h-24 bg-gray-200"></div>
+        <div className="flex flex-col justify-around ml-4 flex-grow">
+          <div className="bg-gray-200 h-4 w-32 mb-2"></div>
+        </div>
+      </div>
+    </td>
+    <td className="p-2 whitespace-nowrap">
+      <div className="text-center bg-gray-200 h-6 w-20 mx-auto"></div>
+    </td>
+    <td className="p-2 whitespace-nowrap">
+      <div className="text-center bg-gray-200 h-6 w-20 mx-auto"></div>
+    </td>
+    <td className="p-2 whitespace-nowrap">
+      <div className="text-center">
+        <div className="bg-gray-200 h-8 w-24 mx-auto mb-2"></div>
+        <div className="bg-gray-200 h-6 w-16 mx-auto"></div>
+      </div>
+    </td>
+  </tr>
+);
 
 export default Wishlist;
