@@ -6,6 +6,8 @@ import InnerImageZoom from "react-inner-image-zoom";
 import "react-inner-image-zoom/lib/InnerImageZoom/styles.css";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import { FaHeart, FaRegHeart } from "react-icons/fa";
+import { IoCartOutline } from "react-icons/io5";
 import "./styles.css";
 
 function Product() {
@@ -231,15 +233,16 @@ function Product() {
                 <p>Size: Screen size</p>
                 <p>Storage: 1TB SSD Storage</p>
               </div>
-              <div className="flex flex-col sm:flex-row gap-4 mb-6">
+              <div className="flex flex-col sm:flex-row gap-4 mb-6 text-xs font-bold">
                 <button
                   onClick={() =>
                     isCartFound
                       ? navigate("/cart")
                       : handleAddToCart(item?.productDetails?._id || item?._id)
                   }
-                  className="w-full sm:w-auto bg-orange-500 text-white px-8 py-3 rounded font-bold"
+                  className="w-full sm:w-auto bg-orange-500 text-white px-8 py-3 rounded flex items-center justify-center gap-2"
                 >
+                  <IoCartOutline size={22} />
                   {isCartFound ? "VIEW CART" : "ADD TO CART"}
                 </button>
                 <button
@@ -254,21 +257,11 @@ function Product() {
                   }
                   className="w-full sm:w-auto flex items-center justify-center gap-2 border border-gray-300 px-8 py-3 rounded font-bold"
                 >
-                  <svg
-                    width="22"
-                    height="22"
-                    viewBox="0 0 32 32"
-                    fill={isWishlistFound ? "red" : "none"}
-                    xmlns="http://www.w3.org/2000/svg"
-                  >
-                    <path
-                      d="M16 27C16 27 3.5 20 3.5 11.5C3.5 9.99736 4.02062 8.54113 4.97328 7.37907C5.92593 6.21702 7.25178 5.42092 8.72525 5.12623C10.1987 4.83154 11.7288 5.05645 13.0551 5.76271C14.3814 6.46897 15.4221 7.61295 16 9C16.5779 7.61295 17.6186 6.46897 18.9449 5.76271C20.2712 5.05645 21.8013 4.83154 23.2748 5.12623C24.7482 5.42092 26.0741 6.21702 27.0267 7.37907C27.9794 8.54113 28.5 9.99736 28.5 11.5C28.5 20 16 27 16 27Z"
-                      stroke={isWishlistFound ? "red" : "currentColor"}
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  {isWishlistFound ? (
+                    <FaHeart size={22} color="red" />
+                  ) : (
+                    <FaRegHeart size={22} />
+                  )}
                   {isWishlistFound ? "Remove from Wishlist" : "Add to Wishlist"}
                 </button>
               </div>
@@ -278,7 +271,7 @@ function Product() {
       </div>
 
       {/* Description and Specification Section */}
-      <div className="mt-16 max-w-[940px] text-sm mx-auto mb-10">
+      <div className="mt-16 max-w-[940px] text-sm lg:text-base mx-auto mb-10">
         <div className="flex justify-center gap-20 border items-center h-16">
           <button
             onClick={() => setIsSpecification(false)}
