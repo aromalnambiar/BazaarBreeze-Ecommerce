@@ -11,7 +11,7 @@ const listProducts = async (req, res) => {
     const skip = (page - 1) * parseInt(pageSize);
 
     // Check if user is logged in
-    const wishlistProductVariantIds = [];
+    let wishlistProductVariantIds = [];
     if (req.user) {
       const { userId } = req.user;
 
@@ -88,7 +88,7 @@ const listProductsByCategory = async (req, res) => {
     }
 
     // Initialize wishlistProductVariantIds as an empty array
-    const wishlistProductVariantIds = [];
+    let wishlistProductVariantIds = [];
 
     // Check if user is logged in
     if (req.user) {

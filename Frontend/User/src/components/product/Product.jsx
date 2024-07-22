@@ -148,8 +148,8 @@ function Product() {
   return (
     <>
       <div className="grid grid-cols-12 mt-8 text-sm max-w-[940px] gap-8">
-        <div className="col-span-10 overflow-hidden col-start-2 col-end-12 lg:col-span-6 h-max border p-4 rounded-md ">
-          <div className="border rounded-lg max-w-[350px] h-[310px] p-10 mx-auto">
+        <div className="col-span-12 sm:col-span-10 overflow-hidden  sm:col-start-2 sm:col-end-12 lg:col-span-6 h-max border py-4 sm:p-4 rounded-md ">
+          <div className="border rounded-lg max-w-[350px] h-[310px] p-4 sm:p-10 mx-auto">
             <div style={{ height: "210px", overflow: "hidden" }}>
               {loading ? (
                 <Skeleton height={210} width={350} />
@@ -168,7 +168,7 @@ function Product() {
             </div>
           </div>
 
-          <div className="mt-6 w-max max-w-[24rem] mx-auto whitespace-nowrap overflow-x-scroll no-scrollbar ">
+          <div className="mt-6  w-max max-w-[24rem] mx-auto whitespace-nowrap overflow-x-scroll no-scrollbar ">
             <div className="flex gap-4 ">
               {loading
                 ? Array.from({ length: 4 }).map((_, index) => (
@@ -187,7 +187,7 @@ function Product() {
             </div>
           </div>
         </div>
-        <div className="col-span-10 col-start-2 col-end-12 lg:col-span-6">
+        <div className="col-span-12 px-4 sm:px-0 col-start-1 sm:col-span-10  sm:col-start-2 col-end-12 lg:col-span-6">
           {loading ? (
             <>
               <Skeleton height={30} width="80%" />

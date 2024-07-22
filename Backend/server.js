@@ -20,12 +20,10 @@ app.use("/uploads", express.static("uploads"));
 app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 
-console.log("Directory name : ", __dirname);
-console.log("path join user : ", path.join(__dirname, "../user/dist"));
-
 // Serve frontend build files
 app.use(express.static(path.join(__dirname, "../user/dist")));
 app.use(express.static(path.join(__dirname, "../admin/dist")));
+
 
 app.get("/adminpanel*", function (req, res) {
   res.sendFile(path.join(__dirname, "../admin/dist", "index.html"));
