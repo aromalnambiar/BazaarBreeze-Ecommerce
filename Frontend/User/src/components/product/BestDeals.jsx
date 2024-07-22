@@ -64,6 +64,21 @@ function BestDeals() {
     }
   };
 
+  const ProductSkeleton = () => (
+    <div className="flex w-full sm:w-full lg:w-48 col-span-6 sm:col-span-4 md:col-span-3 h-56 sm:h-64 rounded-lg relative flex-col p-2 shadow-lg border">
+      <div className="w-full h-44 overflow-hidden">
+        <Skeleton height={144} width="100%" />
+      </div>
+      <div className="absolute bottom-2 w-[calc(100%-1rem)]">
+        <Skeleton height={20} width="80%" />
+        <Skeleton height={16} width="40%" />
+      </div>
+      <div className="absolute right-1 sm:right-4 bottom-6">
+        <Skeleton circle={true} height={24} width={24} />
+      </div>
+    </div>
+  );
+
   return (
     <div className="mx-auto text-xs md:text-base break-all">
       <div className="flex my-4 justify-between mx-2 sm:mx-20 md:mx-0">
@@ -72,34 +87,28 @@ function BestDeals() {
           Browse All product
         </p>
       </div>
-      <div className="flex flex-wrap justify-center gap-3 ">
+      <div className="grid place-items-end justify-items-center max-sm:px-3 grid-cols-12 gap-3 lg:flex lg:flex-wrap lg:justify-center">
         {loading
           ? Array.from({ length: 15 }).map((_, index) => (
-              <div
-                key={index}
-                className="w-40 sm:w-48 h-64 rounded-lg bg-slate-50 p-2 shadow-lg border"
-              >
-                <Skeleton height={176} />
-              </div>
+              <ProductSkeleton key={index} />
             ))
           : products.map((item) => (
               <div
                 key={item.productVariantId}
-                className="flex w-[138px]  sm:w-48 h-56 sm:h-64 rounded-lg relative  flex-col p-2 shadow-lg border"
+                className="flex w-full sm:w-full lg:w-48 col-span-6 sm:col-span-4 md:col-span-3 h-56 sm:h-64 rounded-lg relative flex-col p-2 shadow-lg border"
               >
-                {/* {console.log("item Best : ", item)} */}
                 <div
                   onClick={() => handleClick(item)}
                   className="w-full h-44 overflow-hidden cursor-pointer"
                 >
                   <img
-                    className="w-30 sm:w-44 h-36 mx-auto sm:h-44 object-contain rounded-sm"
+                    className="w-full sm:w-44 h-36 mx-auto sm:h-44 object-contain rounded-sm"
                     src={`${item.image}` || ""}
                     alt=""
                   />
                 </div>
                 <div className="absolute bottom-2">
-                  <p className="text-sm  sm:text-base font-semibold text-gray-500 w-[100px] sm:w-[140px] overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">
+                  <p className="text-sm sm:text-base font-semibold text-gray-500 w-[100px] sm:w-[140px] overflow-hidden whitespace-nowrap overflow-ellipsis max-w-full">
                     {item.description}
                   </p>
                   <p className="text-xs text-[#2DA5F3]">₹ {item.salePrice}</p>
@@ -109,7 +118,7 @@ function BestDeals() {
                     onClick={() =>
                       handleRemoveFromWishlist(item.productVariantId)
                     }
-                    className="text-red-500  absolute right-1 sm:right-4 bottom-6 text-xl cursor-pointer"
+                    className="text-red-500 absolute right-1 sm:right-4 bottom-6 text-xl cursor-pointer"
                   />
                 ) : (
                   <IoIosHeartEmpty
