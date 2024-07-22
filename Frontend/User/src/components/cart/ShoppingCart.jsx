@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import Modal from "../common/Modal";
 import { useNavigate, useLocation } from "react-router-dom";
-import { BASE_URL } from "../../../config";
 import axiosInstance from "../../utils/axiosConfig";
 
 function ShoppingCart() {
@@ -171,12 +170,12 @@ function ShoppingCart() {
   return (
     <>
       <div
-        className={`grid grid-cols-12 gap-4 ${
+        className={`p-2 sm:p-0 grid grid-cols-12 gap-4 ${
           isDashboardCartPath ? "my-0" : "my-14"
         } min-h-[80vh]`}
       >
         <div className="col-span-12 md:col-span-8">
-          <section className="flex flex-col justify-center antialiased text-gray-600 rounded-md">
+          <section className="flex  flex-col justify-center antialiased text-gray-600 rounded-md">
             <div className="h-full">
               <div className="w-full max-w-6xl mx-auto bg-white shadow-lg rounded-sm border border-gray-200">
                 <div className="flex justify-between border-b p-6 pb-8">
@@ -252,7 +251,7 @@ function ShoppingCart() {
                                       className="font-semibold mb-2 cursor-pointer hover:text-red-500 text-gray-500 text-xs"
                                     >
                                       Remove
-                                    </a>
+                         -semib     </a>
                                   </div>
                                 </div>
                               </td>
