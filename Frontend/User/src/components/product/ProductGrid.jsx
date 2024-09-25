@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { IoIosHeartEmpty, IoMdHeart } from "react-icons/io";
 import Skeleton from "react-loading-skeleton";
 import axiosInstance from "../../utils/axiosConfig";
+import { useSelector } from "react-redux";
 
 function ProductGrid({ products, loading, title, viewAllText }) {
   const [wishlistStatus, setWishlistStatus] = useState(
@@ -11,6 +12,7 @@ function ProductGrid({ products, loading, title, viewAllText }) {
     )
   );
   const navigate = useNavigate();
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   const handleClick = (item) => {
     navigate(`/product/${item.productId}`);
@@ -18,6 +20,11 @@ function ProductGrid({ products, loading, title, viewAllText }) {
 
   const handleAddToWishlist = async (productVariant) => {
     try {
+      if (!isAuthenticated) {
+        navigate("/user/signin", { replace: true });
+        return;
+      }
+
       await axiosInstance.post(`/user/wishlist`, { productVariant });
       setWishlistStatus((prevStatus) => ({
         ...prevStatus,
