@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 
-import { BASE_URL } from "../../../config";
+import { BASE_CLOUNDINARY, BASE_URL } from "../../../config";
 import AddAddress from "./AddAddress";
 import EditAddress from "./EditAddress";
 import axiosInstance from "../../utils/axiosConfig";
@@ -22,7 +22,7 @@ function AccountInfo({ user, handleEditAccount, loading }) {
             <Skeleton circle width={40} height={40} />
           ) : user.image ? (
             <img
-              src={`${BASE_URL}/uploads/${user.image}`}
+              src={`${BASE_CLOUNDINARY}/${user.image}`}
               className="w-10 h-10 rounded-full"
               alt=""
             />
