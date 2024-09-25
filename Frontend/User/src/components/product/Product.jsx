@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../utils/axiosConfig";
+import { useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
 import Specification from "./Specification";
 import InnerImageZoom from "react-inner-image-zoom";
@@ -28,6 +29,7 @@ function Product() {
   const navigate = useNavigate();
   const [offer, setOffer] = useState(null);
   const [loading, setLoading] = useState(true);
+  const isAuthenticated = useSelector((state) => state.auth.isAuthenticated);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -73,6 +75,10 @@ function Product() {
 
   const handleAddToCart = async (id) => {
     try {
+      if (!isAuthenticated) {
+        navigate("/user/signin", { replace: true });
+        return;
+      }
       const response = await axiosInstance.post(`/user/cart`, {
         productVariantId: id,
         quantity: 1,
@@ -85,6 +91,10 @@ function Product() {
 
   const handleAddToWishlist = async (productVariant) => {
     try {
+      if (!isAuthenticated) {
+        navigate("/user/signin", { replace: true });
+        return;
+      }
       const response = await axiosInstance.post(`/user/wishlist`, {
         productVariant,
       });
@@ -96,6 +106,10 @@ function Product() {
 
   const handleRemoveFromWishlist = async (productVariant) => {
     try {
+      if (!isAuthenticated) {
+        navigate("/user/signin", { replace: true });
+        return;
+      }
       const response = await axiosInstance.put(`/user/wishlist`, {
         productVariant,
       });
