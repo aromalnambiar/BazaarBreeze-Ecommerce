@@ -260,7 +260,8 @@ function Checkout() {
             {cartItems.map((item) => {
               return (
                 <div key={item?._id} className="flex items-center gap-4 mb-2">
-                  <img className="w-12 h-12 object-contain" src={`${BASE_URL}/uploads/${item.productVariantId.images[0]}`} alt="" />
+                {console.log("Item : ",item)}
+                  <img className="w-12 h-12 object-contain" src={`${item.productVariantId?.publicIds[0]}`} alt="" />
                   <div>
                     <p>{item.productVariantId.variantName || "variant Name"}</p>
                     <p>x {item.quantity}</p>

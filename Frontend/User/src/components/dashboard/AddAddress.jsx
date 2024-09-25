@@ -20,14 +20,15 @@ function AddAddress({ setIsToggle }) {
       street: street.current.value,
       phone1: phone1.current.value,
       pincode: pincode.current.value,
-      userId: userId,
       phone2: phone2.current.value,
     };
 
+    console.log("submitData : ", data);
     axiosInstance
       .post(`/user/address`, data)
       .then((res) => {
         console.log("res : ", res);
+        console.log("Response : ", res);
         setIsToggle((prev) => !prev);
       })
       .catch((err) => {
@@ -42,50 +43,101 @@ function AddAddress({ setIsToggle }) {
           <h3 className="border-b pb-2 mb-2">Shipping addressff</h3>
           <div className="flex flex-wrap -mx-3 mb-2">
             <div className="w-full md:w-1/2 px-3 mb-4 md:mb-0">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="grid-first-name"
+              >
                 Full Name
               </label>
-              <input ref={fullName} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" required type="text" placeholder="Jane" />
+              <input
+                ref={fullName}
+                className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                id="grid-first-name"
+                required
+                type="text"
+                placeholder="Jane"
+              />
             </div>
           </div>
           <div className="flex flex-wrap -mx-3 mb-2">
             <div className="w-full  px-3 mb-6 md:mb-0">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="grid-first-name"
+              >
                 Address
               </label>
-              <input ref={address} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" required placeholder="Jane" />
+              <input
+                ref={address}
+                className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                id="grid-first-name"
+                type="text"
+                required
+                placeholder="Jane"
+              />
             </div>
           </div>
 
           <div className="flex flex-wrap -mx-3 mb-2">
             <div className="w-full md:w-1/3 px-3 mb-2 md:mb-0">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-city">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="grid-city"
+              >
                 Street
               </label>
-              <input ref={street} className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-city" type="text" required placeholder="Albuquerque" />
+              <input
+                ref={street}
+                className="appearance-none block w-full bg-gray-50 text-gray-700 border border-gray-200 rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                id="grid-city"
+                type="text"
+                required
+                placeholder="Albuquerque"
+              />
             </div>
             <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-state">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="grid-state"
+              >
                 State
               </label>
               <div className="relative">
-                <select ref={state} className="block appearance-none w-full bg-gray-50 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-state">
+                <select
+                  ref={state}
+                  className="block appearance-none w-full bg-gray-50 border border-gray-200 text-gray-700 py-3 px-4 pr-8 rounded leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                  id="grid-state"
+                >
                   <option>Kerala</option>
                   <option>Tamilnadu</option>
                   <option>Karnataka</option>
                 </select>
                 <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-                  <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+                  <svg
+                    className="fill-current h-4 w-4"
+                    xmlns="http://www.w3.org/2000/svg"
+                    viewBox="0 0 20 20"
+                  >
                     <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
                   </svg>
                 </div>
               </div>
             </div>
             <div className="w-full md:w-1/3 px-3 mb-6 md:mb-0">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-zip">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="grid-zip"
+              >
                 Pin Code
               </label>
-              <input ref={pincode} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500" id="grid-zip" type="number" required placeholder="90210" />
+              <input
+                ref={pincode}
+                className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 leading-tight focus:outline-none focus:bg-white focus:border-gray-500"
+                id="grid-zip"
+                type="number"
+                required
+                placeholder="90210"
+              />
             </div>
             {/* <div className="w-full mt-6 px-3 mb-6 md:mb-0">
               <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
@@ -94,22 +146,49 @@ function AddAddress({ setIsToggle }) {
               <input ref={email} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="text" required placeholder="Jane" />
             </div> */}
             <div className="w-full md:w-2/4 mt-2 px-3 mb-6 md:mb-0">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="grid-first-name"
+              >
                 Phone1
               </label>
-              <input ref={phone1} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" type="number" pattern="[0-9]{10}" placeholder="Jane" required />
+              <input
+                ref={phone1}
+                className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                id="grid-first-name"
+                type="number"
+                pattern="[0-9]{10}"
+                placeholder="Jane"
+                required
+              />
             </div>
             <div className="w-full md:w-2/4 mt-2 px-3 mb-6 md:mb-0">
-              <label className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2" htmlFor="grid-first-name">
+              <label
+                className="block uppercase tracking-wide text-gray-700 text-xs font-bold mb-2"
+                htmlFor="grid-first-name"
+              >
                 Phone2
               </label>
-              <input ref={phone2} className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white" id="grid-first-name" pattern="[0-9]{10}" type="number" placeholder="Jane" />
+              <input
+                ref={phone2}
+                className="appearance-none block w-full bg-gray-50 text-gray-700 border  rounded py-3 px-4 mb-3 leading-tight focus:outline-none focus:bg-white"
+                id="grid-first-name"
+                pattern="[0-9]{10}"
+                type="number"
+                placeholder="Jane"
+              />
             </div>
             <div className="flex  justify-between w-full items-center">
-              <button onClick={handleSubmit} className="bg-[#FA8232] text-white px-4 py-2 rounded-sm ml-3 mt-2">
+              <button
+                onClick={handleSubmit}
+                className="bg-[#FA8232] text-white px-4 py-2 rounded-sm ml-3 mt-2"
+              >
                 Submit Address
               </button>
-              <p onClick={() => setIsToggle((prev) => !prev)} className="mr-4 text-red-400 cursor-pointer hover:text-red-600">
+              <p
+                onClick={() => setIsToggle((prev) => !prev)}
+                className="mr-4 text-red-400 cursor-pointer hover:text-red-600"
+              >
                 Discard
               </p>
             </div>

@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 function CheckoutSuccess() {
   const navigate = useNavigate("");
   return (
-    <div className="flex justify-center items-center  min-h-[50vh]">
+    <div className="flex justify-center items-center  min-h-[54.4vh]">
       <div className="flex flex-col items-center py-10">
         <svg width="88" height="88" viewBox="0 0 88 88" fill="none" xmlns="http://www.w3.org/2000/svg">
           <path opacity="0.2" d="M44 77C62.2254 77 77 62.2254 77 44C77 25.7746 62.2254 11 44 11C25.7746 11 11 25.7746 11 44C11 62.2254 25.7746 77 44 77Z" fill="#2DB324" />

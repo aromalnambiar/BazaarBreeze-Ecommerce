@@ -21,7 +21,7 @@ app.use("/user", userRoutes);
 app.use("/admin", adminRoutes);
 
 // Serve frontend build files
-app.use(express.static(path.join(__dirname, "../user/dist")));
+app.use(express.static(path.join(__dirname, "../Frontend/User/dist")));
 app.use(express.static(path.join(__dirname, "../admin/dist")));
 
 
@@ -30,7 +30,7 @@ app.get("/adminpanel*", function (req, res) {
 });
 
 app.get("/*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../user/dist", "index.html"));
+  res.sendFile(path.join(__dirname, "../Frontend/User/dist", "index.html"));
 });
 
 const port = process.env.PORT || 4000;

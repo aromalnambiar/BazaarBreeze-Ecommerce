@@ -5,7 +5,7 @@ import Steps from "../order/Stepper";
 import Timeline from "../order/Timeline";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { BASE_URL } from "../../../config";
+import { BASE_CLOUNDINARY, BASE_URL } from "../../../config";
 
 import Swal from "sweetalert2";
 import PdfDownload from "../dashboard/PdfDownload";
@@ -222,7 +222,7 @@ function OrderDetails() {
                       <td className="p-2 whitespace-nowrap">
                         <div className="flex gap-4 items-center">
                           <div className="font-medium text-gray-800">
-                            <img src={`${BASE_URL}/uploads/${item.productDetails.images[0]}`} className="w-10 h-10 object-contain" />
+                            <img src={`${BASE_CLOUNDINARY}/${item.productDetails.images[0]}`} className="w-10 h-10 object-contain" />
                           </div>
                           <p>{item.productDetails.variantName}</p>
                         </div>

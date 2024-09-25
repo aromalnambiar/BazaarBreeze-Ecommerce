@@ -198,14 +198,16 @@ const productDetails = async (req, res) => {
           cart.product.some((item) =>
             item.productVariantId.equals(firstVariant._id)
           );
-
-        // Check if the product variant exists in the wishlist
-        const wishlist = await Wishlist.findOne({ user: userId });
-        isWishlistFound =
+  
+          console.log("userId : ",userId)
+          // Check if the product variant exists in the wishlist
+          const wishlist = await Wishlist.findOne({ userId });
+          isWishlistFound =
           wishlist &&
           wishlist.items.some((item) =>
             item.productVariant.equals(firstVariant._id)
-          );
+        );
+        console.log("wishlist : ",wishlist);
       }
 
       res.status(200).json({

@@ -19,16 +19,7 @@ const { authenticateJWT } = require("../middlewares/authMiddleware.js");
 const nonAuthMiddleware = require("../middlewares/nonAuthMiddleware.js");
 const checkUserBlockStatus = require("../middlewares/checkUserBlockStatus.js");
 
-const storage = multer.diskStorage({
-  destination: "uploads/",
-  filename: function (req, file, cb) {
-    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const fileExtension = path.extname(file.originalname);
-    cb(null, file.fieldname + "-" + uniqueSuffix + fileExtension);
-  },
-});
-
-const upload = multer({ storage: storage });
+const { uploadSingle, uploadArray } = require("../middlewares/imageUpload.js");
 
 // authentication
 router.post("/registration", auth.registerUser);
@@ -69,7 +60,7 @@ router.get("/", authenticateJWT, checkUserBlockStatus, user.showUser);
 router.put(
   "/profile",
   authenticateJWT,
-  upload.single("image"),
+  uploadSingle("image"),
   user.editProfile
 );
 

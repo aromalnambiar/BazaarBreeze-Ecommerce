@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FaArrowRightLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
-import { BASE_URL } from "../../../config";
+import { BASE_CLOUNDINARY } from "../../../config";
 import axiosInstance from "../../utils/axiosConfig";
 
 function OrderList() {
@@ -80,7 +80,7 @@ function OrderList() {
                             <tr key={`${order._id}-item-${itemIdx}`}>
                               {/* {console.log("item : ", item)} */}
                               <td className="px-6 py-4 whitespace-nowrap">
-                                <img src={`${BASE_URL}/uploads/${item.product.images[0]}`} className="w-12 h-12 object-contain" alt="" srcSet="" />
+                                <img src={`${BASE_CLOUNDINARY}/${item.product.images[0]}`} className="w-12 h-12 object-contain" alt="" srcSet="" />
                               </td>
                               <td className="px-6 py-4 whitespace-nowrap">{item.quantity}</td>
                               <td className="px-6 py-4 whitespace-nowrap">{item.orderStatus}</td>
