@@ -22,11 +22,11 @@ app.use("/admin", adminRoutes);
 
 // Serve frontend build files
 app.use(express.static(path.join(__dirname, "../Frontend/User/dist")));
-app.use(express.static(path.join(__dirname, "../admin/dist")));
+app.use(express.static(path.join(__dirname, "../Frontend/Admin/dist")));
 
 
 app.get("/adminpanel*", function (req, res) {
-  res.sendFile(path.join(__dirname, "../admin/dist", "index.html"));
+  res.sendFile(path.join(__dirname, "../Frontend/Admin/dist", "index.html"));
 });
 
 app.get("/*", function (req, res) {
