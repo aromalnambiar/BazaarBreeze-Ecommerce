@@ -327,21 +327,40 @@ const listCategoryProducts = async (req, res) => {
 
 const searchProducts = async (req, res) => {
   const { query } = req.query;
-  console.log("query : ", req.query);
   try {
     const regex = new RegExp(query, "i");
 
-    const products = await Products.find(
+    const products = await Products.aggregate([
       {
-        $and: [
-          { isDelete: false },
-          {
-            $or: [{ name: { $regex: regex } }, { brand: { $regex: regex } }],
-          },
-        ],
+        $match: {
+          isDelete: false,
+          $or: [
+            { name: { $regex: regex } },
+            { brand: { $regex: regex } }
+          ]
+        }
       },
-      { _id: 1, name: 1 }
-    );
+      {
+        $lookup: {
+          from: "productvariants",
+          localField: "_id",
+          foreignField: "productId",
+          as: "variants"
+        }
+      },
+      {
+        $addFields: {
+          firstVariant: { $arrayElemAt: ["$variants", 0] }
+        }
+      },
+      {
+        $project: {
+          _id: 1,
+          name: 1,
+          image: { $arrayElemAt: ["$firstVariant.publicIds", 0] }
+        }
+      }
+    ]);
 
     res.json(products);
   } catch (error) {
