@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend-admin
-          image: aswantht/ecommerce-frontend-admin:latest
+          image: aromalnambiar/ecommerce-frontend-admin:latest
           ports:
             - containerPort: 80
          

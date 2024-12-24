@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: aswantht/ecommerce-backend:latest
+        image: aromalnambiar/ecommerce-backend:latest
         imagePullPolicy: Always
         ports:
         - containerPort: 3000

@@ -1,11 +1,11 @@
-version: '3.9'
+version: "3.9"
 
 services:
   frontend-user:
     build:
       context: ./Frontend/User
       dockerfile: Dockerfile
-    image: aswantht/ecommerce-frontend-user
+    image: aromalnambiar/ecommerce-frontend-user
     ports:
       - "5174:5173"
     depends_on:
@@ -15,7 +15,7 @@ services:
     build:
       context: ./Frontend/Admin
       dockerfile: Dockerfile
-    image: aswantht/ecommerce-frontend-admin
+    image: aromalnambiar/ecommerce-frontend-admin
     ports:
       - "5173:5173"
     depends_on:
@@ -25,10 +25,10 @@ services:
     build:
       context: ./Backend
       dockerfile: Dockerfile
-    image: aswantht/ecommerce-backend
+    image: aromalnambiar/ecommerce-backend
     ports:
       - "4002:3000"
-    env_file: ./Backend/.env  # Specify the location of your .env file here
+    env_file: ./Backend/.env # Specify the location of your .env file here
     volumes:
       - ./Frontend/User/dist:/app/user/dist
       - ./Frontend/Admin/dist:/app/admin/dist
